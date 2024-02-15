@@ -1,0 +1,60 @@
+Apples
+Bananas
+Strawberries
+Avocados
+Bell Peppers
+Carrots
+Broccoli
+Garlic
+Lemons/Limes
+Onion
+Parsley
+Cilantro
+Basil
+Potatoes
+Spinach
+Tomatoes
+Breadcrumbs
+Pasta
+Quinoa
+Rice
+Sandwich Bread
+Tortillas
+Chicken
+Eggs
+Ground Beef
+Sliced Turkey
+Lunch Meat
+Tofu
+Soy Beans
+Seitan
+Butter
+Sliced Cheese
+Shredded Cheese
+Milk
+Greek Yogurt
+Chocolate Chips
+Fruit and Berries
+Frozen Veggies
+Salsa
+Diced Tomatoes
+Jam/Jelly
+Peanut Butter
+Pasta Sauce
+Black Beans
+Chickpeas
+Baked Beans
+Soups
+Tuna
+Olive Oil
+Vegetable
+Red Wine Vinegar
+White Vinegar
+Cooking Wine
+White Wine Vinegar
+Crackers
+Nuts
+Quick Oats
+Popcorn
+Tortilla Chips
+Cereal
