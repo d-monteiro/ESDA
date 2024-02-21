@@ -1,0 +1,10 @@
+Maria Joana,12,Portugal
+Luis Teixeira,18,Espanha
+Francisco Matos,23,Portugal
+Bruno Gouveia,12,França
+Susana Silva,45,Portugal
+Pedro Rocha,5,Espanha
+João Monteiro,67,Espanha
+Filipe Melo,56,Italia
+Ana Sousa,16,Italia
+Tiago Lima,13,França
