@@ -150,21 +150,22 @@ void UserManagement::addUser(User* newUser)
 
 void User::displayUserInfo(ostream& os) const
 {
-  cout<<"Displaying user info:"<<endl;
-  cout<<"-----Username: "<<username<<endl;
-  cout<<"-----Name: "<<name<<endl;
-  cout<<"-----Country: "<<country<<endl;
-
-  cout<<"-----Favorite Genres:"<<endl;
+  os<<"Displaying user info:"<<endl;
+  os<<"-----Username: "<<username<<endl;
+  os<<"-----Name: "<<name<<endl;
+  os<<"-----Country: "<<country<<endl;
+  os<<"-----Favorite Genres:"<<endl;
+  
   for(size_t i=0;i<favoriteGenres.size();++i)
   {
-      cout<<"------ "<<favoriteGenres[i]<<endl;
+      os<<"------ "<<favoriteGenres[i]<<endl;
   }
   
-  cout<<"-----Watched Series:"<<endl;
+  os<<"-----Watched Series:"<<endl;
+  
   for(size_t i=0;i<watchedSeries.size();++i)
   {
-      cout<<"------ "<<watchedSeries[i]->getTitle()<<
+      os<<"------ "<<watchedSeries[i]->getTitle()<<
       ", Episodes Watched: "<<episodesWatched[i]<<endl;
   }
 }
