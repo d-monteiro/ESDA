@@ -150,33 +150,52 @@ void UserManagement::addUser(User* newUser)
 
 void User::displayUserInfo(ostream& os) const
 {
-  os<<"Displaying user info:"<<endl;
-  os<<"-----Username: "<<username<<endl;
-  os<<"-----Name: "<<name<<endl;
-  os<<"-----Country: "<<country<<endl;
-  os<<"-----Favorite Genres:"<<endl;
+//answer 1
+//DM
+
+    os<<"Displaying user info:"<<endl;
+    os<<"-----Username: "<<username<<endl;
+    os<<"-----Name: "<<name<<endl;
+    os<<"-----Country: "<<country<<endl;
+
+    os<<"-----Favorite Genres:"<<endl;
+    for(size_t i=0;i<favoriteGenres.size();++i)
+    {
+        os<<"------ "<<favoriteGenres[i]<<endl;
+    }
   
-  for(size_t i=0;i<favoriteGenres.size();++i)
-  {
-      os<<"------ "<<favoriteGenres[i]<<endl;
-  }
-  
-  os<<"-----Watched Series:"<<endl;
-  
-  for(size_t i=0;i<watchedSeries.size();++i)
-  {
-      os<<"------ "<<watchedSeries[i]->getTitle()<<
-      ", Episodes Watched: "<<episodesWatched[i]<<endl;
-  }
+    os<<"-----Watched Series:"<<endl;
+    for(size_t i=0;i<watchedSeries.size();++i)
+    {
+        os<<"------ "<<watchedSeries[i]->getTitle()<<", Episodes Watched: "<<episodesWatched[i]<<endl;
+    }
 }
 
 int User::addRating(TVSeries* series, float rating)
 {
 //answer 2
+//FS
+
+//verificar parâmetros; if invalid (series name empty or rating out of bounds (assuming rating is between 0 and 10)): return -1
+    if(*series == "" || rating < 0 || rating > 10) return -1;
+//procurar a série na lista de séries já vistas
+    vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), *series);
+//verificar se a série já foi vista; ifnot: return -2
+    if(it == watchedSeries.end()) return -2;
+//atribuir o rating na posição correspondente à série
+    //se for pra substituir
+//    ratings[it - watchedSeries.begin()] = rating;
+    //se for para adicionar
+    ratings.insert(ratings.begin() + it - watchedSeries.begin(), rating);
+//código de retorno: bem sucedido
+    return 0;
 }
 
 float TVSeries::updateRating(const vector<User*>& vectorUser)
 {
+//answer 3
+//DM
+  
   float sum = 0;//Inicialization of sum
   int n = 0;//Inicialization of number of matches found
   
@@ -209,9 +228,56 @@ float TVSeries::updateRating(const vector<User*>& vectorUser)
 int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 {
 //answer 4
+//FS
+
+//verificar parâmetro; if invalid (series name empty): return -1
+    if(*series == "") return -1;
+//verificar se a série já existe; ifyes: return 1
+    vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), *series);
+    if(it == watchedSeries.end()) return 1;
+//adicionar a série à lista
+    watchedSeries.insert(watchedSeries.end(), *series);
+//código de retorno: bem sucedido
+    return 0;
 }
 
 int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
 {
 //answer 5
+//FS
+
+//verificar os parâmetros; if invalid (filename empty): return -1;
+    if(filename == "") return -1;
+//abrir ficheiro de texto
+    ifstream fin(filename);
+//verificar abertura bem sucedida do ficheiro; ifnot: return -1
+    if(!fin) return -1;
+//ler ficheiro
+    string title_str, nseasons_str;
+    while(getline(fin, title_str, ","))
+    {
+    //verificar existência de série; iffalse: return -2 ?
+        vector<TVSeries*>::iterator it = find(manage.vectorTVSeries.begin(), manage.vectorTVSeries.end(), title_str);
+        if(it == manage.vectorTVSeries.end()) return -2;
+        else
+        {
+        //ler nº de seasons
+            getline(fin, nseason_str, ",");
+        //validar
+            if(atoi(nseason_str) <= 0) return -1;
+            else
+            {
+                string neps[atoi(nseason_str)];
+                for(int i = 0; i < atoi(nseason_str); i++)
+                {
+                //read nº eps p/ season !!!UNFINISHED!!!
+                    getline(fin, neps[i]);
+                    //unfinished
+                }
+            }
+        }
+    }
+
+
+
 }
