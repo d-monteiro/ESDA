@@ -1,0 +1,6 @@
+The Office,9,24 24 24 24 24 24 24 24 24, Comedy, 8.7,1
+Breaking Bad,5,7 13 13 13 16, Drama, 9.5,1
+Friends,10,24 24 24 24 24 24 24 24 24 18, Comedy, 8.9,1
+Game of Thrones,8,10 10 10 10 10 10 7 6, Drama, 9.3,1
+Stranger Things,3,8 9 8, Drama, 8.8,0
+Money Heist,5,13 9 8 8 9, Crime, 8.4,1

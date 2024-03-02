@@ -1,0 +1,6 @@
+Breaking Bad,emily_c,10
+Breaking Bad,emily_c,24
+Breaking Bad,carlitos,10
+Breaking Bad,teresa_santos,22
+Friends,emily_c,43
+Friends,carlitos,6
