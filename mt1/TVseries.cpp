@@ -177,7 +177,33 @@ int User::addRating(TVSeries* series, float rating)
 
 float TVSeries::updateRating(const vector<User*>& vectorUser)
 {
-//answer 3
+  float sum = 0;//Inicialization of sum
+  int n = 0;//Inicialization of number of matches found
+  
+  
+  for(size_t i=0;i<vectorUser.size();++i)//Iterate through all the users
+  {
+  if(vectorUser[i] == nullptr) return -1;//And find any nullptr's
+  }
+  
+  for(size_t i=0;i<vectorUser.size();++i)//Iterate through all the users
+  {
+    vector<TVSeries*> series = vectorUser[i]->getWatchedSeries();//Series watched by a single user
+    
+    for(size_t j=0;j<series.size();++j)//Iterate through all the series watched
+    {
+      if(series[j]->getTitle() == title)//If match found
+      {
+        vector<int> ratings = vectorUser[i]->getRatings();//Ratings of all the series watched by an user
+        sum+=ratings[j];//Increment sum
+        n+=1;//Increment number of matches
+      }
+    }
+  }
+  if(n==0) return 0;//Return 0, if no user has seen the serie
+  
+  rating=(sum/n);
+  return rating;//Return new rating
 }
 
 int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
