@@ -159,13 +159,13 @@ void User::displayUserInfo(ostream& os) const
     os<<"-----Country: "<<country<<endl;
 
     os<<"-----Favorite Genres:"<<endl;
-    for(size_t i=0;i<favoriteGenres.size();++i)
+    for(size_t i=0;i<favoriteGenres.size();++i)//Iterate through the array
     {
         os<<"------ "<<favoriteGenres[i]<<endl;
     }
   
     os<<"-----Watched Series:"<<endl;
-    for(size_t i=0;i<watchedSeries.size();++i)
+    for(size_t i=0;i<watchedSeries.size();++i)//Iterate through the array
     {
         os<<"------ "<<watchedSeries[i]->getTitle()<<", Episodes Watched: "<<episodesWatched[i]<<endl;
     }
@@ -230,15 +230,19 @@ int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 //answer 4
 //FS
 
-//verificar parâmetro; if invalid (series name empty): return -1
-    if(*series == "") return -1;
-//verificar se a série já existe; ifyes: return 1
-    vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), *series);
-    if(it == watchedSeries.end()) return 1;
-//adicionar a série à lista
-    watchedSeries.insert(watchedSeries.end(), *series);
-//código de retorno: bem sucedido
-    return 0;
+  if(series == nullptr) return -1;//Find a nullptr's
+
+  //verificar se a série já existe; ifyes: return 1
+  vector<TVSeries*>::iterator it = find(vectorTVSeries.begin(), vectorTVSeries.end(), series);
+  if(it != vectorTVSeries.end()) return 1;
+    
+  //adicionar a série à lista
+  if(it == vectorTVSeries.end())
+  {
+    vectorTVSeries.insert(vectorTVSeries.end(), series);
+  }
+
+  return 0;//código de retorno: bem sucedido
 }
 
 int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
