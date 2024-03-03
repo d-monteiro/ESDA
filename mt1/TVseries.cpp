@@ -269,22 +269,23 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
 
 
 
-    //verificar existência de série; iffalse: return -2 //processo muito longo porque title é privado de TVSeries e vectorTVSeries é privado de TVSeriesManagement
+    //verificar existência de série; iffalse: return -2 
+    //processo muito longo porque title é privado de TVSeries e vectorTVSeries é privado de TVSeriesManagement
 
-        vector<TVSeries*> vtvs = manager.getVectorTVSeries();    //vtvs é uma cópia acessível de manager.vectorTVSeries (privado de TVSeriesManagement)
-        int sz = vtvs.size();    //nº de elementos de manager.vectorTVSeries
-        bool exists = 0;    //se existe a TVSeries em questão
-        int itvs;   //posição da TVSeries em manager.vectorTVSeries
+        vector<TVSeries*> vtvs = manager.getVectorTVSeries();  //vtvs é uma cópia acessível de manager.vectorTVSeries (privado de TVSeriesManagement)
+        int sz = vtvs.size();  //nº de elementos de manager.vectorTVSeries
+        bool exists = 0;  //se existe a TVSeries em questão
+        int itvs;  //posição da TVSeries em manager.vectorTVSeries
 
-        for(int i = 0; i < sz; i++) //pesquisar TVSeries em manager.vectorTVSeries
-        {   //i é cada TVSeries no manager.vectorTVSeries
+        for(int i = 0; i < sz; i++)  //pesquisar TVSeries em manager.vectorTVSeries
+        {//i é cada TVSeries no manager.vectorTVSeries
 
         //comparar o title com o title de cada TVSeries no manager.vectorTVSeries
             if(title == vtvs[i]->getTitle())
-            {   //se TVSeries é encontrada:
+            {//se TVSeries é encontrada:
             
-                exists = 1;   //atualizar existência da TVSeries em questão
-                itvs = i;   //registar a sua posição no manager.vectorTVSeries
+                exists = 1;  //atualizar existência da TVSeries em questão
+                itvs = i;  //registar a sua posição no manager.vectorTVSeries
                 break;  //terminar pesquisa da TVSeries
 
             }//fim comparação TVSeries
@@ -302,21 +303,22 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
         
         else
         {
-        //verificar existência de User  //processo longo porque username é privado de User
+        //verificar existência de User  
+        //processo longo porque username é privado de User
 
-            sz = vectorUsers.size();    //reutilizar a variável sz; nº de elementos de vectorUsers
-            exists = 0; //reutilizar a variável; se existe o User em questão
-            int iu; //posição do User em vectorUsers
+            sz = vectorUsers.size();  //reutilizar a variável sz; nº de elementos de vectorUsers
+            exists = 0;  //reutilizar a variável; se existe o User em questão
+            int iu;  //posição do User em vectorUsers
 
-            for(int i = 0; i < sz; i++) //pesquisar User em vectorUsers
-            {   //i é cada User no vectorUsers
+            for(int i = 0; i < sz; i++)  //pesquisar User em vectorUsers
+            {  //i é cada User no vectorUsers
 
             //comparar o username com o username de cada User no vectorUsers
                 if(uname == vectorUsers[i]->getUsername())
-                {   //se User é encontrado:
+                {  //se User é encontrado:
 
-                    exists = 1;   //atualizar existência do User em questão
-                    iu = i; //registar a sua posição no vectorUsers
+                    exists = 1;  //atualizar existência do User em questão
+                    iu = i;  //registar a sua posição no vectorUsers
                     break;  //terminar pesquisa do User
 
                 }//fim comparação User
@@ -325,7 +327,7 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
 
         //(Finalmente) verificar existência de User
             if(!exists)
-            {   //iffalse: NEW-USER-PROTOCOL
+            {  //iffalse: NEW-USER-PROTOCOL
 
             //criar newUser
                 vector<string> fav;
@@ -338,7 +340,7 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
                 addUser(nUser);
 
             //e registar a sua posição no vectorUsers
-                iu = sz;    //!apesar do tamanho de vectorUsers ter aumentado, sz não foi atualizado!
+                iu = sz;  //!apesar do tamanho de vectorUsers ter aumentado, sz não foi atualizado!
                 
             }//fim NEW-USER-PROTOCOL
 
@@ -351,23 +353,23 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
         //agora que sabemos que temos o user e a série e sabemos as posições de ambos nos respetivos vetores:
 
         //verificar/adicionar TVSeries a watchedSeries do User em questão (User é vectorUsers[iu]; o seu watchedSeries é vectorUsers[iu].watchedSeries)
-            int ret = vectorUsers[iu]->addWatchedSeries(vtvs[itvs]); //addWatchedSeries retorna: 0 para nova adição com sucesso, 1 para série já vista e -1 para erro
+            int ret = vectorUsers[iu]->addWatchedSeries(vtvs[itvs]);  //addWatchedSeries retorna: 0 para nova adição com sucesso, 1 para série já vista e -1 para erro
         
             if(ret == -1)
-            {   //código de erro: return -1
+            {  //código de erro: return -1
                 return -1;
             }
             else
-            {   //reto == 0 || ret == 1: adicionar/atualizar episodesWatched
-                int nepsw = stoi(nepsw_str);    //nº de episodesWatched em int
+            {  //reto == 0 || ret == 1: adicionar/atualizar episodesWatched
+                int nepsw = stoi(nepsw_str);  //nº de episodesWatched em int
             //adicionar/atualizar episodesWatched
-                int out = vectorUsers[iu]->addEpisodesWatched(vtvs[itvs],nepsw);   //addEpisodesWatched retorna: 0 para adição bem sucedida, -1 para parâmetros inválidos e -2 para série não existente (em watchedSeries)
+                int out = vectorUsers[iu]->addEpisodesWatched(vtvs[itvs],nepsw);  //addEpisodesWatched retorna: 0 para adição bem sucedida, -1 para parâmetros inválidos e -2 para série não existente (em watchedSeries)
                 if(out) //out == -1 || out == -2
-                {   //código de erro: return -1
+                {  //código de erro: return -1
                     return -1;
                 }
-                else    //out == 0
-                {   //código de sucesso: prosseguir
+                else  //out == 0
+                {  //código de sucesso: prosseguir
                     break;
                 }
                 
