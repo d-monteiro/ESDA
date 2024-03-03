@@ -248,40 +248,138 @@ int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
 {
 //answer 5
-//FS
+
 
 //verificar os parâmetros; if invalid (filename empty): return -1;
     if(filename == "") return -1;
+
 //abrir ficheiro de texto
     ifstream fin(filename);
+
 //verificar abertura bem sucedida do ficheiro; ifnot: return -1
     if(!fin) return -1;
-//ler ficheiro
-    string title_str, nseasons_str;
-    while(getline(fin, title_str, ","))
-    {
-    //verificar existência de série; iffalse: return -2 ?
-        vector<TVSeries*>::iterator it = find(manage.vectorTVSeries.begin(), manage.vectorTVSeries.end(), title_str);
-        if(it == manage.vectorTVSeries.end()) return -2;
+
+//ler dados em ficheiro
+    string title, uname, nepsw_str;
+    while(getline(fin, title, ',') && getline(fin, uname, ',') && getline(fin, nepsw_str, '\n'))
+    {   //enquanto houver dados:
+
+
+//TVSERIES
+
+
+
+    //verificar existência de série; iffalse: return -2 //processo muito longo porque title é privado de TVSeries e vectorTVSeries é privado de TVSeriesManagement
+
+        vector<TVSeries*> vtvs = manager.getVectorTVSeries();    //vtvs é uma cópia acessível de manager.vectorTVSeries (privado de TVSeriesManagement)
+        int sz = vtvs.size();    //nº de elementos de manager.vectorTVSeries
+        bool exists = 0;    //se existe a TVSeries em questão
+        int itvs;   //posição da TVSeries em manager.vectorTVSeries
+
+        for(int i = 0; i < sz; i++) //pesquisar TVSeries em manager.vectorTVSeries
+        {   //i é cada TVSeries no manager.vectorTVSeries
+
+        //comparar o title com o title de cada TVSeries no manager.vectorTVSeries
+            if(title == vtvs[i]->getTitle())
+            {   //se TVSeries é encontrada:
+            
+                exists = 1;   //atualizar existência da TVSeries em questão
+                itvs = i;   //registar a sua posição no manager.vectorTVSeries
+                break;  //terminar pesquisa da TVSeries
+
+            }//fim comparação TVSeries
+
+        }//fim pesquisa TVSeries
+
+    //(Finalmente) verificar existência de TVSeries; iffalse: return -2
+        if(!exists) return -2;
+        
+        
+
+//USER
+
+
+        
         else
         {
-        //ler nº de seasons
-            getline(fin, nseason_str, ",");
-        //validar
-            if(atoi(nseason_str) <= 0) return -1;
-            else
-            {
-                string neps[atoi(nseason_str)];
-                for(int i = 0; i < atoi(nseason_str); i++)
-                {
-                //read nº eps p/ season !!!UNFINISHED!!!
-                    getline(fin, neps[i]);
-                    //unfinished
-                }
+        //verificar existência de User  //processo longo porque username é privado de User
+
+            sz = vectorUsers.size();    //reutilizar a variável sz; nº de elementos de vectorUsers
+            exists = 0; //reutilizar a variável; se existe o User em questão
+            int iu; //posição do User em vectorUsers
+
+            for(int i = 0; i < sz; i++) //pesquisar User em vectorUsers
+            {   //i é cada User no vectorUsers
+
+            //comparar o username com o username de cada User no vectorUsers
+                if(uname == vectorUsers[i]->getUsername())
+                {   //se User é encontrado:
+
+                    exists = 1;   //atualizar existência do User em questão
+                    iu = i; //registar a sua posição no vectorUsers
+                    break;  //terminar pesquisa do User
+
+                }//fim comparação User
+
+            }//fim pesquisa User
+
+        //(Finalmente) verificar existência de User
+            if(!exists)
+            {   //iffalse: NEW-USER-PROTOCOL
+
+            //criar newUser
+                vector<string> fav;
+                User newUser(uname, "Unknown", "Unknown", fav);
+
+            //criar apontador para o newUser
+                User* nUser = &newUser; 
+
+            //adicionar newUser a vectorUsers
+                addUser(nUser);
+
+            //e registar a sua posição no vectorUsers
+                iu = sz;    //!apesar do tamanho de vectorUsers ter aumentado, sz não foi atualizado!
+                
+            }//fim NEW-USER-PROTOCOL
+
+
+            
+//watchedSeries
+
+
+
+        //agora que sabemos que temos o user e a série e sabemos as posições de ambos nos respetivos vetores:
+
+        //verificar/adicionar TVSeries a watchedSeries do User em questão (User é vectorUsers[iu]; o seu watchedSeries é vectorUsers[iu].watchedSeries)
+            int ret = vectorUsers[iu]->addWatchedSeries(vtvs[itvs]); //addWatchedSeries retorna: 0 para nova adição com sucesso, 1 para série já vista e -1 para erro
+        
+            if(ret == -1)
+            {   //código de erro: return -1
+                return -1;
             }
-        }
-    }
+            else
+            {   //reto == 0 || ret == 1: adicionar/atualizar episodesWatched
+                int nepsw = stoi(nepsw_str);    //nº de episodesWatched em int
+            //adicionar/atualizar episodesWatched
+                int out = vectorUsers[iu]->addEpisodesWatched(vtvs[itvs],nepsw);   //addEpisodesWatched retorna: 0 para adição bem sucedida, -1 para parâmetros inválidos e -2 para série não existente (em watchedSeries)
+                if(out) //out == -1 || out == -2
+                {   //código de erro: return -1
+                    return -1;
+                }
+                else    //out == 0
+                {   //código de sucesso: prosseguir
+                    break;
+                }
+                
+            }//fim adicionar/atualizar episodesWatched
 
+        }//fim else(if(TVSeries existe))
 
+    }//fim while(leitura)
 
+//fechar ficheiro de texto
+    fin.close();
+    
+//código de retorno: bem sucedido
+    return 0;
 }
