@@ -177,16 +177,16 @@ int User::addRating(TVSeries* series, float rating)
 //FS
 
 //verificar parâmetros; if invalid (series name empty or rating out of bounds (assuming rating is between 0 and 10)): return -1
-    if(*series == "" || rating < 0 || rating > 10) return -1;
+    if(series == nullptr || rating < 0 || rating > 10) return -1;
 //procurar a série na lista de séries já vistas
-    vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), *series);
+    vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), series);
 //verificar se a série já foi vista; ifnot: return -2
     if(it == watchedSeries.end()) return -2;
 //atribuir o rating na posição correspondente à série
     //se for pra substituir
-//    ratings[it - watchedSeries.begin()] = rating;
+    ratings[distance(watchedSeries.begin(), it)] = rating;
     //se for para adicionar
-    ratings.insert(ratings.begin() + it - watchedSeries.begin(), rating);
+//    ratings.insert(ratings.begin() + distance(watchedSeries.begin(), it), rating);
 //código de retorno: bem sucedido
     return 0;
 }
@@ -230,19 +230,18 @@ int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 //answer 4
 //FS
 
-  if(series == nullptr) return -1;//Find a nullptr's
+if(series == nullptr) return -1;//Find a nullptr
 
-  //verificar se a série já existe; ifyes: return 1
-  vector<TVSeries*>::iterator it = find(vectorTVSeries.begin(), vectorTVSeries.end(), series);
-  if(it != vectorTVSeries.end()) return 1;
+//verificar se a série já existe; ifyes: return 1
+auto it = find(vectorTVSeries.begin(), vectorTVSeries.end(), series);
+if(it != vectorTVSeries.end()) return 1;
     
-  //adicionar a série à lista
-  if(it == vectorTVSeries.end())
-  {
-    vectorTVSeries.insert(vectorTVSeries.end(), series);
-  }
-
-  return 0;//código de retorno: bem sucedido
+//adicionar a série à lista
+if(it == vectorTVSeries.end())
+{
+  vectorTVSeries.insert(vectorTVSeries.end(), series);
+}
+return 0;//código de retorno: bem sucedido
 }
 
 int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
