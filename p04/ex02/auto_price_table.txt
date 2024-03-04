@@ -1,0 +1,24 @@
+Pneu
+70.0
+Jante
+200.5
+Para-brisas
+334
+Volante
+167.5
+Vidro traseiro
+210.0
+Retrovisor
+34.0
+Farol dianteiro
+57
+Farol Traseiro
+34.75
+Carburador
+453
+Turbo
+901.9
+Bateria
+154.5
+Grades tejadilho
+100
