@@ -175,7 +175,7 @@ int User::addRating(TVSeries* series, float rating)
 //answer 2
 
 //verificar parâmetros; if invalid (series name empty or rating out of bounds (assuming rating is between 0 and 10)): return -1
-    if(series == nullptr || rating < 0 || rating > 10) return -1;
+    if(series == nullptr || rating < 0) return -1;
 //procurar a série na lista de séries já vistas
     vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), series);
 //verificar se a série já foi vista; ifnot: return -2
