@@ -153,19 +153,19 @@ void User::displayUserInfo(ostream& os) const
 //answer 1
 
     os<<"Displaying user info:"<<endl;
-    os<<"-----Username: "<<username<<endl;
-    os<<"-----Name: "<<name<<endl;
-    os<<"-----Country: "<<country<<endl;
-
+    os<<"-----Username: "<<username<<endl;  //display username
+    os<<"-----Name: "<<name<<endl;          //display name
+    os<<"-----Country: "<<country<<endl;    //display country
+//display favorite genres
     os<<"-----Favorite Genres:"<<endl;
-    for(size_t i=0;i<favoriteGenres.size();++i)//Iterate through the array
-    {
+    for(size_t i=0;i<favoriteGenres.size();++i) //Iterate through the array
+    {                                           //displaying all favorite genres
         os<<"------ "<<favoriteGenres[i]<<endl;
     }
-  
+//display watched series w/ repective number of watched episodes 
     os<<"-----Watched Series:"<<endl;
-    for(size_t i=0;i<watchedSeries.size();++i)//Iterate through the array
-    {
+    for(size_t i=0;i<watchedSeries.size();++i)  //Iterate through the array
+    {                                           //displaying all watched series w/ respective number of episodes watched
         os<<"------ "<<watchedSeries[i]->getTitle()<<", Episodes Watched: "<<episodesWatched[i]<<endl;
     }
 }
@@ -174,17 +174,14 @@ int User::addRating(TVSeries* series, float rating)
 {
 //answer 2
 
-//verificar parâmetros; if invalid (series name empty or rating out of bounds (assuming rating is between 0 and 10)): return -1
+//verificar parâmetros; if invalid (series pointer is null or rating value is out of bounds (under 0)): return -1
     if(series == nullptr || rating < 0) return -1;
 //procurar a série na lista de séries já vistas
     vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), series);
 //verificar se a série já foi vista; ifnot: return -2
     if(it == watchedSeries.end()) return -2;
 //atribuir o rating na posição correspondente à série
-    //se for pra substituir
     ratings[distance(watchedSeries.begin(), it)] = rating;
-    //se for para adicionar
-//    ratings.insert(ratings.begin() + distance(watchedSeries.begin(), it), rating);
 //código de retorno: bem sucedido
     return 0;
 }
@@ -193,40 +190,40 @@ float TVSeries::updateRating(const vector<User*>& vectorUser)
 {
 //answer 3
   
-  float sum = 0;//Inicialization of sum
-  int n = 0;//Inicialization of number of matches found
+    float sum = 0;  //Inicialization of sum
+    int n = 0;      //Inicialization of number of matches (ratings) found
   
   
-  for(size_t i=0;i<vectorUser.size();++i)//Iterate through all the users
-  {
-  if(vectorUser[i] == nullptr) return -1;//And find any nullptr's
-  }
-  
-  for(size_t i=0;i<vectorUser.size();++i)//Iterate through all the users
-  {
-    vector<TVSeries*> series = vectorUser[i]->getWatchedSeries();//Series watched by a single user
-    
-    for(size_t j=0;j<series.size();++j)//Iterate through all the series watched
+    for(size_t i=0;i<vectorUser.size();++i) //Iterate through all the users (i)
     {
-      if(series[j]->getTitle() == title)//If match found
-      {
-        vector<int> ratings = vectorUser[i]->getRatings();//Ratings of all the series watched by an user
-        sum+=ratings[j];//Increment sum
-        n+=1;//Increment number of matches
-      }
+    if(vectorUser[i] == nullptr) return -1; //And find any nullptr's (meaning that vectorUser has a faulty element(i))
     }
-  }
-  if(n==0) return 0;//Return 0, if no user has seen the serie
   
-  rating=(sum/n);
-  return rating;//Return new rating
+    for(size_t i=0;i<vectorUser.size();++i) //Iterate through all the users (i)
+    {
+        vector<TVSeries*> series = vectorUser[i]->getWatchedSeries();   //Series watched by a single user (for each one of them)
+    
+        for(size_t j=0;j<series.size();++j) //Iterate through all the series watched (j)
+        {
+            if(series[j]->getTitle() == title)  //If match found (meaning that series' been watched by User)
+            {
+                vector<int> ratings = vectorUser[i]->getRatings();  //Ratings of all the series watched by an user
+                sum+=ratings[j];    //Increment sum w/ the corresponding rating
+                n+=1;               //Increment number of matches found
+            }
+        }
+    }
+    if(n==0) return 0;  //Return 0, if no user has seen the series
+  
+    rating=(sum/n); //calculate new rating
+    return rating;  //Return new rating
 }
 
 int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 {
 //answer 4
 
-if(series == nullptr) return -1;//Find a nullptr
+    if(series == nullptr) return -1;    //Find a nullptr (faulty parameter)
 
 //verificar se a série já existe; ifyes: return 1
 auto it = find(vectorTVSeries.begin(), vectorTVSeries.end(), series);
