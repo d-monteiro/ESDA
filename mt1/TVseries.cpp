@@ -152,16 +152,19 @@ void User::displayUserInfo(ostream& os) const
 {
 //answer 1
 
+
     os<<"Displaying user info:"<<endl;
     os<<"-----Username: "<<username<<endl;  //display username
     os<<"-----Name: "<<name<<endl;          //display name
     os<<"-----Country: "<<country<<endl;    //display country
+
 //display favorite genres
     os<<"-----Favorite Genres:"<<endl;
     for(size_t i=0;i<favoriteGenres.size();++i) //Iterate through the array
     {                                           //displaying all favorite genres
         os<<"------ "<<favoriteGenres[i]<<endl;
     }
+
 //display watched series w/ repective number of watched episodes 
     os<<"-----Watched Series:"<<endl;
     for(size_t i=0;i<watchedSeries.size();++i)  //Iterate through the array
@@ -174,14 +177,19 @@ int User::addRating(TVSeries* series, float rating)
 {
 //answer 2
 
+
 //verificar parâmetros; if invalid (series pointer is null or rating value is out of bounds (under 0)): return -1
     if(series == nullptr || rating < 0) return -1;
+
 //procurar a série na lista de séries já vistas
     vector<TVSeries*>::iterator it = find(watchedSeries.begin(), watchedSeries.end(), series);
+
 //verificar se a série já foi vista; ifnot: return -2
     if(it == watchedSeries.end()) return -2;
+
 //atribuir o rating na posição correspondente à série
     ratings[distance(watchedSeries.begin(), it)] = rating;
+
 //código de retorno: bem sucedido
     return 0;
 }
@@ -189,33 +197,36 @@ int User::addRating(TVSeries* series, float rating)
 float TVSeries::updateRating(const vector<User*>& vectorUser)
 {
 //answer 3
-  
+
+
     float sum = 0;  //Inicialization of sum
-    int n = 0;      //Inicialization of number of matches (ratings) found
-  
-  
+    int n = 0;      //Inicialization of number of matches (users w/ ratings for the Series) found
+
     for(size_t i=0;i<vectorUser.size();++i) //Iterate through all the users (i)
     {
-    if(vectorUser[i] == nullptr) return -1; //And find any nullptr's (meaning that vectorUser has a faulty element(i))
+        if(vectorUser[i] == nullptr) return -1; //And find any nullptr's (meaning that vectorUser has a faulty element(i))
     }
-  
+
     for(size_t i=0;i<vectorUser.size();++i) //Iterate through all the users (i)
     {
-        vector<TVSeries*> series = vectorUser[i]->getWatchedSeries();   //Series watched by a single user (for each one of them)
-    
+        vector<TVSeries*> series = vectorUser[i]->getWatchedSeries();   //Series watched by an user (for each one of them)
+
         for(size_t j=0;j<series.size();++j) //Iterate through all the series watched (j)
         {
-            if(series[j]->getTitle() == title)  //If match found (meaning that series' been watched by User)
+            if(series[j]->getTitle() == title)  //If match found (meaning that Series j has been watched by User i)
             {
-                vector<int> ratings = vectorUser[i]->getRatings();  //Ratings of all the series watched by an user
-                sum+=ratings[j];    //Increment sum w/ the corresponding rating
-                n+=1;               //Increment number of matches found
+                vector<int> ratings = vectorUser[i]->getRatings();  //Ratings of all the series watched by an user (for each one of them)
+                sum+=ratings[j];    //Increment sum w/ the corresponding rating (sum of ratings for Series j)
+                n+=1;               //Increment number of matches found (number of Users who've seen the Series)
             }
         }
     }
+
+//Returns:
+
     if(n==0) return 0;  //Return 0, if no user has seen the series
-  
-    rating=(sum/n); //calculate new rating
+
+    rating=(sum/n); //calculate new rating (and update it at the same time)
     return rating;  //Return new rating
 }
 
@@ -223,18 +234,33 @@ int TVSeriesManagement::TVSeriesInsert(TVSeries* series)
 {
 //answer 4
 
-    if(series == nullptr) return -1;    //Find a nullptr (faulty parameter)
 
-//verificar se a série já existe; ifyes: return 1
-auto it = find(vectorTVSeries.begin(), vectorTVSeries.end(), series);
-if(it != vectorTVSeries.end()) return 1;
+//verificar parâmetro; if invalid (series pointer is null): return -1
+    if(series == nullptr) return -1;
+
+//verificar se a série já existe; ifyes: update TVSeries & return 1
+
+    for(size_t i = 0; i < vectorTVSeries.size(); i++)   //pesquisar TVSeries em vectorTVSeries
+    {   //i é cada TVSeries no vectorTVSeries
+
+        if(vectorTVSeries[i]->getTitle() == series->getTitle()) //comparar o title de cada TVSeries com o title de series
+        {   //se for encontrada uma TVSeries com o título correspondente: (atualizar:)
+
+            if(TVSeriesDelete(series->getTitle())) return -1;   //apagar registo anterior e verificar o código de retorno da operação; if-1: return -1
+
+            vectorTVSeries[i] = series; //e colocar o registo atualizado
+
+            return 1;   //série já existia: return 1
+        }
+    }
     
+//se série não existia:
+
 //adicionar a série à lista
-if(it == vectorTVSeries.end())
-{
-  vectorTVSeries.insert(vectorTVSeries.end(), series);
-}
-return 0;//código de retorno: bem sucedido
+    vectorTVSeries.insert(vectorTVSeries.end(), series);
+
+//código de retorno: bem sucedido
+    return 0;
 }
 
 int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
@@ -252,49 +278,57 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
     if(!fin) return -1;
 
 //ler dados em ficheiro
-    string title, uname, nepsw_str;
+    string title, uname, nepsw_str; //inicializar variáveis para armazenar informações lidas do ficheiro ao longo da execução
     while(getline(fin, title, ',') && getline(fin, uname, ',') && getline(fin, nepsw_str))
-    {   //enquanto houver dados:
+    {   //enquanto forem lidos dados novos:
+
 
 
 //TVSERIES
 
 
 
-    //verificar existência de TVSeries; iffalse: return -2 //processo muito longo porque title é privado de TVSeries e vectorTVSeries é privado de TVSeriesManagement
-
-        vector<TVSeries*> vtvs = manager.getVectorTVSeries();    //vtvs é uma cópia acessível de manager.vectorTVSeries (privado de TVSeriesManagement)
-        int sz = vtvs.size();    //nº de elementos de manager.vectorTVSeries
-        bool exists = 0;    //se existe a TVSeries em questão
-        int itvs;   //posição da TVSeries em manager.vectorTVSeries
+    //verificar existência de TVSeries; iffalse: return -2
+        
+    //notar que vectorTVSeries é privado de TVSeriesManagement
+        vector<TVSeries*> vtvs = manager.getVectorTVSeries();   //vtvs é uma cópia acessível de manager.vectorTVSeries (privado de TVSeriesManagement)
+        
+        int sz = vtvs.size();   //nº de elementos de manager.vectorTVSeries
+        bool exists = 0;        //se existe a TVSeries em questão
+        int itvs;               //posição da TVSeries em manager.vectorTVSeries
 
         for(int i = 0; i < sz; i++) //pesquisar TVSeries em manager.vectorTVSeries
         {   //i é cada TVSeries no manager.vectorTVSeries
 
         //comparar o title com o title de cada TVSeries no manager.vectorTVSeries
-            if(title == vtvs[i]->getTitle())
+            if(title == vtvs[i]->getTitle())    //notar que title é privado de TVSeries
             {   //se TVSeries é encontrada:
             
-                exists = 1;   //atualizar existência da TVSeries em questão
+                exists = 1; //atualizar existência da TVSeries em questão
                 itvs = i;   //registar a sua posição no manager.vectorTVSeries
-                break;  //terminar pesquisa da TVSeries
+                break;      //terminar pesquisa da TVSeries
 
             }//fim comparação TVSeries
 
         }//fim pesquisa TVSeries
 
     //(Finalmente) verificar existência de TVSeries; iffalse: return -2
-        if(!exists) return -2;
-        
-        
+        if(!exists)
+        {
+            fin.close();    //fechar ficheiro de texto
+            return -2;      //TVSeries não existe: return -2
+        }
+
+
 
 //USER
 
 
-        
-        else
+
+        else    //se TVSeries existe:
         {
-        //verificar existência de User  //processo longo porque username é privado de User
+            
+        //verificar existência de User 
 
             sz = vectorUsers.size();    //reutilizar a variável sz; nº de elementos de vectorUsers
             exists = 0; //reutilizar a variável; se existe o User em questão
@@ -304,7 +338,7 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
             {   //i é cada User no vectorUsers
 
             //comparar o username com o username de cada User no vectorUsers
-                if(uname == vectorUsers[i]->getUsername())
+                if(uname == vectorUsers[i]->getUsername())  //notar que username é privado de User
                 {   //se User é encontrado:
 
                     exists = 1;   //atualizar existência do User em questão
@@ -346,17 +380,20 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
             int ret = vectorUsers[iu]->addWatchedSeries(vtvs[itvs]); //addWatchedSeries retorna: 0 para nova adição com sucesso, 1 para série já vista e -1 para erro
         
             if(ret == -1)
-            {   //código de erro: return -1
-                return -1;
+            {
+                fin.close();    //fechar ficheiro de texto
+                return -1;      //código de erro: return -1
             }
             else
-            {   //reto == 0 || ret == 1: adicionar/atualizar episodesWatched
+            {   //ret == 0 || ret == 1: adicionar/atualizar episodesWatched
                 int nepsw = stoi(nepsw_str);    //nº de episodesWatched em int
+                if(nepsw < 0) return -1; //número de episódios inválido: return -1
             //adicionar/atualizar episodesWatched
                 int out = vectorUsers[iu]->addEpisodesWatched(vtvs[itvs],nepsw);   //addEpisodesWatched retorna: 0 para adição bem sucedida, -1 para parâmetros inválidos e -2 para série não existente (em watchedSeries)
                 if(out) //out == -1 || out == -2
-                {   //código de erro: return -1
-                    return -1;
+                {
+                    fin.close();    //fechar ficheiro de texto
+                    return -1;      //código de erro: return -1
                 }
                 //else; out == 0  //código de sucesso: prosseguir (não fazer nada)
                 
@@ -366,9 +403,6 @@ int UserManagement::updateWatched(string filename, TVSeriesManagement& manager)
 
     }//fim while(leitura)
 
-//fechar ficheiro de texto
-    fin.close();
-    
-//código de retorno: bem sucedido
-    return 0;
+    fin.close();    //fechar ficheiro de texto
+    return 0;       //código de retorno: bem sucedido
 }
