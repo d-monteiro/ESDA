@@ -49,16 +49,13 @@ vector<string> Car::getColors() const {return colors;}
 
 void Car::setPrice(float euros)
 {
-  if(price>0) price = (float)euros;
-  else price = 0;
+  if(euros >= 0) price = (float)euros;
 }
 
 void Car::addColors(string color)
 {
   if(!color.empty()) colors.push_back(color);
 }
-
-
 
 void print_vector( vector<string> vec, string sep=" ")
 {
@@ -80,7 +77,7 @@ int main()
     string title = "The Hobbit";
     string author = "J. R. R. Tolkien"; 
     float price = 9.98; 
-    Book b1(ISBN,quantity,title,author,price);
+    Car b1(ISBN,quantity,title,author,price);
 
     cout << "O atributo ISBN é " << b1.getISBN() << endl;
     cout << "O atributo availability é " << b1.getAvailable() << endl;
@@ -98,9 +95,4 @@ int main()
     b1.addGenres("High Fantasy"); 
     cout << "Os elementos do atributo genres são:";
     print_vector(b1.getGenres()); 
-
-
-
-
-
 }
