@@ -8,39 +8,54 @@
 using namespace std;
 
 
-class Car{
- // questão 2 a)
-
+class Car
+{
+  private:
+  string brand;
+  string model;
+  float price;
+  vector<string> colors;
+  
+  public:
+  /*constructor*/
+  Car(string brand, string model, float price);
+  
+  /*Get Methods*/
+  string getBrand() const;
+  string getModel() const;
+  float getPrice() const;
+  vector<string> getColors() const;
+  
+  /*Other Methods*/
+  void setPrice(float euros);
+  void addColors(string color);
 };
 
-
-Car::Car(string brand, string model, float price){
-    // questão 2 b)
+Car::Car(string brand, string model, float price)
+{
+  this->brand = brand;
+  this->model = model;
+  if(price>=0) this->price = price;
+  else this->price = 0;
 }
 
-string Car::getbrand() const{
-     // questão 2 c)
+string Car::getBrand() const {return brand;}
+
+string Car::getModel() const {return model;}
+
+float Car::getPrice() const {return price;}
+
+vector<string> Car::getColors() const {return colors;}
+
+void Car::setPrice(float euros)
+{
+  if(price>0) price = (float)euros;
+  else price = 0;
 }
 
-string Car::getmodel() const{
-     // questão 2 c)
-}
-
-
-float Book::getPrice() const{
-    // questão 2 c)
-}
-
-vector<string> Book::getcolors() const{
-  // // questão 2 c)
-}
-
-
-void Book::setPrice(float euros){
-   // questão 2 d)
-
-void Book::addcolors(string color){
-    // questão 2 e)
+void Car::addColors(string color)
+{
+  if(!color.empty()) colors.push_back(color);
 }
 
 

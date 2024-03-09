@@ -9,52 +9,76 @@ using namespace std;
 
 
 class Book{
- // questão 2 a)
-
+  private:
+    /*Atributes*/
+    int ISBN;
+    int quantity;
+    bool available;
+    string title;
+    string author;
+    float price;
+    vector<string> genres;
+    
+  public:
+    /*Constructor*/
+    Book(int ISBN, int quantity, string title, string author, float price);
+    
+    /*Get Methods*/
+    int getISBN() const;
+    int getQuantity() const;
+    bool getAvailable() const;
+    string getTitle() const;
+    string getAuthor() const;
+    float getPrice() const;
+    vector<string> getGenres() const;
+    
+    /*Other Methods*/
+    void setPrice(float euros);
+    void addGenres(string genrs);
+    
 };
 
 
-Book::Book(int ISNB, int quantity, string title, string author, float price){
-    // questão 2 b)
+Book::Book(int ISBN, int quantity, string title, string author, float price)
+{
+  if(ISBN>0) this->ISBN = ISBN;
+  if(quantity>0){
+    this->quantity = quantity; 
+    this->available = 1;
+  }
+  else{
+    this->quantity = 0; 
+    this->available = 0; 
+  }
+  if(!title.empty()) this->title = title;
+  if(!author.empty()) this->author = author;
+  if(price>=0) this->price = price;
+  else this->price = 0;
 }
 
-int Book::getISNB() const{
-     // questão 2 c)
+int Book::getISBN() const {return ISBN;}
+
+int Book::getQuantity() const {return quantity;}
+
+bool Book::getAvailable() const {return available;}
+
+string Book::getTitle() const {return title;}
+
+string Book::getAuthor() const {return author;}
+
+float Book::getPrice() const {return price;}
+
+vector<string> Book::getGenres() const {return genres;}
+
+void Book::setPrice(float euros)
+{
+  if(euros >= 0) price = (float)euros;
 }
 
-int Book::getQuantity() const{
-     // questão 2 c)
+void Book::addGenres(string genrs)
+{
+  if(!genrs.empty()) genres.push_back(genrs);
 }
-
-bool Book::getAvailable() const{
-     // questão 2 c)
-}
-
-string Book::getTitle() const{
-     // questão 2 c)
-}
-
-string Book::getAuthor() const{
-     // questão 2 c) 
-}
-
-float Book::getPrice() const{
-    // questão 2 c)
-}
-
-vector<string> Book::getGenres() const{
-  // // questão 2 c)
-}
-
-
-void Book::setPrice(float euros){
-   // questão 2 d)
-
-void Book::addGenres(string genrs){
-    // questão 2 e)
-}
-
-
 
 void print_vector( vector<string> vec, string sep=" ")
 {
@@ -68,7 +92,6 @@ void print_vector( vector<string> vec, string sep=" ")
 
 int main()
 {
-   
     cout << "Beginning Tests\n\n" << endl;
 
     int ISBN = 1236574; 
@@ -94,9 +117,4 @@ int main()
     b1.addGenres("High Fantasy"); 
     cout << "Os elementos do atributo genres são:";
     print_vector(b1.getGenres()); 
-
-
-
-
-
 }
