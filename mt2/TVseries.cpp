@@ -356,22 +356,88 @@ void UserManagementList::addUser(User* newUser)
 
 list<TVSeries*> TVSeriesManagementList::seriesByCategory(string cat) const
 {
-    //question 1
-    list<TVSeries*> l;
-    return l;
+//question 1
+
+    list<TVSeries*> l;  //list to be returned
+    
+    bool checkcat = 0;  //state if cat is valid
+
+    for(size_t i = 0; i < vGenres->size(); i++)
+    {
+        if(cat == vGenres[i])  //verify if "cat" is valid
+        {
+            checkcat = 1;
+            break;
+        }
+    }
+    
+    if(!checkcat) return l;  //if "cat" is invalid: return empty
+
+    for(list<TVSeries*>::const_iterator it = listTVSeries.begin(); it != listTVSeries.end(); it++)
+    {
+        if(cat == (*it)->getGenre())  //we compare "cat" with "getGenre" function call from the "TVSeries" pointed by the "(TVSeries) pointer" pointed by "it"
+        {
+            l.push_back(*it);  //list of "TVSeries pointers"; we push the "(TVSeries) pointer" pointed by "it"
+        }
+    }
+    return l;  //finally, return l
 }
 
 list<User*> UserManagementList::seeAll(TVSeries* series)
 {
-    //question 2
-    list<User*> l;
-    return l;
+//question 2
+
+    list<User*> l;  //List to be returned
+    int sum = 0; // sum of all the episodes of the given series
+
+    if(series == nullptr) return l;  //If "series" is invalid: return empty
+    
+    for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){
+        sum += series->getEpisodesPerSeason()[i];
+    }
+
+    for(list<User*>::const_iterator it = listUsers.begin(); it != listUsers.end(); it++){  //Iterate through the list of users to get the series watched
+    for(size_t i = 0; i<(*it)->getWatchedSeries().size(); ++i){  //Iterate through all the watched series of the user in search for the parameter "series"
+        if(((*it)->getWatchedSeries()[i] == series) && (sum == (*it)->getEpisodesWatched()[i])){ //If the series and the number of episodes match: append the user to list l
+            l.push_back(*it); //Appending the user that saw the whole of the series
+        }
+    }}
+
+    return l; //Return the filled list
+    
+    //Should i check if the flag "series->isFinished" to see if it is a completed series?
 }
 
 int User::numberOfEpisodesToSee(string title, list<TVSeries*> listTVSeries )
 {
-    //question 3
-    return -2;
+//question 3
+    
+    int sum = 0;
+    queue<TVSeries*> wishSeriesCheck = wishSeries;
+    bool exists = 0;
+    
+    if(title.empty()) return -1;
+    
+    while (!wishSeriesCheck.empty()) {
+    TVSeries* series = wishSeriesCheck.front();
+    wishSeriesCheck.pop();
+    if(series->getTitle() == title) exists = 1;
+    }
+    
+    if(!exists) return -1;
+    
+    queue<TVSeries*> wishSeriesCopy = wishSeries;
+    while (!wishSeriesCopy.empty()) {
+        TVSeries* series = wishSeriesCopy.front();
+        wishSeriesCopy.pop();
+        if(series->getTitle() == title) break;
+        for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){
+            sum += series->getEpisodesPerSeason()[i];
+            //cout<<"sum= "<<sum<<endl;
+        }
+    }
+    
+    return sum;
 }
 
 int TVSeriesManagementList::TVSeriesDelete(string title, UserManagementList& userManagementlist)
