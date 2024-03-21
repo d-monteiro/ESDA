@@ -350,9 +350,19 @@ void UserManagementList::addUser(User* newUser)
 
 
 
+
+
+
 /**************************/
 /*     A implementar      */
 /**************************/
+
+
+
+
+
+
+
 
 list<TVSeries*> TVSeriesManagementList::seriesByCategory(string cat) const
 {
@@ -371,17 +381,22 @@ list<TVSeries*> TVSeriesManagementList::seriesByCategory(string cat) const
         }
     }
     
-    if(!checkcat) return l;  //if "cat" is invalid: return empty
+    if(!checkcat) return l; //if "cat" is invalid: return empty
 
-    for(list<TVSeries*>::const_iterator it = listTVSeries.begin(); it != listTVSeries.end(); it++)
-    {
+    for(auto it = listTVSeries.begin(); it != listTVSeries.end(); it++)
+    {//"it" points to a "TVSeries pointer"
         if(cat == (*it)->getGenre())  //we compare "cat" with "getGenre" function call from the "TVSeries" pointed by the "(TVSeries) pointer" pointed by "it"
         {
-            l.push_back(*it);  //list of "TVSeries pointers"; we push the "(TVSeries) pointer" pointed by "it"
+            l.push_back(*it);   //list of "TVSeries pointers"; we push the "(TVSeries) pointer" pointed by "it"
         }
     }
-    return l;  //finally, return l
+    return l;   //finally, return l
 }
+
+
+
+
+
 
 list<User*> UserManagementList::seeAll(TVSeries* series)
 {
@@ -408,10 +423,15 @@ list<User*> UserManagementList::seeAll(TVSeries* series)
     //Should i check if the flag "series->isFinished" to see if it is a completed series?
 }
 
+
+
+
+
+
 int User::numberOfEpisodesToSee(string title, list<TVSeries*> listTVSeries )
 {
 //question 3
-    
+ 
     int sum = 0;
     queue<TVSeries*> wishSeriesCheck = wishSeries;
     bool exists = 0;
@@ -440,15 +460,69 @@ int User::numberOfEpisodesToSee(string title, list<TVSeries*> listTVSeries )
     return sum;
 }
 
+
+
+
+
+
 int TVSeriesManagementList::TVSeriesDelete(string title, UserManagementList& userManagementlist)
 {
-    //question 4
-    return -2;
+//question 4
+
+    for(auto it = listTVSeries.begin(); it != listTVSeries.end(); it++) //search for TVSeries
+    {
+        if(title == (*it)->getTitle())  //we compare "title" with "getTitle" function call from the "TVSeries" pointed by the "(TVSeries) pointer" pointed by "it"
+        {
+            for(auto u : userManagementlist.getListUsers()) //for each User "u" in userManagementlist.listUsers (private)
+            {
+                vector<TVSeries*>& ws = u->getWatchedSeries();  //clone each User.watchedSeries (private)
+                vector<int>& ew = u->getEpisodesWatched();      //clone each User.episodesWatched (private)
+                vector<int>& rt = u->getRatings();              //clone each User.ratings (private)
+                queue<TVSeries*>& wl = u->getWishSeries();      //clone each User.wishSeries (private)
+
+                auto iws = find(ws.begin(), ws.end(), *it); //get TVSeries position in each User.watchedSeries
+                if(iws != ws.end())
+                {
+                    ws.erase(iws);  //remove the TVSeries from each User.watchedSeries
+                    auto i = distance(ws.begin(), iws); //get TVSeries position index in User.watchedSeries
+                    ew.erase(ew.begin() + i);   //remove the TVSeries from each User.ratings
+                    rt.erase(rt.begin() + i);   //remove the TVSeries from each User.episodesWatched
+                }
+
+                TVSeries* aux = NULL;   //create a temporary aux for elements from User.wishSeries
+                size_t s = wl.size();   //use a variable so the "for condition" is constant
+                for(size_t t = 0; t < s; t++) //search the TVSeries from each User.wishSeries
+                {
+                    aux = wl.front();   //get element in first position from User.wishSeries
+                    wl.pop();           //remove element in first position from User.wishSeries
+                    
+                    if(aux == *it)     //if element in first position we just removed was the TVSeries we wanted to remove:
+                    {
+                        continue;       //we skip the reinsertion process
+                    }
+
+                    wl.push(aux);       //reinsert the element in User.wishSeries
+                }
+            }
+            delete *it;             //delete the object TVSeries pointed by the pointer pointed by "it"
+            listTVSeries.erase(it); //remove the pointer that was pointing to the deleted TVSeries
+
+            return 0;
+        }
+    }
+
+    return -1;  //if TVSeries to be searched does not exist: return -1
 }
+
+
+
+
+
 
 list<TVSeries*> TVSeriesManagementList::suggestsSeries(string username,string userWhoSuggests, list<User*> userlist ) const
 {
-    //question 5
+//question 5
+
     list<TVSeries*> l;
     return l;
 }
