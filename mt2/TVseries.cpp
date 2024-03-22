@@ -522,7 +522,81 @@ int TVSeriesManagementList::TVSeriesDelete(string title, UserManagementList& use
 list<TVSeries*> TVSeriesManagementList::suggestsSeries(string username,string userWhoSuggests, list<User*> userlist ) const
 {
 //question 5
-
+    
     list<TVSeries*> l;
+    bool exists = 0;
+    bool userExists = 0;
+    int indexOfUserWhoSuggests = 0;
+    int indexOfUserWhomSuggested = 0;
+    indexOfUserWhoSuggests +=1;
+    
+    if(username.empty()) return l;  //If username does not exist: return empty string
+
+    for(auto it = userlist.begin(); it != userlist.end(); it++){  //Iterate through all the users
+        if(username == (*it)->getUsername()){
+            indexOfUserWhomSuggested = (int)distance(userlist.begin(),it);  //To get its index
+            userExists = 1;
+        }
+    } 
+    
+    if(!userExists) return l; //If not: return empty string
+    if(indexOfUserWhomSuggested == (int)distance(userlist.begin(),userlist.end())) return l; //If not: return empty string
+    
+    for(auto it = userlist.begin(); it != userlist.end(); it++){  //Iterate through all the users
+        if(userWhoSuggests == (*it)->getUsername()){
+            exists = 1;  //To check if the user who suggests exists
+            indexOfUserWhoSuggests = (int)distance(userlist.begin(),it); //and to get its index
+        }
+    }  //If yes: turn flag to TRUE
+    
+    
+    if(!exists){
+        
+        auto ite = userlist.begin();
+        advance(ite,indexOfUserWhomSuggested);
+        
+        for(size_t i = 0; i < (*ite)->getFavoriteGenres().size(); ++i){
+        for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){  //Iterate through all the TV series
+            if((*seriesptr)->getGenre() == (*ite)->getFavoriteGenres()[i]) l.push_back(*seriesptr);
+        }}
+        
+        for(size_t i = 0; i < (*ite)->getWatchedSeries().size(); ++i){
+        auto seriesptr = l.begin();
+        while(seriesptr != l.end()){  //Iterate through all the TV series
+            if((*seriesptr) == (*ite)->getWatchedSeries()[i]) seriesptr = l.erase(seriesptr);
+            else ++seriesptr;
+        }}
+        
+        return l; //If not: return suggested series from all the series
+    }
+    
+    //Else: create list from "userWhoSuggests" to "username"
+    
+        auto userPtr = userlist.begin();
+        advance(userPtr,indexOfUserWhomSuggested);
+        
+        auto suggesterPtr = userlist.begin();
+        advance(suggesterPtr,indexOfUserWhoSuggests);
+        
+        for(size_t i = 0; i < (*suggesterPtr)->getWatchedSeries().size(); ++i){
+        for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){  //Iterate through all the TV series
+            if((*seriesptr) == (*suggesterPtr)->getWatchedSeries()[i]) l.push_back(*seriesptr);
+        }}
+        
+        for(size_t i = 0; i < (*userPtr)->getFavoriteGenres().size(); ++i){ //Iterate through all the genres
+        for(size_t ii = 0; ii < (*suggesterPtr)->getWatchedSeries().size(); ++ii){ //Iterate through all the TV series
+        for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){ //Iterate through all the TV series
+            if((*seriesptr) == (*userPtr)->getWatchedSeries()[ii]){
+                if((*seriesptr)->getGenre() == (*userPtr)->getFavoriteGenres()[i]) l.push_back(*seriesptr);
+            }
+        }}}
+        
+        for(size_t i = 0; i < (*userPtr)->getWatchedSeries().size(); ++i){
+        auto seriesptr = l.begin();
+        while(seriesptr != l.end()){  //Iterate through all the TV series
+            if((*seriesptr) == (*userPtr)->getWatchedSeries()[i]) seriesptr = l.erase(seriesptr);
+            else ++seriesptr;
+        }}
+    
     return l;
 }
