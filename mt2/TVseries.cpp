@@ -402,25 +402,23 @@ list<User*> UserManagementList::seeAll(TVSeries* series)
 {
 //question 2
 
-    list<User*> l;  //List to be returned
-    int sum = 0; // sum of all the episodes of the given series
+    list<User*> l; //List to be returned
+    int sum = 0; //Sum of all the episodes of the given series
 
-    if(series == nullptr) return l;  //If "series" is invalid: return empty
+    if(series == nullptr) return l; //If "series" is invalid: return empty
     
-    for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){
-        sum += series->getEpisodesPerSeason()[i];
+    for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){ //Iterate through all the seasons
+        sum += series->getEpisodesPerSeason()[i]; //To sum all the episodes
     }
 
-    for(list<User*>::const_iterator it = listUsers.begin(); it != listUsers.end(); it++){  //Iterate through the list of users to get the series watched
-    for(size_t i = 0; i<(*it)->getWatchedSeries().size(); ++i){  //Iterate through all the watched series of the user in search for the parameter "series"
+    for(auto it = listUsers.begin(); it != listUsers.end(); it++){ //Iterate through the list of users to get the series watched
+    for(size_t i = 0; i<(*it)->getWatchedSeries().size(); ++i){ //Iterate through all the watched series of the user in search for the parameter "series"
         if(((*it)->getWatchedSeries()[i] == series) && (sum == (*it)->getEpisodesWatched()[i])){ //If the series and the number of episodes match: append the user to list l
             l.push_back(*it); //Appending the user that saw the whole of the series
         }
     }}
 
     return l; //Return the filled list
-    
-    //Should i check if the flag "series->isFinished" to see if it is a completed series?
 }
 
 
@@ -432,32 +430,33 @@ int User::numberOfEpisodesToSee(string title, list<TVSeries*> listTVSeries )
 {
 //question 3
  
-    int sum = 0;
-    queue<TVSeries*> wishSeriesCheck = wishSeries;
-    bool exists = 0;
+    int sum = 0; //Sum of all the episodes to see
+    queue<TVSeries*> wishSeriesCheck = wishSeries; //Copy of wishSeries to check if the series exists in the queue
+    bool exists = 0; //Flag to indicate if series exists
     
-    if(title.empty()) return -1;
+    if(title.empty()) return -1; //If parameter invalid: return -1
     
-    while (!wishSeriesCheck.empty()) {
+    while (!wishSeriesCheck.empty()){ //Iterate through the queue of wished series
     TVSeries* series = wishSeriesCheck.front();
     wishSeriesCheck.pop();
-    if(series->getTitle() == title) exists = 1;
+    if(series->getTitle() == title) exists = 1; //If exists: exists flag to TRUE
     }
     
-    if(!exists) return -1;
+    if(!exists) return -1; //If not: return -1
     
-    queue<TVSeries*> wishSeriesCopy = wishSeries;
-    while (!wishSeriesCopy.empty()) {
+    queue<TVSeries*> wishSeriesCopy = wishSeries; //Copy of wishSeries to determine nº of episodes to see
+
+    while (!wishSeriesCopy.empty()){ //Iterate through the queue of wished series
         TVSeries* series = wishSeriesCopy.front();
         wishSeriesCopy.pop();
-        if(series->getTitle() == title) break;
-        for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){
-            sum += series->getEpisodesPerSeason()[i];
-            //cout<<"sum= "<<sum<<endl;
+
+        if(series->getTitle() == title) break; //If series is reached: break out of loop
+        for(size_t i = 0; i < series->getEpisodesPerSeason().size(); ++i){ //Iterate through all the seasons
+            sum += series->getEpisodesPerSeason()[i]; //To sum all the episodes
         }
     }
     
-    return sum;
+    return sum; //Return nº of episodes to see
 }
 
 
@@ -483,25 +482,25 @@ int TVSeriesManagementList::TVSeriesDelete(string title, UserManagementList& use
                 auto iws = find(ws.begin(), ws.end(), *it); //get TVSeries position in each User.watchedSeries
                 if(iws != ws.end())
                 {
-                    ws.erase(iws);  //remove the TVSeries from each User.watchedSeries
+                    ws.erase(iws); //remove the TVSeries from each User.watchedSeries
                     auto i = distance(ws.begin(), iws); //get TVSeries position index in User.watchedSeries
-                    ew.erase(ew.begin() + i);   //remove the TVSeries from each User.ratings
-                    rt.erase(rt.begin() + i);   //remove the TVSeries from each User.episodesWatched
+                    ew.erase(ew.begin() + i); //remove the TVSeries from each User.ratings
+                    rt.erase(rt.begin() + i); //remove the TVSeries from each User.episodesWatched
                 }
 
                 TVSeries* aux = NULL;   //create a temporary aux for elements from User.wishSeries
                 size_t s = wl.size();   //use a variable so the "for condition" is constant
                 for(size_t t = 0; t < s; t++) //search the TVSeries from each User.wishSeries
                 {
-                    aux = wl.front();   //get element in first position from User.wishSeries
-                    wl.pop();           //remove element in first position from User.wishSeries
+                    aux = wl.front();  //get element in first position from User.wishSeries
+                    wl.pop();          //remove element in first position from User.wishSeries
                     
-                    if(aux == *it)     //if element in first position we just removed was the TVSeries we wanted to remove:
+                    if(aux == *it) //if element in first position we just removed was the TVSeries we wanted to remove:
                     {
-                        continue;       //we skip the reinsertion process
+                        continue; //we skip the reinsertion process
                     }
 
-                    wl.push(aux);       //reinsert the element in User.wishSeries
+                    wl.push(aux); //reinsert the element in User.wishSeries
                 }
             }
             delete *it;             //delete the object TVSeries pointed by the pointer pointed by "it"
@@ -523,80 +522,80 @@ list<TVSeries*> TVSeriesManagementList::suggestsSeries(string username,string us
 {
 //question 5
     
-    list<TVSeries*> l;
-    bool exists = 0;
-    bool userExists = 0;
-    int indexOfUserWhoSuggests = 0;
-    int indexOfUserWhomSuggested = 0;
-    indexOfUserWhoSuggests +=1;
+    list<TVSeries*> l; //List to be returned
+    bool exists = 0; //Flag to indicate if user who suggests exists
+    bool userExists = 0; //Flag to indicate if user exists
+    int indexOfUserWhoSuggests = 0; //Index variable of user who suggests
+    int indexOfUserWhomSuggested = 0; //Index variable of user to whom series are suggested
     
-    if(username.empty()) return l;  //If username does not exist: return empty string
+    if(username.empty()) return l; //If username does not exist: return empty string
 
-    for(auto it = userlist.begin(); it != userlist.end(); it++){  //Iterate through all the users
-        if(username == (*it)->getUsername()){
-            indexOfUserWhomSuggested = (int)distance(userlist.begin(),it);  //To get its index
-            userExists = 1;
+    for(auto it = userlist.begin(); it != userlist.end(); it++){ //Iterate through all the users
+        if(username == (*it)->getUsername()){ //If a match is found
+            indexOfUserWhomSuggested = (int)distance(userlist.begin(),it); //Get its index
+            userExists = 1; //Update exists flag
         }
     } 
     
     if(!userExists) return l; //If not: return empty string
     if(indexOfUserWhomSuggested == (int)distance(userlist.begin(),userlist.end())) return l; //If not: return empty string
     
-    for(auto it = userlist.begin(); it != userlist.end(); it++){  //Iterate through all the users
-        if(userWhoSuggests == (*it)->getUsername()){
-            exists = 1;  //To check if the user who suggests exists
-            indexOfUserWhoSuggests = (int)distance(userlist.begin(),it); //and to get its index
+    for(auto it = userlist.begin(); it != userlist.end(); it++){ //Iterate through all the users
+        if(userWhoSuggests == (*it)->getUsername()){ //If a match is found
+            indexOfUserWhoSuggests = (int)distance(userlist.begin(),it); //Get its index
+            exists = 1; //Update exists flag
         }
-    }  //If yes: turn flag to TRUE
-    
-    
-    if(!exists){
-        
-        auto ite = userlist.begin();
-        advance(ite,indexOfUserWhomSuggested);
-        
-        for(size_t i = 0; i < (*ite)->getFavoriteGenres().size(); ++i){
-        for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){  //Iterate through all the TV series
-            if((*seriesptr)->getGenre() == (*ite)->getFavoriteGenres()[i]) l.push_back(*seriesptr);
-        }}
-        
-        for(size_t i = 0; i < (*ite)->getWatchedSeries().size(); ++i){
-        auto seriesptr = l.begin();
-        while(seriesptr != l.end()){  //Iterate through all the TV series
-            if((*seriesptr) == (*ite)->getWatchedSeries()[i]) seriesptr = l.erase(seriesptr);
-            else ++seriesptr;
-        }}
-        
-        return l; //If not: return suggested series from all the series
     }
     
-    //Else: create list from "userWhoSuggests" to "username"
     
-        auto userPtr = userlist.begin();
-        advance(userPtr,indexOfUserWhomSuggested);
+    if(!exists){ //If the user who suggests does not exist, check criteria nº 2/3/4
         
-        auto suggesterPtr = userlist.begin();
-        advance(suggesterPtr,indexOfUserWhoSuggests);
+        auto ite = userlist.begin(); //Iterator of user's list
+        advance(ite,indexOfUserWhomSuggested); //Advance to position of user to whom series are suggested
         
-        for(size_t i = 0; i < (*suggesterPtr)->getWatchedSeries().size(); ++i){
-        for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){  //Iterate through all the TV series
-            if((*seriesptr) == (*suggesterPtr)->getWatchedSeries()[i]) l.push_back(*seriesptr);
-        }}
-        
-        for(size_t i = 0; i < (*userPtr)->getFavoriteGenres().size(); ++i){ //Iterate through all the genres
-        for(size_t ii = 0; ii < (*suggesterPtr)->getWatchedSeries().size(); ++ii){ //Iterate through all the TV series
+        //criteria nº2
+        for(size_t i = 0; i < (*ite)->getFavoriteGenres().size(); ++i){ //Iterate through all the genres of user
         for(auto seriesptr = listTVSeries.begin(); seriesptr != listTVSeries.end(); ++seriesptr){ //Iterate through all the TV series
-            if((*seriesptr) == (*userPtr)->getWatchedSeries()[ii]){
-                if((*seriesptr)->getGenre() == (*userPtr)->getFavoriteGenres()[i]) l.push_back(*seriesptr);
-            }
-        }}}
+            if((*seriesptr)->getGenre() == (*ite)->getFavoriteGenres()[i]) l.push_back(*seriesptr);
+            //If genre of series == one of the favorite genres of the user: append series to suggestion list
+        }}
         
-        for(size_t i = 0; i < (*userPtr)->getWatchedSeries().size(); ++i){
+        //criteria nº3
+        for(size_t i = 0; i < (*ite)->getWatchedSeries().size(); ++i){ //Iterate through all the series seen by the user
         auto seriesptr = l.begin();
-        while(seriesptr != l.end()){  //Iterate through all the TV series
+        while(seriesptr != l.end()){  //Iterate through all the TV series in the suggestion list
+            if((*seriesptr) == (*ite)->getWatchedSeries()[i]) seriesptr = l.erase(seriesptr);
+            //If series(in suggestion list) == series seen by the user: erase it from suggestion list
+            else ++seriesptr; //If not: check next series
+        }}
+        
+        return l; //return suggestion list
+    }
+    
+    //Else: check criteria nº 1/2/3
+    
+        auto userPtr = userlist.begin(); //Iterator of user's list
+        advance(userPtr,indexOfUserWhomSuggested); //Advance to position of user to whom series are suggested
+        
+        auto suggesterPtr = userlist.begin(); //Iterator of user's list
+        advance(suggesterPtr,indexOfUserWhoSuggests); //Advance to position of user who suggests
+        
+        //criteria nº1 && criteria nº2
+        for(size_t i = 0; i < (*suggesterPtr)->getWatchedSeries().size(); ++i){ //Iterate through all the series seen by suggester (criteria nº1)
+        for(size_t ii = 0; ii < (*userPtr)->getFavoriteGenres().size(); ++ii){ //Iterate through all the genres of user to whom series are suggested (criteria nº2)
+            if(((*suggesterPtr)->getWatchedSeries()[i])->getGenre() == (*userPtr)->getFavoriteGenres()[ii]){
+                l.push_back((*suggesterPtr)->getWatchedSeries()[i]); //Append series suggestion list
+            } //If genre of series seen by user == one of the favorite genres of the user: append series to suggestion list
+        }}
+        
+        //criteria nº3
+        for(size_t i = 0; i < (*userPtr)->getWatchedSeries().size(); ++i){ //Iterate through all the series seen by the user
+        auto seriesptr = l.begin();
+        while(seriesptr != l.end()){ //Iterate through all the TV series in the suggestion list
             if((*seriesptr) == (*userPtr)->getWatchedSeries()[i]) seriesptr = l.erase(seriesptr);
-            else ++seriesptr;
+            //If series(in suggestion list) == series seen by the user: erase it from suggestion list
+            else ++seriesptr; //If not: check next series
         }}
     
-    return l;
+    return l; //return suggestion list
 }
