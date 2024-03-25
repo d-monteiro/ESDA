@@ -14,11 +14,21 @@ using namespace std;
  *  @param  n_binary Binary number to be converted.
  *  @return Decimal number conversion.
  */
-int bin2dec(string n_binary)
+int bin2dec(string n_binario)
 {
-    // Exercise a)
-
-    return 0;
+    stack<int> stack;
+    int i = 0;
+    int sum = 0;
+    
+    for(char bit : n_binario) stack.push(stoi(&bit));
+    
+    while(!stack.empty()){
+        sum += pow(2,i)*stack.top();
+        stack.pop();
+        i++;
+    }
+    
+    return sum;
 }
 
 // Do not change

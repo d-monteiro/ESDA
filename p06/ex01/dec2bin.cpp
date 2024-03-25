@@ -16,9 +16,21 @@ using namespace std;
  */
 string dec2bin(int n_decimal)
 {
-    // Exercise b)
-
-    return "";
+    stack<int> stack;
+    string result;
+    
+    while(n_decimal > 0){
+        stack.push(n_decimal % 2);
+        n_decimal /= 2;
+    }
+    
+    while(!stack.empty()){
+        int bit = stack.top();
+        result += to_string(bit);
+        stack.pop();
+    }
+    
+    return result;
 }
 
 // Do not change

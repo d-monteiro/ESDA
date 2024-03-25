@@ -16,11 +16,27 @@ using namespace std;
  *  @note   The position of an element corresponds to its order, which means that the head element of the queue is at position 1.
  *  @note   If there are two or more elements with the same value (corresponding to the largest value), the position to be returned is the one of the first element that would leave the queue.
  */
-int posLargestElement(queue<char> queue_var)
-{ 
-	// Exercise a) 
+int posLargestElement(queue<char> fila)
+{
+    char caracter, max;
+    int index = 1;
+    queue<char> filacopy = fila;
+    
+    if(fila.empty()) return 0;
+    
+    while(!fila.empty()){
+        caracter = fila.front();
+        fila.pop();
+        if(caracter >= max) max = caracter;
+    }
+    
+    while(!filacopy.empty()){
+        if(filacopy.front() == max) break;
+        index++;
+        filacopy.pop();
+    }
 
-	return 0;
+	return index;
 }
 
 /** 
