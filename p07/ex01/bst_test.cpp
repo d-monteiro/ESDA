@@ -33,6 +33,20 @@ int main()
             /* Alínea a */
             vector<string> vtr{"G", "C", "A", "F", "L", "J", "V", "M", "N", "O"};
 
+            Node F = {vtr[3], nullptr, nullptr};
+            Node A = {vtr[2], nullptr, nullptr};
+            Node C = {vtr[1], &A, &F};
+
+            Node O = {vtr[9], nullptr, nullptr};
+            Node N = {vtr[8], nullptr, &O};
+            Node M = {vtr[7], nullptr, &N};
+            Node V = {vtr[6], &M, nullptr};
+            Node J = {vtr[5], nullptr, nullptr};
+            Node L = {vtr[4], &J, &V};
+
+            Node root = {vtr[0], &C, &L};
+
+            obj_tree.setRoot(&root);
             
             cout << "\n Elementos inseridos com sucesso" << endl;
             break;
@@ -62,7 +76,8 @@ int main()
         case 5:
         {
             cout << "\n Informe o valor (string) -> " << endl;
-            /* Alinea e */
+            string value = "N";
+            obj_tree.remove(value);
             break;
         }
         }

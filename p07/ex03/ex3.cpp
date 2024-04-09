@@ -140,15 +140,27 @@ public:
     // pergunta a - Quantos carros existem num determinado ano
     int carsYear(Node* root,int cyear)
     {
-       //responder aqui
-       return 0;
+        if (root == nullptr) return 0;
+        
+        int count = 0;
+        
+        if (root->car->year == cyear) count+=1;
+            
+        int leftCount = carsYear(root->left, cyear);
+        int rightCount = carsYear(root->right, cyear);
+        
+        return count + leftCount + rightCount;
     }
 
-    // pergunta b - Imprima todos os modelos de uma determinada marca
     void printbrand(Node* root,string cbrand)
     {
-        //responder aqui
-
+        if (root == nullptr) return;
+        
+        if (root->car->brand == cbrand) cout<<root->car->model<<"\n";
+        
+        printbrand(root->left, cbrand);
+        
+        printbrand(root->right, cbrand);
     }
 
  

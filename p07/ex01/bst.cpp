@@ -169,19 +169,32 @@ bool Tree::remove(string value)
 /* Calcula a altura da árvore a partir de um nó */
 int Tree::getHeight(Node *treeNode)
 {
-  /* Alinea b */
+    if(treeNode == nullptr) return -1;
+    
+    int l = getHeight(treeNode->left);
+    int r = getHeight(treeNode->right);
+    
+    return 1+max(l,r);
 }
 
 /* Caminha em pre-ordem */
-void Tree::preOrder(Node *current)
+void Tree::preOrder(Node *treeNode)
 {
-  /* Alinea c */
+    if(treeNode != nullptr){
+        cout<<treeNode->item<<" ";
+        preOrder(treeNode->left);
+        preOrder(treeNode->right);
+    }
 }
 
 /* Caminha em pos-ordem */
-void Tree::posOrder(Node *current)
+void Tree::posOrder(Node *treeNode)
 {
-  /* Alinea d */
+    if(treeNode != nullptr){
+        posOrder(treeNode->left);
+        posOrder(treeNode->right);
+        cout<<treeNode->item<<" ";
+    }
 }
 
 int Tree::getHeight()
