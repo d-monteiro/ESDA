@@ -696,11 +696,20 @@ void UserManagementTree::inorder() {
 /**************************/
 /*     A implementar      */
 /**************************/
-priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TVSeries>& pq, string cat) {
+priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TVSeries>& pq, string cat) 
+{
+    priority_queue<TVSeries> answer; //Init of the return queue
+    
+    if(pq.empty() || cat.empty()) return answer; //If any of the parameters are invalid: return empty queue
+    
+    priority_queue<TVSeries> pqCopy = pq; //Copy of pq to determine...
 
-    //question 1
-    priority_queue<TVSeries> pqnew;
-    return pqnew;
+    while (!pqCopy.empty()){ //Iterate through the copy of pq
+        TVSeries series = pqCopy.top();
+        if(series.getGenre() == cat) answer.push(series);
+        pqCopy.pop();
+    }
+    return answer;
 }
 
 

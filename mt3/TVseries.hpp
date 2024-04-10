@@ -323,7 +323,7 @@ class UserManagement {
          */ 
         int updateWatched(string filename, TVSeriesManagementList& manager);
 
-                       /** 
+        /** 
          *  @brief  priority queue with series for the rating of the series (only series with a minimum number of users who have seen the series can be there)
          *  @param  listTV list of all series.
          *  @param  min minimum number of users who watched the series.
