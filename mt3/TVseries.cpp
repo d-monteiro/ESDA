@@ -693,11 +693,26 @@ void UserManagementTree::remove(string user) {
 void UserManagementTree::inorder() {
         inorderTraversal(root);
     }
+
+
+
+
+
+
+
 /**************************/
 /*     A implementar      */
 /**************************/
+
+
+
+
+
+
+
 priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TVSeries>& pq, string cat) 
 {
+//question 1
     priority_queue<TVSeries> answer; //Init of the return queue
     
     if(pq.empty() || cat.empty()) return answer; //If any of the parameters are invalid: return empty queue
@@ -713,8 +728,14 @@ priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TV
 }
 
 
+
+
+
+
+
 priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,int min)
 {
+//question 2
     priority_queue<TVSeries> answer; //Init of the return queue
     vector<int> seriesSeen(listTV.size(), 0);
     
@@ -739,44 +760,99 @@ priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,in
     return answer;
 }
 
+
+
+
+
+
+
 vector<User*> UserManagementTree::usersInitialLetter(NodeUser* root,char ch)
 {
-    vector<User*> answer;    //Init of the return vector
-    if(root == nullptr || ch < 'A' || (ch > 'Z' && ch < 'a') || ch > 'z') return answer; //Check faulty arguments
+//question 3
+    vector<User*> v, carry;    //vector to fill with the user pointers
+
+    if(root == nullptr || ch < 'A' || (ch > 'Z' && ch < 'a') || ch > 'z') return v; //check faulty arguments
+
+    string uname = root->user->getUsername();   //get username from user from root
     
-    char newch = tolower(ch); //Normalize entry argument
-    char first = tolower(root->user->getUsername()[0]); //Normalize first char
-
-
-    //Push user into vector (if there's a match)
-    if (first == newch) answer.push_back(root->user);
-
-    //Search left subtree recursively(if exists)
-    if (root->left != nullptr) {
-        vector<User*> leftUsers = usersInitialLetter(root->left, newch);
-        answer.insert(answer.end(), leftUsers.begin(), leftUsers.end()); //Merge into answer
+//search in lowercase
+    if(tolower(uname[0]) == tolower(ch))  //if root user has correct letter:
+    {
+        v.push_back(root->user);                                                //push into vector
+        if(root->left != nullptr) carry = usersInitialLetter(root->left, ch);   //search left subtree (if exists)
+        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+        if(root->right != nullptr) carry = usersInitialLetter(root->right, ch); //search right subtree (if exists)
+        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+    }
+    else if(tolower(uname[0]) > tolower(ch))  //if root user is bigger:
+    {
+        if(root->left != nullptr) carry = usersInitialLetter(root->left, ch);   //search left subtree (if exists)
+        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+    }
+    else if(tolower(uname[0]) < tolower(ch))  //if root user is smaller:
+    {
+        if(root->right != nullptr) carry = usersInitialLetter(root->right, ch); //search right subtree (if exists)
+        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
     }
 
-    // Search right subtree recursively(if exists)
-    if (root->right != nullptr) {
-        vector<User*> rightUsers = usersInitialLetter(root->right, newch);
-        answer.insert(answer.end(), rightUsers.begin(), rightUsers.end()); //Merge into answer
+    return v;   //return vector filled (or not) with the user pointers
+}
+
+
+
+
+
+
+
+list<User*> UserManagementTree::usersNotFan(NodeUser* root)
+{
+//question 4
+
+    list<User*> lt; //list to be returned
+    
+    if(root == nullptr) return lt;  //check faulty argument
+
+    int notFinished = 0;    //counter criteria to add users to the list
+
+    vector<TVSeries*>& ws = root->user->getWatchedSeries(); //access to watchedSeries
+    vector<int>& ew = root->user->getEpisodesWatched();     //access to episodesWatched
+
+//update counter criteria
+    int n = 0;
+    vector<int> eps;
+    for(size_t i = 0; i < ws.size(); i++)    //for each TVSeries in watchedSeries
+    {//calculate total number of episodes of each TVSeries
+        eps = ws[i]->getEpisodesPerSeason();    //access to episodesPerSeason
+        n = 0;                                  //reset number of episodes
+        for(int j = 0; j < ws[i]->getNumberOfSeasons(); j++)
+        {
+            n += eps[j];    //total sum of episodes
+        }
+    //compare with the number of episodes watched for that TVSeries
+        if(ew[i] != n) notFinished++;   //if not finished: increment counter
     }
 
-    return answer;   //Return vector filled with the user pointers
+//apply counter criteria to filter Users into the list
+    if(notFinished > 2) lt.push_back(root->user);
+
+//expand search trough the lower nodes and collect their findings into our list
+    list<User*> res = usersNotFan(root->left);      //expand search through left subtree, collecting its findings
+    lt.insert(lt.end(), res.begin(), res.end());    //push left subtree's founds into our list
+    res = usersNotFan(root->right);                 //expand search through right subtree, collecting its findings
+    lt.insert(lt.end(), res.begin(), res.end());    //push right subtree's founds into our list
+
+    return lt;  //return list
 }
 
-list<User*> UserManagementTree::usersNotFan(NodeUser* root) {
 
-    //question 4
-    list<User*> lt;
-    return lt;
 
-}
 
-vector<int> UserManagementTree::usersCategoryStatistics(NodeUser* root,string cat,int perc) {
-   
-   //question 5
+
+
+
+vector<int> UserManagementTree::usersCategoryStatistics(NodeUser* root,string cat,int perc)
+{
+//question 5
    vector<int> v;
    return v;
 
