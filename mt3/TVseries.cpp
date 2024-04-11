@@ -739,12 +739,32 @@ priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,in
     return answer;
 }
 
-vector<User*> UserManagementTree::usersInitialLetter(NodeUser* root,char ch) {
+vector<User*> UserManagementTree::usersInitialLetter(NodeUser* root,char ch)
+{
+    vector<User*> answer;    //Init of the return vector
+    if(root == nullptr || ch < 'A' || (ch > 'Z' && ch < 'a') || ch > 'z') return answer; //Check faulty arguments
     
-    //question 3
-    vector<User*> v;
-    return v;
- }
+    char newch = tolower(ch); //Normalize entry argument
+    char first = tolower(root->user->getUsername()[0]); //Normalize first char
+
+
+    //Push user into vector (if there's a match)
+    if (first == newch) answer.push_back(root->user);
+
+    //Search left subtree recursively(if exists)
+    if (root->left != nullptr) {
+        vector<User*> leftUsers = usersInitialLetter(root->left, newch);
+        answer.insert(answer.end(), leftUsers.begin(), leftUsers.end()); //Merge into answer
+    }
+
+    // Search right subtree recursively(if exists)
+    if (root->right != nullptr) {
+        vector<User*> rightUsers = usersInitialLetter(root->right, newch);
+        answer.insert(answer.end(), rightUsers.begin(), rightUsers.end()); //Merge into answer
+    }
+
+    return answer;   //Return vector filled with the user pointers
+}
 
 list<User*> UserManagementTree::usersNotFan(NodeUser* root) {
 
