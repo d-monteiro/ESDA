@@ -713,11 +713,30 @@ priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TV
 }
 
 
-priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,int min) {
+priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,int min)
+{
+    priority_queue<TVSeries> answer; //Init of the return queue
+    vector<int> seriesSeen(listTV.size(), 0);
     
-    //question 2
-    priority_queue<TVSeries> q;
-    return q;
+    for (auto user : vectorUsers) {
+    for (auto numOfSeen : user->getEpisodesWatched()) {
+        if (numOfSeen >= 2) {
+            auto it = find(user->getEpisodesWatched().begin(), user->getEpisodesWatched().end(), numOfSeen);
+            auto seriesIndex = distance(user->getEpisodesWatched().begin(), it);
+            for (auto seriesPtr : listTV) {
+                if ((user->getWatchedSeries()[seriesIndex])->getTitle() == seriesPtr->getTitle()) seriesSeen[seriesIndex]++;
+            }
+        }
+    }
+    }
+
+    auto it = seriesSeen.begin();
+    for (auto seriesPtr : listTV) {
+        if (*it >= min) answer.push(*seriesPtr);
+        ++it;
+    }
+
+    return answer;
 }
 
 vector<User*> UserManagementTree::usersInitialLetter(NodeUser* root,char ch) {
