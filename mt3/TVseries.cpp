@@ -700,6 +700,8 @@ void UserManagementTree::inorder() {
 
 
 
+
+
 /**************************/
 /*     A implementar      */
 /**************************/
@@ -710,16 +712,18 @@ void UserManagementTree::inorder() {
 
 
 
-priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TVSeries>& pq, string cat) 
+
+
+priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TVSeries>& pq, string cat)
 {
 //question 1
-    priority_queue<TVSeries> answer; //Init of the return queue
+    priority_queue<TVSeries> answer;    //Init of the return queue
     
-    if(pq.empty() || cat.empty()) return answer; //If any of the parameters are invalid: return empty queue
+    if(pq.empty() || cat.empty()) return answer;    //If any of the parameters are invalid: return empty queue
     
-    priority_queue<TVSeries> pqCopy = pq; //Copy of pq to determine...
+    priority_queue<TVSeries> pqCopy = pq;   //Copy of pq to determine...
 
-    while (!pqCopy.empty()){ //Iterate through the copy of pq
+    while (!pqCopy.empty()){    //Iterate through the copy of pq
         TVSeries series = pqCopy.top();
         if(series.getGenre() == cat) answer.push(series);
         pqCopy.pop();
@@ -736,7 +740,7 @@ priority_queue<TVSeries> UserManagement::queueTVSeriesCategory(priority_queue<TV
 priority_queue<TVSeries> UserManagement::queueTVSeries(list<TVSeries*> listTV,int min)
 {
 //question 2
-    priority_queue<TVSeries> answer; //Init of the return queue
+    priority_queue<TVSeries> answer;    //Init of the return queue
     vector<int> seriesSeen(listTV.size(), 0);
     
     for (auto user : vectorUsers) {
@@ -775,28 +779,19 @@ vector<User*> UserManagementTree::usersInitialLetter(NodeUser* root,char ch)
 
     string uname = root->user->getUsername();   //get username from user from root
     
-//search in lowercase
+//search in lowercase, just so we don't have to search twice
     if(tolower(uname[0]) == tolower(ch))  //if root user has correct letter:
     {
-        v.push_back(root->user);                                                //push into vector
-        if(root->left != nullptr) carry = usersInitialLetter(root->left, ch);   //search left subtree (if exists)
-        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
-        if(root->right != nullptr) carry = usersInitialLetter(root->right, ch); //search right subtree (if exists)
-        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+        v.push_back(root->user);    //push into vector
     }
-    else if(tolower(uname[0]) > tolower(ch))  //if root user is bigger:
-    {
-        if(root->left != nullptr) carry = usersInitialLetter(root->left, ch);   //search left subtree (if exists)
-        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
-    }
-    else if(tolower(uname[0]) < tolower(ch))  //if root user is smaller:
-    {
-        if(root->right != nullptr) carry = usersInitialLetter(root->right, ch); //search right subtree (if exists)
-        v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
-    }
-
+//extend search throughout the lower nodes
+    if(root->left != nullptr) carry = usersInitialLetter(root->left, ch);   //search left subtree (if exists)
+    v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+    if(root->right != nullptr) carry = usersInitialLetter(root->right, ch); //search right subtree (if exists)
+    v.insert(v.end(), carry.begin(), carry.end());                          //concatenate results
+        
     return v;   //return vector filled (or not) with the user pointers
-}
+ }
 
 
 
@@ -835,13 +830,13 @@ list<User*> UserManagementTree::usersNotFan(NodeUser* root)
 //apply counter criteria to filter Users into the list
     if(notFinished > 2) lt.push_back(root->user);
 
-//expand search trough the lower nodes and collect their findings into our list
-    list<User*> res = usersNotFan(root->left);      //expand search through left subtree, collecting its findings
+//extend search troughout the lower nodes and collect their findings into our list
+    list<User*> res = usersNotFan(root->left);      //extend search through left subtree, collecting its findings
     lt.insert(lt.end(), res.begin(), res.end());    //push left subtree's founds into our list
-    res = usersNotFan(root->right);                 //expand search through right subtree, collecting its findings
+    res = usersNotFan(root->right);                 //extend search through right subtree, collecting its findings
     lt.insert(lt.end(), res.begin(), res.end());    //push right subtree's founds into our list
 
-    return lt;  //return list
+    return lt;  //return the filled list
 }
 
 
@@ -853,7 +848,65 @@ list<User*> UserManagementTree::usersNotFan(NodeUser* root)
 vector<int> UserManagementTree::usersCategoryStatistics(NodeUser* root,string cat,int perc)
 {
 //question 5
-   vector<int> v;
-   return v;
+    vector<int> v = { 0, 0, 0 };  //vector to be returned
 
+//check faulty arguments
+    if(root == nullptr || perc <= 0 || perc > 100) return v;    //check "root" and "perc"
+    
+    bool check = 0;                     //boolean to check if "cat" is a valid category
+    for(int i = 0; i < N_GENRES; i++)   //process to check if "cat" is a valid category
+    {//by comparing it with the valid categories listed in vGenres
+        if(cat == vGenres[i]) check = 1;    //if "cat" corresponds to a valid category: "check" turns true
+    }
+    if(!check) return v;    //means "cat" is not a valid category
+
+//set up the variables we'll need for searching
+    vector<bool> stats = { 0, 0, 0 };                           //vector which contains the values to be added to our return vector ("v")
+    vector<TVSeries*>& ws = root->user->getWatchedSeries();     //access to watchedSeries of the User in "root"
+    vector<int>& ew = root->user->getEpisodesWatched();         //access to episodesWatched of the User in "root"
+    int n = 0;
+    vector<int> eps;
+    vector<string> favgns = root->user->getFavoriteGenres();    //access to favoriteGenres of the User in "root"
+//
+    for(size_t i = 0; i < ws.size(); i++)
+    {//for each TVSeries (pointed by ws[i]) watched by the User in "root":
+        if(ws[i]->getGenre() == cat)
+        {//if TVSeries' genre corresponds to the one we're looking for:
+            stats[0] = 1;   //update the respective stat (for return vector's position 0)
+            
+            eps = eps = ws[i]->getEpisodesPerSeason();  //access to episodesPerSeason
+            n = 0;                                      //reset number of episodes
+            for(int j = 0; j < ws[i]->getNumberOfSeasons(); j++)
+            {//for each season of the TVSeries pointed by ws[i]:
+                n += eps[j];    //update total sum of episodes
+            }
+            if(ew[i] >= (float)(n*perc)/100.00)
+            {//if User in "root" has watched at least "perc"% of the episodes of the TVSeries pointed by ws[i]:
+                stats[1] = 1;   //update the respective stat (for return vector's position 1)
+                
+                for(size_t k = 0; k < favgns.size(); k++)
+                {//look for a correspondence for "cat" within the favoriteGenres of the User in "root"; if a correspondence is found:
+                    if(favgns[k] == cat) stats[2] = 1;  //update the respective stat (for return vector's position 2)
+                }
+            }
+        }
+    }
+//update our return vector
+    v[0] += stats[0];                          
+    v[1] += stats[1];
+    v[2] += stats[2];
+
+//extend search troughout the lower nodes and collect their findings into our list
+    vector<int> res = usersCategoryStatistics(root->left, cat, perc);   //extend search through left subtree, collecting its findings
+    //update our return vector with left subtree's founds
+    v[0] += res[0];                          
+    v[1] += res[1];
+    v[2] += res[2];
+    res = usersCategoryStatistics(root->right, cat, perc);              //extend search through right subtree, collecting its findings
+    //update our return vector with right subtree's founds
+    v[0] += res[0];                          
+    v[1] += res[1];
+    v[2] += res[2];
+
+    return v;   //return the filled vector
 }
