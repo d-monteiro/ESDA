@@ -1,0 +1,25 @@
+Breaking Bad,emily_c,10
+Breaking Bad,emily_c,50
+Breaking Bad,carlitos,10
+Breaking Bad,teresa_santos,22
+Friends,emily_c,43
+Friends,carlitos,6
+The Office,john_doe,12
+The Office,rodrigo8,34
+The Office,mike124,25
+The Office,teresa_santos,65
+Game of Thrones,carlitos,51
+Game of Thrones,teresa_santos,65
+Stranger Things,mia_davis,10
+Stranger Things,teresa_santos,15
+Stranger Things,mike124,15
+Money Heist,mike124,13
+Money Heist,teresa_santos,11
+The Crown,carlitos,12
+The Crown,rodrigo8,12
+The Crown,mike124,23
+The Crown,emily_c,24
+Narcos,carlitos,30
+Narcos,emily_c,30
+Narcos,mike124,21
+Narcos,rodrigo8,29

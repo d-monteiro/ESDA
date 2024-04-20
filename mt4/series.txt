@@ -1,0 +1,24 @@
+The Office,9,24 24 24 24 24 24 24 24 24,Comedy, 8.7,1
+Breaking Bad,5,7 13 13 13 16,Drama, 9.5,1
+Friends,10,24 24 24 24 24 24 24 24 24 18,Comedy, 8.9,1
+Game of Thrones,8,10 10 10 10 10 10 7 6,Drama, 9.3,1
+Stranger Things,3,8 9 8,Drama, 9.8,0
+Money Heist,5,13 9 8 8 9,Crime, 8.4,1
+The Crown,5,10 10 10 10 10,Drama, 8.7,1
+Narcos,3,10 10 10,Crime, 8.8,1
+Black Mirror,5,3 3 6 6 3,Drama, 8.7,1
+The Mandalorian,2,8 8,Action, 8.8,0
+The Witcher,2,8 8,Fantasy, 8.2,0
+Sherlock,4,3 3 3 3,Crime, 9.1,1
+The Big Bang Theory,12,17 23 23 24 24 24 24 24 24 24 24 24,Comedy, 8.8,1
+Peaky Blinders,6,6 6 6 6 6 6,Crime, 8.8,1
+Grey's Anatomy,18,9 27 25 17 24 24 24 24 17 23 21 17 24 24 24 24 17 16,Drama, 7.5,0
+Dark, 3,8 8 8,Drama, 8.8,1
+The Walking Dead,11,6 13 16 16 16 16 16 16 16 22 24,Drama, 8.2,0
+The Boys,3,8 8 8,Action, 7.2,1
+The Umbrella Academy,3,10 10 10,Action, 8.3,0
+Brooklyn Nine-Nine,8,18 18 18 18 18 18 18 18 18,Comedy,9.2,0
+The Marvelous Mrs. Maisel,4,10 10 10 10,Comedy,7.9,1
+The Haunting of Hill House,1,10,Drama,6.3,1
+Vikings,6,20 20 20 20 20 20,Drama,7.9,1
+Fargo,4,10 10 10 10,Crime,6.9,1
