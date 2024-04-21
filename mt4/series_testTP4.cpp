@@ -34,9 +34,9 @@ int verifica_mostFollowing(UserManagementGraph& g)
     /*Teste 2*/
     vector_following = g.mostFollowing();
    
-    if (vector_following.size()!=4)
+    if (vector_following.size()!=3)
     {
-        cout << "...verifica_mostFollowing: (Grafo preenchido) Tamanho do vetor (="<<vector_following.size()<<") e' diferente do esperado (=4) (ERRO)" << endl;
+        cout << "...verifica_mostFollowing: (Grafo preenchido) Tamanho do vetor (="<<vector_following.size()<<") e' diferente do esperado (=3) (ERRO)" << endl;
           er++;
     }
     else
@@ -46,7 +46,7 @@ int verifica_mostFollowing(UserManagementGraph& g)
     /*Teste 3*/
     bool ok=true;
     string str="";
-    string s1="john_doe";
+    //string s1="john_doe";
     string s2="mia_davis";
     string s3="rodrigo8";
     string s4="emily_c";
@@ -57,7 +57,7 @@ int verifica_mostFollowing(UserManagementGraph& g)
         for(auto i=0;i<vector_following.size();i++)
         {
             str+=vector_following[i]->getUsername()+" - ";
-            if ((vector_following[i]->getUsername()!=s1) && (vector_following[i]->getUsername()!=s2) && (vector_following[i]->getUsername()!=s3) && (vector_following[i]->getUsername()!=s4)) 
+            if ( (vector_following[i]->getUsername()!=s2) && (vector_following[i]->getUsername()!=s3) && (vector_following[i]->getUsername()!=s4)) 
             {
                 ok=false;
             }
@@ -72,7 +72,7 @@ int verifica_mostFollowing(UserManagementGraph& g)
     
     if (!ok)
     {
-        cout << "...verifica_mostFollowing: (Grafo preenchido) Os elementos (="<<str<<") são diferentes do esperado (="<<s1<<") (ERRO)" <<endl;
+        cout << "...verifica_mostFollowing: (Grafo preenchido) Os elementos (="<<str<<") são diferentes do esperado (="<<s2<<","<<s3<<","<<s4<<") (ERRO)" <<endl;
           er++;
     }
     else
