@@ -1136,42 +1136,166 @@ struct CompareP {
     }
 };
 
+
+
+
+
+
+
+
+
 /**************************/
 /*     A implementar      */
 /**************************/
 
+
+
+
+
+
+
+
+
 vector<User*> UserManagementGraph::mostFollowing()
 {
-   // question 1
-    vector<User*> vMostUsers;
- return vMostUsers;
+// question 1
+    vector<User*> vMostUsers;   //vector to be returned
+    size_t max = 0;             //max amount of Users followed by an User (the one(s) in vMostUsers)
+
+    if (totalUsers == 0) return vMostUsers; //if network is empty: return empty vector
+    
+    for(size_t i = 0; i < totalUsers; i++)  //check if all Nodes have valid User pointers
+    {
+        if(userNodes[i] == nullptr) return vMostUsers;  //if not: return empty vector
+    }
+
+    for(size_t i = 0; i < totalUsers; i++)  //for all Users:
+    {
+        if(network[i].size() == max)    //if they follow the same amount of Users than the User(s) with the current max amount:
+        {
+            vMostUsers.push_back(userNodes[i]); //push it into vMostUsers
+        }
+        else if(network[i].size() > max)    //if they follow more Users than the User(s) with the current max amount:
+        {
+            max = network[i].size();            //update the max amount
+            vMostUsers.clear();                 //clear vMostUsers
+            vMostUsers.push_back(userNodes[i]); //and push the new User into vMostUsers
+        }
+    }
+
+    return vMostUsers;  //return our filled vector
 }
+
+
+
+
+
+
 
 TVSeries* UserManagementGraph::followingMostWatchedSeries(User* userPtr)
 {
-  // question 2 
-   TVSeries* vMostViewed=nullptr;
-   return vMostViewed;
+// question 2
+    TVSeries* vMostViewed=nullptr;
+
+    if(userPtr == nullptr) return vMostViewed;  //check for faulty parameter
+
+//create the variables needed to the operation
+    vector<TVSeries*> viewed;   //vector to keep track of the series watched by the multiple Users followed by User pointed by userPtr
+    vector<int> eps, viewers;   //vectors to keep track of the total number of episodes watched by the same multiple Users for each
+    //TVSeries in viewed and also how many of those Users have seen each one of those TVSeries
+    list<User*>::iterator net = network[userNodePosition(userPtr)].begin();
+
+//get the TVSeries into viewed and respective nº of episodes watched to eps and viewers to viewers
+    for(size_t i = 0; i < network[userNodePosition(userPtr)].size(); i++)
+    {
+        vector<TVSeries*> watchedseries = (*net)->getWatchedSeries();   //accessible copy of each User's watchedSeries
+        vector<int> epswatched = (*net)->getEpisodesWatched();          //accessible copy of each User's episodesWatched
+
+        for(size_t j = 0; j < watchedseries.size(); j++)
+        {
+            auto it = find(viewed.begin(), viewed.end(), watchedseries[j]); //search for each TVSeries in viewed
+            if(it == viewed.end())  //if not found:
+            {
+                viewed.push_back(watchedseries[j]); //add TVSeries (pointer) to viewed
+                eps.push_back(epswatched[j]);       //add the number of episodes watched by this User
+                viewers.push_back(1);               //add the first viewer for this TVSeries
+            }
+            else    //if found:
+            {
+                eps[distance(viewed.begin(), it)] += epswatched[j]; //update the total number of episodes watched for this TVSeries
+                viewers[distance(viewed.begin(), it)]++;            //increment the number of viewers for this TVSeries
+            }
+        }
+
+        net++;  //increment network iterator
+    }
+
+//filter the TVSeries to be returned
+    int max_eps = 0, max_viewers = 0;   //create max variables
+
+    for(size_t i = 0; i < viewed.size(); i++)   //for each TVSeries in viewed:
+    {
+        if(eps[i] > max_eps)    //if it has more episodes watched:
+        {
+            max_eps = eps[i];           //update max_eps
+            max_viewers = viewers[i];   //update max_viewers
+            vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+        }
+        else if(eps[i] == max_eps)  //if it has the same nº of episodes watched:
+        {
+            if(viewers[i] > max_viewers)    //but it has more viewers:
+            {
+                max_viewers = viewers[i];   //update max_viewers
+                vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+            }
+            else if(viewers[i] == max_viewers)  //and the same nº of viewers:
+            {
+                if(viewed[i]->getTitle() < vMostViewed->getTitle()) //if it is first in alphabetical order:
+                {
+                    vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+                }
+            }
+        }
+    }
+
+    return vMostViewed; //return our TVSeries (pointer)
 }
+
+
+
+
+
+
 
 int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 {
-     
-  // question 3     
+// question 3
+
     return -1;
-   
 }
+
+
+
+
 
 
 
 int HashTable::insertCountryStats(CountryStats &countryS)
 {       
-// question 4    
-return -1;
+// question 4
+
+    return -1;
 }
+
+
+
+
+
+
 
 int HashTable::importFromVector(UserManagement &userManager)      
 {
-// question 5    
-return -1;
+// question 5
+
+    return -1;
 }
