@@ -1281,10 +1281,39 @@ int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 
 
 int HashTable::insertCountryStats(CountryStats &countryS)
-{       
-// question 4
-
-    return -1;
+{
+    int index = 0;
+    string country = countryS.country;
+    
+    if(country.empty()) return -1;
+    
+    index = hashFunction(countryS.country);
+    
+    if(table[index] != nullptr){
+        index = probingFunction(country, 1);
+        if(table[index] != nullptr){
+            index = probingFunction(country, 2);
+            if(table[index] != nullptr){
+                index = probingFunction(country, 3);
+                if(table[index] != nullptr){
+                    index = probingFunction(country, 4);
+                    if(table[index] != nullptr){
+                        index = probingFunction(country, 5);
+                    }
+                }
+            }
+        }
+    }
+    
+    table[index] = &countryS;
+    
+    totalCountryStats++;
+    
+    //cout<<"Indice da chave \"apagado\" : "<<hashFunction(countryS.country)<<endl;
+    
+    //show();
+    
+    return index;
 }
 
 
