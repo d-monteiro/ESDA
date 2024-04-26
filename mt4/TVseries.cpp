@@ -1136,42 +1136,253 @@ struct CompareP {
     }
 };
 
+
+
+
+
+
+
+
+
 /**************************/
 /*     A implementar      */
 /**************************/
 
+
+
+
+
+
+
+
+
 vector<User*> UserManagementGraph::mostFollowing()
 {
-   // question 1
-    vector<User*> vMostUsers;
- return vMostUsers;
+// question 1
+    vector<User*> vMostUsers;   //vector to be returned
+    size_t max = 0;             //max amount of Users followed by an User (the one(s) in vMostUsers)
+
+    if (totalUsers == 0) return vMostUsers; //if network is empty: return empty vector
+    
+    for(size_t i = 0; i < totalUsers; i++)  //check if all Nodes have valid User pointers
+    {
+        if(userNodes[i] == nullptr) return vMostUsers;  //if not: return empty vector
+    }
+
+    for(size_t i = 0; i < totalUsers; i++)  //for all Users:
+    {
+        if(network[i].size() == max)    //if they follow the same amount of Users than the User(s) with the current max amount:
+        {
+            vMostUsers.push_back(userNodes[i]); //push it into vMostUsers
+        }
+        else if(network[i].size() > max)    //if they follow more Users than the User(s) with the current max amount:
+        {
+            max = network[i].size();            //update the max amount
+            vMostUsers.clear();                 //clear vMostUsers
+            vMostUsers.push_back(userNodes[i]); //and push the new User into vMostUsers
+        }
+    }
+
+    return vMostUsers;  //return our filled vector
 }
+
+
+
+
+
+
 
 TVSeries* UserManagementGraph::followingMostWatchedSeries(User* userPtr)
 {
-  // question 2 
-   TVSeries* vMostViewed=nullptr;
-   return vMostViewed;
+// question 2
+    TVSeries* vMostViewed=nullptr;
+
+    if(userPtr == nullptr) return vMostViewed;  //check for faulty parameter
+
+//create the variables needed to the operation
+    vector<TVSeries*> viewed;   //vector to keep track of the series watched by the multiple Users followed by User pointed by userPtr
+    vector<int> eps, viewers;   //vectors to keep track of the total number of episodes watched by the same multiple Users for each
+    //TVSeries in viewed and also how many of those Users have seen each one of those TVSeries
+    list<User*>::iterator net = network[userNodePosition(userPtr)].begin();
+
+//get the TVSeries into viewed and respective nº of episodes watched to eps and viewers to viewers
+    for(size_t i = 0; i < network[userNodePosition(userPtr)].size(); i++)
+    {
+        vector<TVSeries*> watchedseries = (*net)->getWatchedSeries();   //accessible copy of each User's watchedSeries
+        vector<int> epswatched = (*net)->getEpisodesWatched();          //accessible copy of each User's episodesWatched
+
+        for(size_t j = 0; j < watchedseries.size(); j++)
+        {
+            auto it = find(viewed.begin(), viewed.end(), watchedseries[j]); //search for each TVSeries in viewed
+            if(it == viewed.end())  //if not found:
+            {
+                viewed.push_back(watchedseries[j]); //add TVSeries (pointer) to viewed
+                eps.push_back(epswatched[j]);       //add the number of episodes watched by this User
+                viewers.push_back(1);               //add the first viewer for this TVSeries
+            }
+            else    //if found:
+            {
+                eps[distance(viewed.begin(), it)] += epswatched[j]; //update the total number of episodes watched for this TVSeries
+                viewers[distance(viewed.begin(), it)]++;            //increment the number of viewers for this TVSeries
+            }
+        }
+
+        net++;  //increment network iterator
+    }
+
+//filter the TVSeries to be returned
+    int max_eps = 0, max_viewers = 0;   //create max variables
+
+    for(size_t i = 0; i < viewed.size(); i++)   //for each TVSeries in viewed:
+    {
+        if(eps[i] > max_eps)    //if it has more episodes watched:
+        {
+            max_eps = eps[i];           //update max_eps
+            max_viewers = viewers[i];   //update max_viewers
+            vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+        }
+        else if(eps[i] == max_eps)  //if it has the same nº of episodes watched:
+        {
+            if(viewers[i] > max_viewers)    //but it has more viewers:
+            {
+                max_viewers = viewers[i];   //update max_viewers
+                vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+            }
+            else if(viewers[i] == max_viewers)  //and the same nº of viewers:
+            {
+                if(viewed[i]->getTitle() < vMostViewed->getTitle()) //if it is first in alphabetical order:
+                {
+                    vMostViewed = viewed[i];    //update TVSeries (pointer) to be returned
+                }
+            }
+        }
+    }
+
+    return vMostViewed; //return our TVSeries (pointer)
 }
+
+
+
+
+
+
 
 int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 {
-     
-  // question 3     
+// question 3
+
     return -1;
-   
 }
+
+
+
+
 
 
 
 int HashTable::insertCountryStats(CountryStats &countryS)
 {       
-// question 4    
-return -1;
+// question 4
+
+    return -1;
 }
+
+
+
+
+
+
 
 int HashTable::importFromVector(UserManagement &userManager)      
 {
-// question 5    
-return -1;
+// question 5
+
+//create a vector with a vector for each country's CountryStats
+    //(for this, we'll use the "index", this way, CountryStats position is the same in both the table and seriesCStats)
+//each one of those index vectors have all the DIFFERENT TVSeries watched by the Users of their indexes' countries
+    //this will be specially useful when there's need to update a CountryStats' nTVSeries and nGenre attributes
+    vector<vector<TVSeries*>> seriesCStat;
+
+//set seriesCStat size to maximum (the same size as table) each country
+    seriesCStat.resize(tableSize);
+
+    for(User* user: userManager.getVectorUsers())   //for each User pointed by the pointers "user" in userManager's vectorUsers:
+    {//begin importFromVector
+
+        if(user == nullptr) return -1;  //check for nullptrs
+
+        vector<TVSeries*>& watchS = user->getWatchedSeries();   //shortcut alias to User's watchedSeries
+        int index = searchCountryStats(user->getCountry());     //save User's country's CountryStats position in the table for later usage
+        vector<int> vGen(N_GENRES, 0);                          //create/reset vector to use as payload to nGenre attribute
+
+    //index == -1 means CountryStats does not exist
+        if(index == -1) //if CountryStats for this User's country doesn't exist: CS CREATION PROCESS
+        {//begin CS CREATION PROCESS
+
+        //update vGen
+            for(size_t i = 0; i < watchS.size(); i++)   //for each TVSeries in User's watchedSeries:
+            {
+                for(size_t j = 0; j < N_GENRES; j++)    //for each Genre:
+                {//compare TVSeries' Genre with each Genre
+                    if(watchS[i]->getGenre() == vGenres[j]) //whenever a correspondence is found:
+                    {
+                        vGen[j]++;  //update vGen count of corresponding Genre
+                    }
+                }
+            }
+
+        //create new CountryStats
+            CountryStats *CStat = new CountryStats(user->getCountry(), 1, watchS.size(), watchS.size(), vGen);
+        //insert new CountryStats into the table and get its index
+            index = insertCountryStats(*CStat);
+
+        //fill the new CountryStats' vector in seriesCStat
+            for(size_t i = 0; i < watchS.size(); i++)   //for each TVSeries in User's watchedSeries:
+            {
+                seriesCStat[index].push_back(watchS[i]);   //push it into the vector
+            }
+
+        }//end CS CREATION PROCESS
+
+        else    //if CountryStats already exists: CS UPDATE PROCESS
+        {//begin CS UPDATE PROCESS
+
+            table[index]->nUsers++; //update nUsers
+
+        //update seriesCStat
+            for(size_t i = 0; i < watchS.size(); i++)   //for each TVSeries in User's watchedSeries:
+            {//search TVSeries within seriesCStat[index]
+                auto it = find(seriesCStat[index].begin(), seriesCStat[index].end(), watchS[i]);
+                if(it == seriesCStat[index].end())  //if TVSeries is not within seriesCStat[index]:
+                {
+                    seriesCStat[index].push_back(watchS[i]);    //push it into the vector
+                }
+            }
+
+            table[index]->nTVSeries = seriesCStat[index].size();    //updated nTVSeries
+            
+        //update averageTVseries
+            table[index]->averageTVseries *= (table[index]->nUsers - 1);    //multiply by nUsers-1 in order to get previous sum
+            table[index]->averageTVseries += watchS.size();                 //update sum by adding the new parcel
+            table[index]->averageTVseries /= (float)table[index]->nUsers;   //divide (the sum) by nUsers to get average
+            
+        //update vGen
+            for(size_t i = 0; i < seriesCStat[index].size(); i++)
+            {
+                for(size_t j = 0; j < N_GENRES; j++)    //for each Genre:
+                {//compare TVSeries' Genre with each Genre
+                    if(seriesCStat[index][i]->getGenre() == vGenres[j])  //whenever a correspondence is found:
+                    {
+                        vGen[j]++;  //update vGen count of corresponding Genre
+                    }
+                }
+            }
+
+            table[index]->nGenre = vGen;    //update nGenre
+
+        }//end CS UPDATE PROCESS
+    
+    }//end importFromVector
+
+    return 0;   //return success code
 }
