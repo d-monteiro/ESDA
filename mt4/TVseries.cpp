@@ -1288,6 +1288,23 @@ int HashTable::insertCountryStats(CountryStats &countryS)
     if(country.empty()) return -1;
     
     index = hashFunction(countryS.country);
+
+    /*
+    SUGESTÃO
+    para alterar o bloco de ifs à frente
+
+    int c = 1;
+    while(table[index] != nullptr){
+        index = probingFunction(country, c++);
+    }
+
+    ou
+
+    for(int c = 1; c < 6; c++){
+        index = probingFunction(country, c++);
+    }
+    
+    */
     
     if(table[index] != nullptr){
         index = probingFunction(country, 1);
