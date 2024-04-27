@@ -1269,9 +1269,47 @@ TVSeries* UserManagementGraph::followingMostWatchedSeries(User* userPtr)
 
 int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 {
-// question 3
-
-    return -1;
+    int d = 0;
+    list<User*> vizinhos;
+    
+    
+    if(userSrc == nullptr || userDst == nullptr) return -1;
+    
+    for (auto node : userNodes){ //Iterate through all the nodes
+        if (node == userSrc) node->setLength(0); //Set distance of userSrc to 0
+        else node->setLength(std::numeric_limits<int>::max()); //Set distance of other nodes to max (infinity)
+    }
+    
+    priority_queue<User*, vector<User*>, CompareP> queue;
+    queue.push(userSrc);
+    
+    while (!queue.empty()) {
+        User* temp = queue.top();
+        queue.pop();
+        if (temp == userDst) break;
+        
+        for(int i = 0; i < (int) totalUsers; i++){
+            if(userNodes.at(i) == temp){
+                for (auto user : network.at(i)){
+                    vizinhos.push_back(user);
+                }
+            }
+        }
+        
+        for (auto vizinho : vizinhos){
+            d = temp->getLength() + 1;
+            
+            // Update distance if shorter path is found
+            if(d < vizinho->getLength()) {
+                vizinho->setLength(d);
+                queue.push(vizinho);
+            }
+        }
+    }
+    
+    if (userDst->getLength() == std::numeric_limits<int>::max()) return -2;
+    
+    return userDst->getLength();
 }
 
 
@@ -1289,37 +1327,9 @@ int HashTable::insertCountryStats(CountryStats &countryS)
     
     index = hashFunction(countryS.country);
 
-    /*
-    SUGESTÃO
-    para alterar o bloco de ifs à frente
-
     int c = 1;
     while(table[index] != nullptr){
         index = probingFunction(country, c++);
-    }
-
-    ou
-
-    for(int c = 1; c < 6; c++){
-        index = probingFunction(country, c++);
-    }
-    
-    */
-    
-    if(table[index] != nullptr){
-        index = probingFunction(country, 1);
-        if(table[index] != nullptr){
-            index = probingFunction(country, 2);
-            if(table[index] != nullptr){
-                index = probingFunction(country, 3);
-                if(table[index] != nullptr){
-                    index = probingFunction(country, 4);
-                    if(table[index] != nullptr){
-                        index = probingFunction(country, 5);
-                    }
-                }
-            }
-        }
     }
     
     table[index] = &countryS;
