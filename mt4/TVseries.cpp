@@ -1269,45 +1269,46 @@ TVSeries* UserManagementGraph::followingMostWatchedSeries(User* userPtr)
 
 int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 {
+    //Init of variables to be used
     int d = 0;
     list<User*> vizinhos;
+    priority_queue<User*, vector<User*>, CompareP> queue; //This one using CompareP function
     
-    
-    if(userSrc == nullptr || userDst == nullptr) return -1;
+    if(userSrc == nullptr || userDst == nullptr) return -1; //If any of the parameters are invalid: return -1
     
     for (auto node : userNodes){ //Iterate through all the nodes
         if (node == userSrc) node->setLength(0); //Set distance of userSrc to 0
         else node->setLength(std::numeric_limits<int>::max()); //Set distance of other nodes to max (infinity)
     }
     
-    priority_queue<User*, vector<User*>, CompareP> queue;
-    queue.push(userSrc);
+    queue.push(userSrc); //As per the algorithm, start with userSrc
     
-    while (!queue.empty()) {
+    //Dijkstra Algorithm
+    while (!queue.empty()){
         User* temp = queue.top();
         queue.pop();
         if (temp == userDst) break;
         
-        for(int i = 0; i < (int) totalUsers; i++){
+        for(int i = 0; i < (int) totalUsers; i++){ //To find the neighbours
             if(userNodes.at(i) == temp){
-                for (auto user : network.at(i)){
+                for (auto user : network.at(i)){ //Use of .at()
                     vizinhos.push_back(user);
                 }
             }
         }
         
-        for (auto vizinho : vizinhos){
+        for (auto vizinho : vizinhos){ //Iterate through the neighbours
             d = temp->getLength() + 1;
-            
+        
             // Update distance if shorter path is found
             if(d < vizinho->getLength()) {
                 vizinho->setLength(d);
                 queue.push(vizinho);
             }
         }
-    }
+    } // Implementation as per the lectures slides
     
-    if (userDst->getLength() == std::numeric_limits<int>::max()) return -2;
+    if (userDst->getLength() == std::numeric_limits<int>::max()) return -2; //No path found
     
     return userDst->getLength();
 }
@@ -1320,25 +1321,22 @@ int UserManagementGraph::shortestPaths(User* userSrc, User* userDst)
 
 int HashTable::insertCountryStats(CountryStats &countryS)
 {
+    //Init of variables to be used
     int index = 0;
     string country = countryS.country;
+    int c = 1; //Number of Conflicts
     
-    if(country.empty()) return -1;
+    if(country.empty()) return -1; //Check for faulty parameter
     
-    index = hashFunction(countryS.country);
+    index = hashFunction(countryS.country); //Use of an already made function
 
-    int c = 1;
     while(table[index] != nullptr){
-        index = probingFunction(country, c++);
+        index = probingFunction(country, c++); //Use of an already made function
     }
     
     table[index] = &countryS;
     
     totalCountryStats++;
-    
-    //cout<<"Indice da chave \"apagado\" : "<<hashFunction(countryS.country)<<endl;
-    
-    //show();
     
     return index;
 }
