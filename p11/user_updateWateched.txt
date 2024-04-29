@@ -1,0 +1,92 @@
+Breaking Bad,john_smith,35
+Game of Thrones,maria_garcia,60
+Friends,ahmed_khan,236
+Stranger Things,sophie_dubois,20
+The Office,wei_chen,100
+The Crown,alejandro_lopez,30
+Black Mirror,anna_muller,18
+The Mandalorian,emily_johnson,16
+The Witcher,miguel_silva,16
+Money Heist,priya_patel,40
+Fargo,louis_dubois,352
+The Big Bang Theory,jing_li,192
+Vikings,javier_hernandez,7
+The Boys,sophia_wagner,24
+Brooklyn Nine-Nine,michael_brown,72
+The Haunting of Hill House,luiz_santos,10
+The Umbrella Academy,rajesh_kumar,20
+Peaky Blinders,camille_dupont,36
+Sherlock,ling_wei,9
+The Marvelous Mrs. Maisel,maria_garcia,30
+Stranger Things,felipe_silva,10
+Breaking Bad,felipe_silva,45
+The Crown,felipe_silva,20
+Friends,felipe_silva,180
+The Witcher,felipe_silva,8
+Game of Thrones,daniel_smith,50
+The Office,daniel_smith,110
+Black Mirror,daniel_smith,12
+The Mandalorian,daniel_smith,8
+Money Heist,neha_sharma,50
+Fargo,neha_sharma,320
+The Big Bang Theory,neha_sharma,240
+Vikings,tao_wang,7
+The Boys,tao_wang,20
+Brooklyn Nine-Nine,tao_wang,90
+The Haunting of Hill House,christopher_davis,8
+The Umbrella Academy,chloe_lambert,16
+Peaky Blinders,rajat_singh,24
+Sherlock,chloe_lambert,6
+The Marvelous Mrs. Maisel,wei_zhang,24
+Stranger Things,chloe_lambert,20
+Breaking Bad,chloe_lambert,35
+Game of Thrones,sophie_dubois,60
+Friends,sophie_dubois,236
+The Office,wei_zhang,100
+The Crown,christopher_davis,30
+Black Mirror,neha_sharma,18
+The Mandalorian,carlos_garcia,16
+The Witcher,tao_wang,16
+Money Heist,tao_wang,40
+Fargo,tao_wang,352
+The Big Bang Theory,tao_wang,192
+Vikings,rajat_singh,7
+The Boys,wei_zhang,24
+Brooklyn Nine-Nine,carlos_garcia,72
+The Haunting of Hill House,rajat_singh,10
+The Umbrella Academy,anna_muller,20
+Peaky Blinders,maria_garcia,36
+Sherlock,rajat_singh,9
+The Marvelous Mrs. Maisel,xiu_chen,30
+Stranger Things,chloe_lambert,10
+Breaking Bad,sophie_dubois,45
+Game of Thrones,maria_garcia,60
+Friends,chloe_lambert,236
+Fargo,carlos_garcia,352
+The Big Bang Theory,maria_garcia,192
+Vikings,chloe_lambert,7
+The Umbrella Academy,maria_garcia,20
+Peaky Blinders,chloe_lambert,36
+Breaking Bad,maria_garcia,35
+The Office,chloe_lambert,100
+Black Mirror,maria_garcia,18
+The Witcher,sophie_dubois,16
+Money Heist,maria_garcia,40
+Vikings,maria_garcia,7
+Brooklyn Nine-Nine,maria_garcia,72
+The Haunting of Hill House,chloe_lambert,10
+The Marvelous Mrs. Maisel,maria_garcia,30
+Stranger Things,sophie_dubois,10
+Breaking Bad,maria_garcia,45
+Black Mirror,maria_garcia,18
+Money Heist,maria_garcia,40
+Vikings,maria_garcia,7
+Brooklyn Nine-Nine,maria_garcia,72
+The Marvelous Mrs. Maisel,maria_garcia,30
+Breaking Bad,maria_garcia,45
+Black Mirror,maria_garcia,18
+Money Heist,maria_garcia,40
+The Big Bang Theory,maria_garcia,40
+Fargo,maria_garcia,40
+The Mandalorian,maria_garcia,40
+The Crown,maria_garcia,40
