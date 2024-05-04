@@ -7,16 +7,16 @@
 
 using namespace std; 
 
-class TitleBasics; /** @brief Class to represent a TVSerie. */
-class TitlePrincipals; /** @brief Class to represent the a Crew or a Cast associated to a episode */
-class TitleEpisode; /** @brief Class to represent each episode  */
+class Series; /** @brief Class to represent a TVSerie. */
+class Crew; /** @brief Class to represent the a Crew or a Cast associated to a episode */
+class Episode; /** @brief Class to represent each episode  */
 
 class TVSeriesAPP; /** @brief Class to represent a APP TVSeries Management */
 
 
 
 /** @brief Class to represent a TVSerie. */
-class TitleBasics {
+class Series {
 public:
     /* ATTRIBUTES */
     string tconst; /** @brief alphanumeric unique identifier of the title */
@@ -32,7 +32,7 @@ public:
 };
 
 /** @brief Class to represent the a Crew or a Cast associated to a episode */
-class TitlePrincipals {
+class Crew {
 public:
     /* ATTRIBUTES */
     string tconst;  /** @brief alphanumeric unique identifier of the episode */ 
@@ -48,7 +48,7 @@ public:
 };
 
 /** @brief Class to represent each episode  */
-class TitleEpisode {
+class Episode {
 public:
     /* ATTRIBUTES */
     string tconst; /** @brief alphanumeric identifier of episode */
@@ -63,41 +63,66 @@ public:
 /** @brief Class to represent a APP TVSeries Management */
 class TVSeriesAPP {
 private:
+  unordered_map<string, Series> SeriesMap; /** @brief Map to store the Series objects */
+  unordered_map<string, Crew> CrewMap; /** @brief Map to store the Crew objects */
+  unordered_map<string, Episode> EpisodesMap; /** @brief Map to store the Episodes objects*/
 
-    
 public:
-    /* --- Constructor --- */
-    TVSeriesAPP();
-  
-    /* --- Destructor --- */
-    ~TVSeriesAPP();
+  /* --- Constructor --- */
+  TVSeriesAPP();
 
-    /** @brief add TtitleBasic to TVSeriesAPP */
-    void addTitleBasics(const TitleBasics& title);
 
-    /** @brief add TitleEpisode to TVSeriesAPP  */
-    void addTitleEpisodes(const TitleEpisode& episode);
 
-    /** @brief add TitlePrincipals to TVSeriesAPP */
-    void addTitlePrincipal(const TitlePrincipals& principal);
-    
-    //PERGUNTA 1
-    vector<string> getUniquePrincipals(const string& seriesTconst ) const;
+  /* --- Destructor --- */
+  ~TVSeriesAPP();
 
-    //PERGUNTA 2
-    string getMostSeriesGenre() const;
 
-    //PERGUNTA 3
-    vector<string> principalsWithMultipleCategories(const string& seriesTconst) const;
 
-    //PERGUNTA 4
-    vector<string> principalsInAllEpisodes(const string& seriesTconst) const;
+  /* --- Add Methods --- */
 
-    //PERGUNTA 5
-    int principalInMultipleGenres(vector<string> vGenres);
+  /** @brief add TtitleBasic to TVSeriesAPP */
+  void addSeries(const Series& title);
 
-    //PERGUNTA 6
-    string getPrincipalFromCharacter(const string& character) const;
+  /** @brief add TitleEpisode to TVSeriesAPP  */
+  void addEpisode(const Episode& episode);
+
+  /** @brief add TitlePrincipals to TVSeriesAPP */
+  void addCrew(const Crew& principal);
+
+
+
+  /* --- Get Methods --- */
+
+  /** @brief get TitleBasics given a tconst */
+  Series getCrew(const string& tconst);
+
+  /** @brief get TitleEpisodes given a tconst */
+  Episode getEpisode(const string& tconst);
+
+  /** @brief get Parent Series given a episode */
+  Series getParentSeries(const Episode& episode);
+
+
+
+  /* --- Answer Methods --- */
+
+  //PERGUNTA 1
+  vector<string> getUniquePrincipals(const string& seriesTconst ) const;
+
+  //PERGUNTA 2
+  string getMostSeriesGenre() const;
+
+  //PERGUNTA 3
+  vector<string> principalsWithMultipleCategories(const string& seriesTconst) const;
+
+  //PERGUNTA 4
+  vector<string> principalsInAllEpisodes(const string& seriesTconst) const;
+
+  //PERGUNTA 5
+  int principalInMultipleGenres(vector<string> vGenres);
+
+  //PERGUNTA 6
+  string getPrincipalFromCharacter(const string& character) const;
 };
 
-#endif // TVSERIES_HPP
+#endif

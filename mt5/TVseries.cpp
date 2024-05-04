@@ -4,31 +4,45 @@
 #include <functional>
 #include <stack>
 
-TVSeriesAPP::TVSeriesAPP() {
-
+TVSeriesAPP::TVSeriesAPP(){
+  SeriesMap = unordered_map<string, Series>();
+  CrewMap = unordered_map<string, Crew>();
+  EpisodesMap = unordered_map<string, Episode>();
 }
    
-TVSeriesAPP::~TVSeriesAPP() {
-    
+TVSeriesAPP::~TVSeriesAPP(){
+  SeriesMap.clear();
+  CrewMap.clear();
+  EpisodesMap.clear();
+}
+
+void TVSeriesAPP::addSeries(const Series& title) {
+  SeriesMap[title.tconst] = title;
+}
+
+void TVSeriesAPP::addEpisode(const Episode& episode){
+  EpisodesMap[episode.tconst] = episode;
+}
+
+void TVSeriesAPP::addCrew(const Crew& principal){ 
+  CrewMap[principal.tconst] = principal;   
+}
+
+Series TVSeriesAPP::getCrew(const string& tconst) {
+  return SeriesMap[tconst];
+}
+
+Episode TVSeriesAPP::getEpisode(const string& tconst) {
+  return EpisodesMap[tconst];
+}
+
+Series TVSeriesAPP::getParentSeries(const Episode& episode) {
+  return SeriesMap[episode.parentTconst];
 }
 
 
-void TVSeriesAPP::addTitleBasics(const TitleBasics& title) {
-    
- }
-void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) {
-  
-}
 
-
-void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) {
-
-    
-}
-
-
-
-//Pergunta 1:
+//PERGUNTA 1:
 
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const {
     
@@ -37,9 +51,9 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
     return {};
 }
 
+
+
 //PERGUNTA 2:
-
-
 
 string TVSeriesAPP::getMostSeriesGenre() const {
    
@@ -48,7 +62,8 @@ string TVSeriesAPP::getMostSeriesGenre() const {
 }
 
 
-//PERGUNTA 3: 
+
+//PERGUNTA 3:
 
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const {
 
@@ -57,13 +72,15 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const {
 
 
 
-//PERGUNTA 4
+//PERGUNTA 4:
 
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const {
 
   return {};
 }
- 
+
+
+
 //PERGUNTA 5:
 
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres) {
@@ -73,7 +90,9 @@ return -1;
 }
 
 
-//PERGUNTA 6: 
+
+//PERGUNTA 6:
+
 vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const {
 
     return {};

@@ -500,7 +500,7 @@ int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
     getline(file, line);
     while (getline(file, line)) {
         istringstream iss(line);
-        TitleBasics title;
+        Series title;
         string genre;
         getline(iss, title.tconst, '\t');
         getline(iss, title.titleType, '\t');
@@ -533,7 +533,7 @@ int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
         while (getline(iss, genre, ',')) {
             title.genres.push_back(genre);
         }
-        Tree.addTitleBasics(title);
+        Tree.addSeries(title);
     }
 
     file.close();
@@ -561,13 +561,13 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
     getline(file, line);
     while (getline(file, line)) {
         istringstream iss(line);
-        TitleEpisode episode;
+        Episode episode;
         getline(iss, episode.tconst, '\t');
         getline(iss, episode.parentTconst, '\t');
         iss >> episode.seasonNumber;
         iss.ignore(); // Ignore the tab
         iss >> episode.episodeNumber;
-        Tree.addTitleEpisodes(episode);
+        Tree.addEpisode(episode);
        
     }
 
@@ -577,7 +577,7 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
 
 
 int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
-    vector<TitlePrincipals> principals;
+    vector<Crew> principals;
 
     ifstream file(filename);
     if (!file.is_open()) {
@@ -590,7 +590,7 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
     getline(file, line);
     while (getline(file, line)) {
         istringstream iss(line);
-        TitlePrincipals principal;
+        Crew principal;
         string genre;
         getline(iss, principal.tconst, '\t');
         
@@ -641,7 +641,7 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
             principal.characters.push_back(characters);
         }
          
-        Tree.addTitlePrincipal(principal);
+        Tree.addCrew(principal);
       
     }
 
