@@ -48,7 +48,6 @@ int verifica_getUniquePrincipals5(TVSeriesAPP& app)
     
     return er;
 }
-
 int verifica_getUniquePrincipals(TVSeriesAPP& app)
 {
     int er = 0;
@@ -98,7 +97,6 @@ int verifica_getMostSeriesGenre5(TVSeriesAPP& app)
    
     return er;
 }
-
 int verifica_getMostSeriesGenre(TVSeriesAPP& app)
 {
     int er = 0;
@@ -160,8 +158,6 @@ int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
 
     return er;
 }
-
-
 int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
 {
     int er = 0;
@@ -200,9 +196,6 @@ int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
 
     return er;
 }
-
-
-
 
 
 int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
@@ -250,9 +243,6 @@ int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
 
     return er;
 }
-
-
-
 int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
 {
    int er = 0;
@@ -300,7 +290,6 @@ int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
 }
 
 
-
 int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
 {
    int er = 0;
@@ -341,8 +330,6 @@ int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
 
     return er;
 }
-
-
 int verifica_principalInMultipleGenres(TVSeriesAPP& app)
 {
    int er = 0;
@@ -434,7 +421,6 @@ int verifica_principalsInAllEpisodes5(TVSeriesAPP& app)
 
     return er;
 }
-
 int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
 {
    int er = 0;
@@ -484,6 +470,7 @@ int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
 
     return er;
 }
+
 
 // Function to parse TitleBasics from a TSV file
 int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
@@ -540,12 +527,6 @@ int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-
-
-
-
-
-
 // Function to parse TitleEpisode from a TSV file
 int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
  //   vector<TitleEpisode> episodes;
@@ -575,7 +556,7 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-
+// Function to parse TitlePrincipals from a TSV file
 int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
     vector<Crew> principals;
 
@@ -650,10 +631,8 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
 }
 
 
-
-
 int main() {
-     int errorCount = 0, error;
+    int errorCount = 0, error;
 
     cout << "INICIO DOS TESTES\n\n" << endl;
     cout << "Base de dados pequena (5 series) \n\n" << endl;
@@ -661,7 +640,6 @@ int main() {
 
     TVSeriesAPP tvSeriesApp5;
     int res = parseTitleBasics("series5.basics.tsv",tvSeriesApp5);
-    
     res = parseTitleEpisodes("series5.episode.tsv", tvSeriesApp5);
     res = parseTitlePrincipals("series5.principals.names.tsv",tvSeriesApp5);
     
@@ -681,7 +659,7 @@ int main() {
 
 
 
-
+/*
     //PERGUNTA 2
         error = verifica_getMostSeriesGenre5(tvSeriesApp5);
     if (error)
@@ -855,7 +833,7 @@ time = (double)(end - beg) / CLOCKS_PER_SEC;
 cout << "Tempo para responder às 6 questões: "<< time << endl;
 
 // fim do comentário
-
+*/
 if (errorCount == 0)
         cout << "FIM DOS TESTES: Todos os testes passaram\n" << endl;
     else
