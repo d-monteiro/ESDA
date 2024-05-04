@@ -333,7 +333,12 @@ class UserManagement {
          */
         void addUser(User* newUser);
 
-
+        /** 
+         *  @brief  Add a new registered user to the beginning vector.
+         *  @param  newUser User to be added.
+         *  @return void
+         */
+        void addUserBegin(User* newUser);
         
         /** 
          *  @brief  Update the series watched by the registered users by reading a text file.
@@ -399,6 +404,13 @@ class UserManagementList {
          *  @return void
          */
         void addUser(User* newUser);
+
+        /** 
+         *  @brief  Add a new registered user to the beginning vector.
+         *  @param  newUser User to be added.
+         *  @return void
+         */
+        void addUserBegin(User* newUser);
 
         /** 
          *  @brief  Create a list of all users who have watched all episodes of a given series
@@ -666,6 +678,8 @@ class HashTable
          *  @note  Removes the hash table from memory (delete table elements).
          */
         ~HashTable();
+
+        void clear();
 
 
         /* GET METHODS */

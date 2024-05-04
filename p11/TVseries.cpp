@@ -367,6 +367,11 @@ void UserManagement::addUser(User* newUser)
     vectorUsers.push_back(newUser);
 }
 
+void UserManagement::addUserBegin(User* newUser)
+{
+    vectorUsers.insert(vectorUsers.begin(),newUser);
+}
+
 int UserManagement::updateWatched(string filename, TVSeriesManagementList& manager)
 {
     ifstream file(filename);
@@ -514,6 +519,11 @@ list<User*> UserManagementList::getListUsers() const { return listUsers; }
 void UserManagementList::addUser(User* newUser)
 {
     listUsers.push_back(newUser);
+}
+
+void UserManagementList::addUserBegin(User* newUser)
+{
+    listUsers.push_front(newUser);
 }
 
 list<User*> UserManagementList::seeAll(TVSeries* series)
@@ -915,6 +925,16 @@ HashTable::~HashTable()
             
    } 
  
+}
+
+void HashTable::clear() {
+    for (int i = 0; i < table.size(); ++i) {
+        if (table[i] != nullptr) {  // Check if the pointer is not null
+            delete table[i];  // Delete the object
+            table[i] = nullptr;  // Set the pointer to null
+        }
+    }
+    totalCountryStats = 0;  // Reset the total number of country stats
 }
 
 int HashTable::getTableSize() const
