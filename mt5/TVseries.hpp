@@ -3,13 +3,16 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map> 
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <iostream>
+#include <algorithm>
 
 using namespace std; 
 
 class Series; /** @brief Class to represent a TVSerie. */
-class Crew; /** @brief Class to represent the a Crew or a Cast associated to a episode */
+class Person; /** @brief Class to represent the a Person or a Cast associated to a episode */
 class Episode; /** @brief Class to represent each episode  */
 
 class TVSeriesAPP; /** @brief Class to represent a APP TVSeries Management */
@@ -30,11 +33,11 @@ public:
   int runtimeMinutes; /** @brief primary runtime of the title, in minutes */
   vector<string> genres; /** @brief includes up to three genres associated with the title */
 
-  friend std::ostream& operator<<(std::ostream& os, const Series& series);
+  friend ostream& operator<<(ostream& os, const Series& series);
 };
 
 /** @brief Class to represent TitlePrincipals. */
-class Crew {
+class Person {
 public:
   /* ATTRIBUTES */
   string tconst;  /** @brief alphanumeric unique identifier of the episode */ 
@@ -46,7 +49,7 @@ public:
   string job; /** @brief the specific job title if applicable, else '\N' */
   vector<string> characters; /** @brief the name of the character played if applicable, else '\N' */
     
-  friend std::ostream& operator<<(std::ostream& os, const Crew& crew);
+  friend ostream& operator<<(ostream& os, const Person& Person);
 };
 
 /** @brief Class to represent TitleEpisode.  */
@@ -58,7 +61,7 @@ public:
   int seasonNumber; /** @brief season number the episode belongs to */
   int episodeNumber; /** @brief episode number of the tconst in the TV series */
 
-  friend std::ostream& operator<<(std::ostream& os, const Episode& episode);
+  friend ostream& operator<<(ostream& os, const Episode& episode);
 };
 
 
@@ -68,8 +71,9 @@ public:
 class TVSeriesAPP {
 private:
   unordered_map<string, Series> SeriesMap; /** @brief Map to store the Series objects */
-  unordered_map<string, Crew> CrewMap; /** @brief Map to store the Crew objects */
-  unordered_map<string, Episode> EpisodesMap; /** @brief Map to store the Episodes objects*/
+  unordered_map<string, Person> PersonMap; /** @brief Map to store the Person objects */
+  unordered_map<string, Episode> EpisodesMap; /** @brief Map to store the Episodes objects */
+  unordered_multimap<string, Person> PeopleToEpisodeMap; /** @brief Map Person objects to a given Episode */
 
 public:
   /* --- Constructor --- */
@@ -84,14 +88,17 @@ public:
 
   /* --- Add Methods --- */
 
-  /** @brief add TtitleBasic to TVSeriesAPP */
+  /** @brief add TitleBasic to TVSeriesAPP */
   void addSeries(const Series& title);
 
   /** @brief add TitleEpisode to TVSeriesAPP  */
   void addEpisode(const Episode& episode);
 
   /** @brief add TitlePrincipals to TVSeriesAPP */
-  void addCrew(const Crew& principal);
+  void addPerson(const Person& principal);
+
+  /** @brief add Person to a Series */
+  void addPersonToEpisode(const string& episodeTconst, const Person& person);
 
 
 
@@ -101,7 +108,7 @@ public:
   Series getSeries(const string& tconst) const;
 
   /** @brief get TitlePrincipals given a tconst */
-  Crew getCrew(const string& tconst) const;
+  Person getPerson(const string& tconst) const;
 
   /** @brief get TitleEpisodes given a tconst */
   Episode getEpisode(const string& tconst);
@@ -137,8 +144,8 @@ public:
 /** @brief Operator Overloading to display Series object */
 ostream& operator<<(ostream& os, const Series& series);
 
-/** @brief Operator Overloading to display Crew object */
-ostream& operator<<(ostream& os, const Crew& crew);
+/** @brief Operator Overloading to display Person object */
+ostream& operator<<(ostream& os, const Person& Person);
 
 /** @brief Operator Overloading to display Episode object */
 ostream& operator<<(ostream& os, const Episode& episode);

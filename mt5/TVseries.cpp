@@ -8,14 +8,16 @@ using namespace std;
 
 TVSeriesAPP::TVSeriesAPP(){
   SeriesMap = unordered_map<string, Series>();
-  CrewMap = unordered_map<string, Crew>();
+  PersonMap = unordered_map<string, Person>();
   EpisodesMap = unordered_map<string, Episode>();
+  PeopleToEpisodeMap = unordered_multimap<string, Person>();
 }
    
 TVSeriesAPP::~TVSeriesAPP(){
   SeriesMap.clear();
-  CrewMap.clear();
+  PersonMap.clear();
   EpisodesMap.clear();
+  PeopleToEpisodeMap.clear();
 }
 
 void TVSeriesAPP::addSeries(const Series& title) {
@@ -26,16 +28,23 @@ void TVSeriesAPP::addEpisode(const Episode& episode){
   EpisodesMap[episode.tconst] = episode;
 }
 
-void TVSeriesAPP::addCrew(const Crew& principal){ 
-  CrewMap[principal.tconst] = principal;   
+void TVSeriesAPP::addPerson(const Person& principal){ 
+  PersonMap[principal.nconst] = principal;
+  PeopleToEpisodeMap.insert({principal.tconst, principal});
 }
+
+void TVSeriesAPP::addPersonToEpisode(const string& episodeTconst, const Person& person){
+  PeopleToEpisodeMap.insert({person.tconst, person});
+}
+
+
 
 Series TVSeriesAPP::getSeries(const string& tconst) const{
   return SeriesMap.at(tconst);
 }
 
-Crew TVSeriesAPP::getCrew(const string& tconst) const{
-  return CrewMap.at(tconst);
+Person TVSeriesAPP::getPerson(const string& tconst) const{
+  return PersonMap.at(tconst);
 }
 
 Episode TVSeriesAPP::getEpisode(const string& tconst){
@@ -51,9 +60,27 @@ Series TVSeriesAPP::getParentSeries(const Episode& episode){
 //PERGUNTA 1:
 
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ){
-  cout<<getSeries(seriesTconst)<<endl;
+  vector<string> answer;
+  vector<Episode> help;
 
-  return {};
+  for(auto i = EpisodesMap.begin(); i != EpisodesMap.end(); ++i){
+    if(i->second.parentTconst == seriesTconst) help.push_back(i->second);
+  }
+
+  for(const auto& episode : help){
+    auto range = PeopleToEpisodeMap.equal_range(episode.tconst);
+
+    for(auto it = range.first; it != range.second; ++it){
+      string name = PersonMap.at(it->second.nconst).primaryName;
+      if(find(answer.begin(), answer.end(), name) == answer.end()){
+        answer.push_back(name);
+      }
+    }
+  }
+
+  sort(answer.begin(), answer.end());
+
+  return answer;
 }
 
 
@@ -148,24 +175,24 @@ ostream& operator<<(ostream& os, const Series& series){
   os << "runtimeMinutes: " << series.runtimeMinutes << endl;
   os << "genres: ";
   for(const auto& genre : series.genres){
-    os << genre << ", ";
+    os << genre << " ";
   }
   os << endl;
 
   return os;
 }
 
-//Overloading the << operator for Crew
-ostream& operator<<(ostream& os, const Crew& crew){
-  os << "Crew details: " << endl;
-  os << "tconst: " << crew.tconst << endl;
-  os << "ordering: " << crew.ordering << endl;
-  os << "nconst: " << crew.nconst << endl;
-  os << "primaryName: " << crew.primaryName << endl;
-  os << "birthYear: " << crew.birthYear << endl;
-  os << "category: " << crew.category << endl;
-  os << "job: " << crew.job << endl;
-  for(const auto& character : crew.characters){
+//Overloading the << operator for Person
+ostream& operator<<(ostream& os, const Person& Person){
+  os << "Person details: " << endl;
+  os << "tconst: " << Person.tconst << endl;
+  os << "ordering: " << Person.ordering << endl;
+  os << "nconst: " << Person.nconst << endl;
+  os << "primaryName: " << Person.primaryName << endl;
+  os << "birthYear: " << Person.birthYear << endl;
+  os << "category: " << Person.category << endl;
+  os << "job: " << Person.job << endl;
+  for(const auto& character : Person.characters){
     os << "character: " << character << endl;
   }
 

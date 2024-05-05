@@ -558,7 +558,7 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
 
 // Function to parse TitlePrincipals from a TSV file
 int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
-    vector<Crew> principals;
+    vector<Person> principals;
 
     ifstream file(filename);
     if (!file.is_open()) {
@@ -571,7 +571,7 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
     getline(file, line);
     while (getline(file, line)) {
         istringstream iss(line);
-        Crew principal;
+        Person principal;
         string genre;
         getline(iss, principal.tconst, '\t');
         
@@ -622,7 +622,7 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
             principal.characters.push_back(characters);
         }
          
-        Tree.addCrew(principal);
+        Tree.addPerson(principal);
       
     }
 
@@ -659,7 +659,7 @@ int main() {
 
 
 
-/*
+
     //PERGUNTA 2
         error = verifica_getMostSeriesGenre5(tvSeriesApp5);
     if (error)
@@ -758,7 +758,7 @@ int main() {
         cout << "OK: verifica_getUniquePrincipals passou\n\n" << endl;
     }  
 
-
+/*
 
 
     //PERGUNTA 2
@@ -825,7 +825,7 @@ int main() {
     }  
 
    
-
+*/
 
 
     end = clock();
@@ -833,7 +833,7 @@ time = (double)(end - beg) / CLOCKS_PER_SEC;
 cout << "Tempo para responder às 6 questões: "<< time << endl;
 
 // fim do comentário
-*/
+
 if (errorCount == 0)
         cout << "FIM DOS TESTES: Todos os testes passaram\n" << endl;
     else
