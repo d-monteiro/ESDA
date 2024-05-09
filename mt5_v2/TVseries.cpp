@@ -1,147 +1,266 @@
-#ifndef TVSERIES_HPP
-#define TVSERIES_HPP
-
-#include <string>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
+#include "TVseries.hpp"
 #include <iostream>
 #include <algorithm>
+#include <functional>
+#include <stack>
 
-using namespace std; 
+using namespace std;
 
-/** @brief Class to represent a TVSeries */
-class TitleBasics{
-public:
-  /* ATTRIBUTES */
-  string tconst;          /** @brief alphanumeric unique identifier of the title */
-  string titleType;       /** @brief the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc) */
-  string primaryTitle;    /** @brief the more popular title / the title used by the filmmakers on promotional materials at the point of release */
-  string originalTitle;   /** @brief original title, in the original language */
-  bool isAdult;           /** @brief 0: non-adult title; 1: adult title */
-  int startYear;          /** @brief represents the release year of a title. In the case of TV Series, it is the series start year */
-  int endYear;            /** @brief TV Series end year. ‘\N’ for all other title types */
-  int runtimeMinutes;     /** @brief primary runtime of the title, in minutes */
-  vector<string> genres;  /** @brief includes up to three genres associated with the title */
+TVSeriesAPP::TVSeriesAPP(){
+  SeriesMap = unordered_map<string, TitleBasics>();
+  PersonMap = unordered_map<string, TitlePrincipals>();
+  EpisodesMap = unordered_map<string, TitleEpisode>();
+  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>();
+  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();
+}
+   
+TVSeriesAPP::~TVSeriesAPP(){
+  SeriesMap.clear();
+  PersonMap.clear();
+  EpisodesMap.clear();
+  PeopleToEpisodeMap.clear();
+  EpisodeToSeriesMap.clear();
+  PeopleNameToSeriesMap.clear();
+}
 
-  friend ostream& operator<<(ostream& os, const TitleBasics& series);
-};
 
-/** @brief Class to represent the Crew or a Cast associated to an episode */
-class TitlePrincipals{
-public:
-  /* ATTRIBUTES */
-  string tconst;              /** @brief alphanumeric unique identifier of the episode */ 
-  int ordering;               /** @brief a number to uniquely identify rows for a given titleId */
-  string nconst;              /** @brief alphanumeric unique identifier of the name/person */
-  string primaryName;         /** @brief name by which the person is most often credited */
-  int birthYear;              /** @brief  in YYYY format */
-  string category;            /** @brief  the category of job that person was in */
-  string job;                 /** @brief the specific job title if applicable, else '\N' */
-  vector<string> characters;  /** @brief the name of the character played if applicable, else '\N' */
-  
-  friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
-};
+void TVSeriesAPP::addTitleBasics(const TitleBasics& title){
+  SeriesMap[title.tconst] = title;
+}
 
-/** @brief Class to represent each episode  */
-class TitleEpisode{
-public:
-  /* ATTRIBUTES */
-  string tconst;        /** @brief alphanumeric identifier of episode */
-  string parentTconst;  /** @brief alphanumeric identifier of the parent TV Series */
-  int seasonNumber;     /** @brief season number the episode belongs to */
-  int episodeNumber;    /** @brief episode number of the tconst in the TV series */
-  
-  friend ostream& operator<<(ostream& os, const TitleEpisode& episode);
-};
+void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode){
+  EpisodesMap[episode.tconst] = episode;
+  EpisodeToSeriesMap.insert({episode.parentTconst, episode});
+}
+
+
+void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal){
+  PersonMap[principal.nconst] = principal;
+  PeopleToEpisodeMap.insert({principal.tconst, principal});
+
+  auto episode = EpisodesMap.find(principal.tconst);
+  PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});
+}
+
+void TVSeriesAPP::addPersonToEpisode(const string& episodeTconst, const TitlePrincipals& person){
+  PeopleToEpisodeMap.insert({person.tconst, person});
+}
 
 
 
+TitleBasics TVSeriesAPP::getSeries(const string& tconst) const{
+  return SeriesMap.at(tconst);
+}
 
-/** @brief Class to represent a APP TVSeries Management */
-class TVSeriesAPP{
-private:
-  unordered_map<string, TitleBasics> SeriesMap;                   /** @brief Map to store the Series objects */
-  unordered_map<string, TitlePrincipals> PersonMap;               /** @brief Map to store the Person objects */
-  unordered_map<string, TitleEpisode> EpisodesMap;                /** @brief Map to store the Episodes objects */
-  unordered_multimap<string, TitlePrincipals> PeopleToEpisodeMap; /** @brief Map Person objects to a given Episode */
-  unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;    /** @brief Map Episode objects to a given Series */
-  unordered_multimap<string, string> PeopleNameToSeriesMap;       /** @brief Map Person objects' Name to a given Series */
+TitlePrincipals TVSeriesAPP::getPerson(const string& tconst) const{
+  return PersonMap.at(tconst);
+}
+
+TitleEpisode TVSeriesAPP::getEpisode(const string& tconst){
+  return EpisodesMap[tconst];
+}
+
+TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
+  return SeriesMap[episode.parentTconst];
+}
+
+
+
+//Pergunta 1:
+
+vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const{
+  vector<string> answer;
+  vector<TitleEpisode> help;
+
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+ /*
+  auto SeriesRange = EpisodeToSeriesMap.equal_range(seriesTconst);
+
+  for(auto& episode = SeriesRange.first; episode != SeriesRange.second; ++episode){
+    auto EpsRange = PeopleToEpisodeMap.equal_range(episode->second.tconst);
+
+    for(auto it = EpsRange.first; it != EpsRange.second; ++it){
+      /*
+      // Check if nconst exists in PersonMap
+      if (PersonMap.find(it->second.nconst) == PersonMap.end()){
+        continue;
+      }
+      *//*
+      string name = PersonMap.at(it->second.nconst).primaryName;
+      if(find(answer.begin(), answer.end(), name) == answer.end()){
+        answer.push_back(name);
+      }
+    }
+  }*/
+
+  auto it = PeopleNameToSeriesMap.equal_range(seriesTconst);
+
+  for(auto p = it.first; p != it.second; p++){
+    if(find(answer.begin(), answer.end(), p->second) == answer.end()){
+      answer.push_back(p->second);
+    }
+  }
+
+  std::sort(answer.begin(), answer.end());
+
+  return answer;
+}
+
+
+
+//PERGUNTA 2:
+
+string TVSeriesAPP::getMostSeriesGenre() const{
+  unordered_map<string, int> genreCount;
+
+  for (const auto& series : SeriesMap){
+    for (const auto& genre : series.second.genres){
+      genreCount[genre]++;
+    }
+  }
+
+  return max_element(genreCount.begin(), genreCount.end(), 
+    [](const auto& a, const auto& b){
+      if (a.second != b.second) return a.second < b.second;
+      else return a.first.size() > b.first.size();
+    })->first;
+}
+
+
+//PERGUNTA 3: 
+
+vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const{
+
+}
+
+
+
+//PERGUNTA 4
+
+vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const{
+  vector<string> answer;
+
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+
+  const auto epsRange = EpisodeToSeriesMap.equal_range(seriesTconst);
+  const auto pplNameRange = PeopleNameToSeriesMap.equal_range(seriesTconst);
+
+  for(auto personName = pplNameRange.first; personName != pplNameRange.second; personName++)
+  {
+    bool all = 1;
     
-public:
-  /* --- Constructor --- */
-  TVSeriesAPP();
+    for(auto episode = epsRange.first; episode != epsRange.second; episode++)
+    {
+      const auto pplRange = PeopleToEpisodeMap.equal_range(episode->second.tconst);
+
+      if(personName->first == episode->second.tconst){
+        all = 0;
+      }
+    }
+
+    if(all){answer.push_back(personName->second);}
+  }
+
+  std::sort(answer.begin(), answer.end());
+
+  return answer;
+}
+ 
+//PERGUNTA 5:
+
+int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres){
+
+}
+
+
+//PERGUNTA 6: 
+
+string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const{
+
+}
 
 
 
-  /* --- Destructor --- */
-  ~TVSeriesAPP();
 
 
 
-  /* --- Add Methods --- */
-
-  /** @brief add TtitleBasic to TVSeriesAPP */
-  void addTitleBasics(const TitleBasics& title);
-
-  /** @brief add TitleEpisode to TVSeriesAPP  */
-  void addTitleEpisodes(const TitleEpisode& episode);
-
-  /** @brief add TitlePrincipals to TVSeriesAPP */
-  void addTitlePrincipal(const TitlePrincipals& principal);
-
-  /** @brief add Person to a Series */
-  void addPersonToEpisode(const string& episodeTconst, const TitlePrincipals& person);
 
 
 
-  /* --- Get Methods --- */
-
-  /** @brief get TitleBasics given a tconst */
-  TitleBasics getSeries(const string& tconst) const;
-
-  /** @brief get TitlePrincipals given a tconst */
-  TitlePrincipals getPerson(const string& tconst) const;
-
-  /** @brief get TitleEpisodes given a tconst */
-  TitleEpisode getEpisode(const string& tconst);
-
-  /** @brief get Parent Series given an episode */
-  TitleBasics getParentSeries(const TitleEpisode& episode);
 
 
 
-  /* --- Answer Methods --- */
+
+
+/*Other Functions**/ 
+
+//Custom hash function for strings
+size_t customHash(const string& str) {
+  const int p = 31; // A prime number
+  const int m = 1e9 + 9; // A large prime number
+
+  size_t hash_value = 0;
+  size_t p_pow = 1;
   
-  //PERGUNTA 1
-  vector<string> getUniquePrincipals(const string& seriesTconst ) const;
+  // Hash calculation
+  for (char c : str) {
+    hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+    p_pow = (p_pow * p) % m;
+  }
+  return hash_value;
+}
 
-  //PERGUNTA 2
-  string getMostSeriesGenre() const;
+//Overloading the << operator for Series
+ostream& operator<<(ostream& os, const TitleBasics& series){
+  os << "Series details: " << endl;
+  os << "tconst: " << series.tconst << endl;
+  os << "titleType: " << series.titleType << endl;
+  os << "primaryTitle: " << series.primaryTitle << endl;
+  os << "originalTitle: " << series.originalTitle << endl;
+  os << "isAdult: " << (series.isAdult ? "Yes" : "No") << endl;
+  os << "startYear: " << series.startYear << endl;
+  os << "endYear: " << series.endYear << endl;
+  os << "runtimeMinutes: " << series.runtimeMinutes << endl;
+  os << "genres: ";
+  for(const auto& genre : series.genres){
+    os << genre << " ";
+  }
+  os << endl;
 
-  //PERGUNTA 3
-  vector<string> principalsWithMultipleCategories(const string& seriesTconst) const;
+  return os;
+}
 
-  //PERGUNTA 4
-  vector<string> principalsInAllEpisodes(const string& seriesTconst) const;
+//Overloading the << operator for Person
+ostream& operator<<(ostream& os, const TitlePrincipals& Person){
+  os << "Person details: " << endl;
+  os << "tconst: " << Person.tconst << endl;
+  os << "ordering: " << Person.ordering << endl;
+  os << "nconst: " << Person.nconst << endl;
+  os << "primaryName: " << Person.primaryName << endl;
+  os << "birthYear: " << Person.birthYear << endl;
+  os << "category: " << Person.category << endl;
+  os << "job: " << Person.job << endl;
+  for(const auto& character : Person.characters){
+    os << "character: " << character << endl;
+  }
 
-  //PERGUNTA 5
-  int principalInMultipleGenres(vector<string> vGenres);
+  return os;
+}
 
-  //PERGUNTA 6
-  string getPrincipalFromCharacter(const string& character) const;    
-};
+//Overloading the << operator for Episode
+ostream& operator<<(ostream& os, const TitleEpisode& episode){
+  os << "Episode details: " << endl;
+  os << "tconst: " << episode.tconst << endl;
+  os << "parentTconst: " << episode.parentTconst << endl;
+  os << "seasonNumber: " << episode.seasonNumber << endl;
+  os << "episodeNumber: " << episode.episodeNumber << endl;
 
-
-
-/** @brief Operator Overloading to display Series object */
-ostream& operator<<(ostream& os, const TitleBasics& series);
-
-/** @brief Operator Overloading to display Person object */
-ostream& operator<<(ostream& os, const TitlePrincipals& Person);
-
-/** @brief Operator Overloading to display Episode object */
-ostream& operator<<(ostream& os, const TitleEpisode& episode);
-
-#endif
+  return os;
+}
