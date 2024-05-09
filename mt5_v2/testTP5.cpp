@@ -48,7 +48,6 @@ int verifica_getUniquePrincipals5(TVSeriesAPP& app)
     
     return er;
 }
-
 int verifica_getUniquePrincipals(TVSeriesAPP& app)
 {
     int er = 0;
@@ -76,7 +75,6 @@ int verifica_getUniquePrincipals(TVSeriesAPP& app)
     return er;
 }
 
-
 int verifica_getMostSeriesGenre5(TVSeriesAPP& app)
 {
     int er = 0;
@@ -98,7 +96,6 @@ int verifica_getMostSeriesGenre5(TVSeriesAPP& app)
    
     return er;
 }
-
 int verifica_getMostSeriesGenre(TVSeriesAPP& app)
 {
     int er = 0;
@@ -120,7 +117,6 @@ int verifica_getMostSeriesGenre(TVSeriesAPP& app)
    
     return er;
 }
-
 
 int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
 {
@@ -160,8 +156,6 @@ int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
 
     return er;
 }
-
-
 int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
 {
     int er = 0;
@@ -200,10 +194,6 @@ int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
 
     return er;
 }
-
-
-
-
 
 int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
 {
@@ -250,9 +240,6 @@ int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
 
     return er;
 }
-
-
-
 int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
 {
    int er = 0;
@@ -299,8 +286,6 @@ int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
     return er;
 }
 
-
-
 int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
 {
    int er = 0;
@@ -341,8 +326,6 @@ int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
 
     return er;
 }
-
-
 int verifica_principalInMultipleGenres(TVSeriesAPP& app)
 {
    int er = 0;
@@ -383,7 +366,6 @@ int verifica_principalInMultipleGenres(TVSeriesAPP& app)
 
     return er;
 }
-
 
 int verifica_principalsInAllEpisodes5(TVSeriesAPP& app)
 {
@@ -434,7 +416,6 @@ int verifica_principalsInAllEpisodes5(TVSeriesAPP& app)
 
     return er;
 }
-
 int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
 {
    int er = 0;
@@ -484,6 +465,7 @@ int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
 
     return er;
 }
+
 
 // Function to parse TitleBasics from a TSV file
 int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
@@ -540,12 +522,6 @@ int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-
-
-
-
-
-
 // Function to parse TitleEpisode from a TSV file
 int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
  //   vector<TitleEpisode> episodes;
@@ -575,7 +551,7 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-
+// Function to parse TitlePrincipals from TSV file
 int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
     vector<TitlePrincipals> principals;
 
@@ -650,10 +626,8 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
 }
 
 
-
-
 int main() {
-     int errorCount = 0, error;
+    int errorCount = 0, error;
 
     cout << "INICIO DOS TESTES\n\n" << endl;
     cout << "Base de dados pequena (5 series) \n\n" << endl;
@@ -677,7 +651,7 @@ int main() {
     else
     {
         cout << "OK: verifica_getUniquePrincipals5 passou\n\n" << endl;
-    }  
+    }
 
 
 
@@ -767,7 +741,9 @@ int main() {
 
     clock_t beg, end;
     double time;
-    beg = clock();   
+    beg = clock();
+
+/*
     //PERGUNTA 1
       error = verifica_getUniquePrincipals(tvSeriesApp);
     if (error)
@@ -779,7 +755,7 @@ int main() {
     {
         cout << "OK: verifica_getUniquePrincipals passou\n\n" << endl;
     }  
-
+/**/
 
 
 
@@ -795,7 +771,7 @@ int main() {
         cout << "OK: verifica_getMostSeriesGenre passou\n\n" << endl;
     }  
 
- 
+/* 
    
    //PERGUNTA 3
       error = verifica_principalsWithMultipleCategories(tvSeriesApp);
@@ -847,7 +823,7 @@ int main() {
     }  
 
    
-
+*/
 
 
     end = clock();
