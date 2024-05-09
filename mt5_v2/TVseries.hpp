@@ -11,35 +11,35 @@
 
 using namespace std; 
 
-/** @brief Class to represent a TVSerie. */
+/** @brief Class to represent a TVSeries */
 class TitleBasics{
 public:
   /* ATTRIBUTES */
-  string tconst; /** @brief alphanumeric unique identifier of the title */
-  string titleType; /** @brief the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc) */
-  string primaryTitle; /** @brief the more popular title / the title used by the filmmakers on promotional materials at the point of release */
-  string originalTitle; /** @brief original title, in the original language */
-  bool isAdult; /** @brief 0: non-adult title; 1: adult title */
-  int startYear; /** @brief represents the release year of a title. In the case of TV Series, it is the series start year */
-  int endYear; /** @brief TV Series end year. ‘\N’ for all other title types */
-  int runtimeMinutes; /** @brief primary runtime of the title, in minutes */
-  vector<string> genres; /** @brief includes up to three genres associated with the title */
+  string tconst;          /** @brief alphanumeric unique identifier of the title */
+  string titleType;       /** @brief the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc) */
+  string primaryTitle;    /** @brief the more popular title / the title used by the filmmakers on promotional materials at the point of release */
+  string originalTitle;   /** @brief original title, in the original language */
+  bool isAdult;           /** @brief 0: non-adult title; 1: adult title */
+  int startYear;          /** @brief represents the release year of a title. In the case of TV Series, it is the series start year */
+  int endYear;            /** @brief TV Series end year. ‘\N’ for all other title types */
+  int runtimeMinutes;     /** @brief primary runtime of the title, in minutes */
+  vector<string> genres;  /** @brief includes up to three genres associated with the title */
 
   friend ostream& operator<<(ostream& os, const TitleBasics& series);
 };
 
-/** @brief Class to represent the a Crew or aCast associated to a episode */
+/** @brief Class to represent the Crew or a Cast associated to an episode */
 class TitlePrincipals{
 public:
   /* ATTRIBUTES */
-  string tconst;  /** @brief alphanumeric unique identifier of the episode */ 
-  int ordering; /** @brief a number to uniquely identify rows for a given titleId */
-  string nconst; /** @brief alphanumeric unique identifier of the name/person */
-  string primaryName; /** @brief name by which the person is most often credited */
-  int birthYear; /** @brief  in YYYY format */
-  string category; /** @brief  the category of job that person was in */
-  string job; /** @brief the specific job title if applicable, else '\N' */
-  vector<string> characters; /** @brief the name of the character played if applicable, else '\N' */
+  string tconst;              /** @brief alphanumeric unique identifier of the episode */ 
+  int ordering;               /** @brief a number to uniquely identify rows for a given titleId */
+  string nconst;              /** @brief alphanumeric unique identifier of the name/person */
+  string primaryName;         /** @brief name by which the person is most often credited */
+  int birthYear;              /** @brief  in YYYY format */
+  string category;            /** @brief  the category of job that person was in */
+  string job;                 /** @brief the specific job title if applicable, else '\N' */
+  vector<string> characters;  /** @brief the name of the character played if applicable, else '\N' */
   
   friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 };
@@ -48,10 +48,10 @@ public:
 class TitleEpisode{
 public:
   /* ATTRIBUTES */
-  string tconst; /** @brief alphanumeric identifier of episode */
-  string parentTconst; /** @brief alphanumeric identifier of the parent TV Series */
-  int seasonNumber; /** @brief season number the episode belongs to */
-  int episodeNumber; /** @brief episode number of the tconst in the TV series */
+  string tconst;        /** @brief alphanumeric identifier of episode */
+  string parentTconst;  /** @brief alphanumeric identifier of the parent TV Series */
+  int seasonNumber;     /** @brief season number the episode belongs to */
+  int episodeNumber;    /** @brief episode number of the tconst in the TV series */
   
   friend ostream& operator<<(ostream& os, const TitleEpisode& episode);
 };
@@ -62,10 +62,12 @@ public:
 /** @brief Class to represent a APP TVSeries Management */
 class TVSeriesAPP{
 private:
-  unordered_map<string, TitleBasics> SeriesMap; /** @brief Map to store the Series objects */
-  unordered_map<string, TitlePrincipals> PersonMap; /** @brief Map to store the Person objects */
-  unordered_map<string, TitleEpisode> EpisodesMap; /** @brief Map to store the Episodes objects */
+  unordered_map<string, TitleBasics> SeriesMap;                   /** @brief Map to store the Series objects */
+  unordered_map<string, TitlePrincipals> PersonMap;               /** @brief Map to store the Person objects */
+  unordered_map<string, TitleEpisode> EpisodesMap;                /** @brief Map to store the Episodes objects */
   unordered_multimap<string, TitlePrincipals> PeopleToEpisodeMap; /** @brief Map Person objects to a given Episode */
+  unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;    /** @brief Map Episode objects to a given Series */
+  unordered_multimap<string, string> PeopleNameToSeriesMap;       /** @brief Map Person objects' Name to a given Series */
     
 public:
   /* --- Constructor --- */
@@ -105,7 +107,7 @@ public:
   /** @brief get TitleEpisodes given a tconst */
   TitleEpisode getEpisode(const string& tconst);
 
-  /** @brief get Parent Series given a episode */
+  /** @brief get Parent Series given an episode */
   TitleBasics getParentSeries(const TitleEpisode& episode);
 
 
