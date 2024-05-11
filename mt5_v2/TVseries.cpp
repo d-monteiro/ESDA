@@ -69,7 +69,8 @@ TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
 
 //Pergunta 1:
 
-vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const{
+vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
+{
   vector<string> answer;
   vector<TitleEpisode> help;
 
@@ -114,7 +115,8 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 
 //PERGUNTA 2:
 
-string TVSeriesAPP::getMostSeriesGenre() const{
+string TVSeriesAPP::getMostSeriesGenre() const
+{
   unordered_map<string, int> genreCount;
 
   for (const auto& series : SeriesMap){
@@ -133,57 +135,80 @@ string TVSeriesAPP::getMostSeriesGenre() const{
 
 //PERGUNTA 3: 
 
-vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const{
-
+vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
+{
+  vector<string> answer;
+  return answer;
 }
 
 
 
 //PERGUNTA 4
 
-vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const{
-  vector<string> answer;
+vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const
+{
+  vector<string> answer;  //create answer vector
 
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
-    return answer;
-  }
-
-  const auto epsRange = EpisodeToSeriesMap.equal_range(seriesTconst);
-  const auto pplNameRange = PeopleNameToSeriesMap.equal_range(seriesTconst);
-
-  for(auto personName = pplNameRange.first; personName != pplNameRange.second; personName++)
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end())  //check if seriesTconst exists in SeriesMap
   {
-    bool all = 1;
-    
-    for(auto episode = epsRange.first; episode != epsRange.second; episode++)
-    {
-      const auto pplRange = PeopleToEpisodeMap.equal_range(episode->second.tconst);
-
-      if(personName->first == episode->second.tconst){
-        all = 0;
-      }
-    }
-
-    if(all){answer.push_back(personName->second);}
+    return answer;  //return empty vector if it doesn't
   }
 
-  std::sort(answer.begin(), answer.end());
+  const auto epsRange = EpisodeToSeriesMap.equal_range(seriesTconst); //get all episodes of the series
+  const auto pplNames = getUniquePrincipals(seriesTconst);            //get all people of the series
 
-  return answer;
+  for(auto p = 0; p < pplNames.size(); p++) //iterate through all people of the series
+  {
+    bool all = 1; //flag to check if person is in all episodes
+    
+    for(auto episode = epsRange.first; episode != epsRange.second; episode++) //iterate through all episodes of the series
+    {
+      bool found = 0; //flag to check if person is in the episode
+
+      const auto pplRange = PeopleToEpisodeMap.equal_range(episode->second.tconst); //get all people of the episode
+
+      for(auto person = pplRange.first; person != pplRange.second; person++)  //iterate through all people of the episode
+      {//check if person is in the episode
+        if(pplNames[p] == person->second.primaryName) //search person in the episode
+        {//if person is in the episode:
+          found = 1;  //set flag to true
+          break;      //end search in the episode
+        }
+      }//end of search in the episode
+
+      if(!found)  //if person is not in the episode:
+      {
+        all = 0;  //set flag to false
+        break;    //end search in all episodes
+      }
+    }//end of search in all episodes
+
+    if(all) //if person is in all episodes:
+    {
+      answer.push_back(pplNames[p]);  //add person to answer vector
+    }
+  }
+
+  std::sort(answer.begin(), answer.end());  //sort answer vector
+
+  return answer;  //return answer vector
 }
  
 //PERGUNTA 5:
 
-int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres){
-
+int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
+{
+  int count = 0;
+  return count;
 }
 
 
 //PERGUNTA 6: 
 
-string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const{
-
+string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
+{
+  string answer;
+  return answer;
 }
 
 
