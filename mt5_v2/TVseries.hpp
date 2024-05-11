@@ -58,24 +58,82 @@ public:
 
 
 
-
 /** @brief Class to represent a APP TVSeries Management */
 class TVSeriesAPP{
 private:
-  unordered_map<string, TitleBasics> SeriesMap;                   /** @brief Map to store the Series objects */
-  unordered_map<string, TitlePrincipals> PersonMap;               /** @brief Map to store the Person objects */
-  unordered_map<string, TitleEpisode> EpisodesMap;                /** @brief Map to store the Episodes objects */
+//Titles
 
-  unordered_multimap<string, TitlePrincipals> PeopleToEpisodeMap; /** @brief Map Person objects to a given Episode */
-  unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;    /** @brief Map Episode objects to a given Series */
-  unordered_multimap<string, string> PeopleNameToSeriesMap;       /** @brief Map Person objects' primaryName to a given Series */
-  /** @warning !!!IT ALLOWS MULTIPLE INSTANCES OF THE SAME NAME!!!*/
-  
+  /**
+   * @brief Map to store the Series objects
+   * @param string Series's tconst
+   * @param TitleBasics Series object
+  */
+  unordered_map<string, TitleBasics> SeriesMap;
+
+  /**
+   * @brief Map to store the Person objects
+   * @param string Person's nconst
+   * @param TitlePrincipals Person object
+  */
+  unordered_map<string, TitlePrincipals> PersonMap;
+
+  /**
+   * @brief Map to store the Episodes objects
+   * @param string Episode's tconst
+   * @param TitleEpisode Episode object
+  */
+  unordered_map<string, TitleEpisode> EpisodesMap;
+
+
+//ToEpisodes
+
+  /**
+   * @brief Map Person objects to a given Episode
+   * @param string Episode's tconst
+   * @param TitlePrincipals Person object
+  */
+  unordered_multimap<string, TitlePrincipals> PeopleToEpisodeMap;
+
+
+//ToSeries
+
+  /**
+   * @brief Map Episode objects to a given Series
+   * @param string Series's tconst
+   * @param TitleEpisode Episode object
+  */
+  unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;
+
+  /**
+   * @brief Map Person objects' primaryName to a given Series
+   * @param string1 Series's tconst
+   * @param string2 Person's primaryName
+   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME!
+  */
+  unordered_multimap<string, string> PeopleNameToSeriesMap;
+
+
+//ToPeople
+  /**
+   * @brief Map Series objects to a given Person (nconst)
+   * @param string Person's nconst
+   * @param TitleBasics Series object
+  */
+  unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
+
+
+//ToGenres
+
+  /**
+   * @brief Map Series objects to a given Genre
+   * @param string Genre
+   * @param TitleBasics Series object
+  */
+  unordered_multimap<string, TitleBasics> SeriesToGenresMap;
+
 public:
   /* --- Constructor --- */
   TVSeriesAPP();
-
-
 
   /* --- Destructor --- */
   ~TVSeriesAPP();
@@ -92,9 +150,6 @@ public:
 
   /** @brief add TitlePrincipals to TVSeriesAPP */
   void addTitlePrincipal(const TitlePrincipals& principal);
-
-  /** @brief add Person to a Series */
-  void addPersonToEpisode(const string& episodeTconst, const TitlePrincipals& person);
 
 
 
