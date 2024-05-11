@@ -65,10 +65,12 @@ private:
   unordered_map<string, TitleBasics> SeriesMap;                   /** @brief Map to store the Series objects */
   unordered_map<string, TitlePrincipals> PersonMap;               /** @brief Map to store the Person objects */
   unordered_map<string, TitleEpisode> EpisodesMap;                /** @brief Map to store the Episodes objects */
+
   unordered_multimap<string, TitlePrincipals> PeopleToEpisodeMap; /** @brief Map Person objects to a given Episode */
   unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;    /** @brief Map Episode objects to a given Series */
-  unordered_multimap<string, string> PeopleNameToSeriesMap;       /** @brief Map Person objects' Name to a given Series */
-    
+  unordered_multimap<string, string> PeopleNameToSeriesMap;       /** @brief Map Person objects' primaryName to a given Series */
+  /** @warning !!!IT ALLOWS MULTIPLE INSTANCES OF THE SAME NAME!!!*/
+  
 public:
   /* --- Constructor --- */
   TVSeriesAPP();
