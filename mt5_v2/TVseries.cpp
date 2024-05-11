@@ -6,47 +6,77 @@
 
 using namespace std;
 
-TVSeriesAPP::TVSeriesAPP(){
-  SeriesMap = unordered_map<string, TitleBasics>();
-  PersonMap = unordered_map<string, TitlePrincipals>();
-  EpisodesMap = unordered_map<string, TitleEpisode>();
-  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>();
-  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();
+
+TVSeriesAPP::TVSeriesAPP()
+{
+//Titles
+  SeriesMap = unordered_map<string, TitleBasics>();     //from TitleBasics
+  PersonMap = unordered_map<string, TitlePrincipals>(); //from TitlePrincipals
+  EpisodesMap = unordered_map<string, TitleEpisode>();  //from TitleEpisode
+//ToEpisode
+  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
+//ToSeries
+  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();  //from TitleEpisode
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();     //from TitlePrincipals
+//ToPeople
+  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();  //from TitlePrincipals
+//ToGenres
+  SeriesToGenresMap = unordered_multimap<string, TitleBasics>();  //from TitleBasics
 }
-   
-TVSeriesAPP::~TVSeriesAPP(){
+/*
+  PeopleToGenresMap = unordered_multimap<string, string>();
+
+  SeriesToEpisodesMap = unordered_multimap<string, string>();
+*/
+TVSeriesAPP::~TVSeriesAPP()
+{
+//Titles
   SeriesMap.clear();
   PersonMap.clear();
   EpisodesMap.clear();
+//ToEpisode
   PeopleToEpisodeMap.clear();
+//ToSeries
   EpisodeToSeriesMap.clear();
   PeopleNameToSeriesMap.clear();
+//ToPeople
+  SeriesToPeopleMap.clear();
+//ToGenres
+  SeriesToGenresMap.clear();
 }
 
 
-void TVSeriesAPP::addTitleBasics(const TitleBasics& title){
-  SeriesMap[title.tconst] = title;
+void TVSeriesAPP::addTitleBasics(const TitleBasics& title)  //a TitleBasic is a Series
+{
+//Title
+  SeriesMap[title.tconst] = title;  //add title to SeriesMap
+//ToGenres
+  for(size_t g = 0; g < title.genres.size(); g++)  //iterate through all genres of the title
+  {
+    SeriesToGenresMap.insert({title.genres[g], title});  //add title to SeriesToGenresMap
+  }
 }
 
-void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode){
-  EpisodesMap[episode.tconst] = episode;
-  EpisodeToSeriesMap.insert({episode.parentTconst, episode});
+void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) //a TitleEpisode is an Episode
+{
+//Title
+  EpisodesMap[episode.tconst] = episode;  //add episode to EpisodesMap
+//ToSeries
+  EpisodeToSeriesMap.insert({episode.parentTconst, episode}); //add episode to EpisodeToSeriesMap
 }
 
-
-void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal){
-  PersonMap[principal.nconst] = principal;
-  PeopleToEpisodeMap.insert({principal.tconst, principal});
-
-  auto episode = EpisodesMap.find(principal.tconst);
-  PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});
+void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitlePrincipal is a Person
+{
+//Title
+  PersonMap[principal.nconst] = principal;  //add principal to PersonMap
+//ToEpisode
+  PeopleToEpisodeMap.insert({principal.tconst, principal}); //add principal to PeopleToEpisodeMap
+//ToSeries
+  auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
+  PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
+//ToPeople
+  SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
 }
-
-void TVSeriesAPP::addPersonToEpisode(const string& episodeTconst, const TitlePrincipals& person){
-  PeopleToEpisodeMap.insert({person.tconst, person});
-}
-
 
 
 TitleBasics TVSeriesAPP::getSeries(const string& tconst) const{
@@ -67,12 +97,12 @@ TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
 
 
 
-//Pergunta 1:
+//PERGUNTA 1:
 
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
 {
   vector<string> answer;
-  vector<TitleEpisode> help;
+  //vector<TitleEpisode> help;
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
@@ -98,9 +128,9 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
     }
   }*/
 
-  auto it = PeopleNameToSeriesMap.equal_range(seriesTconst);
+  auto pplNames = PeopleNameToSeriesMap.equal_range(seriesTconst);
 
-  for(auto p = it.first; p != it.second; p++){
+  for(auto p = pplNames.first; p != pplNames.second; p++){
     if(find(answer.begin(), answer.end(), p->second) == answer.end()){
       answer.push_back(p->second);
     }
@@ -133,7 +163,7 @@ string TVSeriesAPP::getMostSeriesGenre() const
 }
 
 
-//PERGUNTA 3: 
+//PERGUNTA 3:
 
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
@@ -143,7 +173,7 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
 
 
 
-//PERGUNTA 4
+//PERGUNTA 4:
 
 vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const
 {
@@ -198,12 +228,40 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
-  int count = 0;
+  if(vGenres.empty()) //check if vGenres is empty
+  {
+    return 0; //return 0 if it is
+  }
+
+  int count = 0;  //initialize count
+
+  for(auto person: PersonMap) //iterate through all people
+  {
+    bool found = 0; //flag to check if person is InMultipleGenres
+
+    auto seriesFromPerson = SeriesToPeopleMap.equal_range(person.first); //get all series of the person
+/*                        /!\ UNDER CONSTRUCTION /!\
+    for(auto series =)
+    for(auto genre: vGenres)  //iterate through all genres
+    {
+      if(find(person.second.genres.begin(), person.second.genres.end(), genre) != person.second.genres.end())
+      {
+        found = 1;
+        break;
+      }
+    }
+*/
+    if(found)
+    {
+      count++;
+    }
+  }
+
   return count;
 }
 
 
-//PERGUNTA 6: 
+//PERGUNTA 6:
 
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
@@ -213,23 +271,12 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*Other Functions**/ 
+/*Other Functions*/ 
 
 //Custom hash function for strings
 size_t customHash(const string& str) {
-  const int p = 31; // A prime number
-  const int m = 1e9 + 9; // A large prime number
+  const int p = 31;       // A prime number
+  const int m = 1e9 + 9;  // A large prime number
 
   size_t hash_value = 0;
   size_t p_pow = 1;
