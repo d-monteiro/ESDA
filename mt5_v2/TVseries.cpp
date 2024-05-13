@@ -13,15 +13,16 @@ TVSeriesAPP::TVSeriesAPP()
   SeriesMap = unordered_map<string, TitleBasics>();     //from TitleBasics
   PersonMap = unordered_map<string, TitlePrincipals>(); //from TitlePrincipals
   EpisodesMap = unordered_map<string, TitleEpisode>();  //from TitleEpisode
+
 //ToEpisode
   PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
 //ToSeries
-  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();  //from TitleEpisode
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();     //from TitlePrincipals
+  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();    //from TitleEpisode
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();       //from TitlePrincipals
 //ToPeople
-  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();  //from TitlePrincipals
+  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();      //from TitlePrincipals
 //ToGenres
-  SeriesToGenresMap = unordered_multimap<string, TitleBasics>();  //from TitleBasics
+  SeriesToGenresMap = unordered_multimap<string, TitleBasics>();      //from TitleBasics
 }
 /*
   PeopleToGenresMap = unordered_multimap<string, string>();
@@ -101,42 +102,22 @@ TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
 
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
 {
-  vector<string> answer;
-  //vector<TitleEpisode> help;
+  vector<string> answer;  // Create answer vector
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
     return answer;
   }
- /*
-  auto SeriesRange = EpisodeToSeriesMap.equal_range(seriesTconst);
 
-  for(auto& episode = SeriesRange.first; episode != SeriesRange.second; ++episode){
-    auto EpsRange = PeopleToEpisodeMap.equal_range(episode->second.tconst);
+  auto people = PeopleNameToSeriesMap.equal_range(seriesTconst);
 
-    for(auto it = EpsRange.first; it != EpsRange.second; ++it){
-      /*
-      // Check if nconst exists in PersonMap
-      if (PersonMap.find(it->second.nconst) == PersonMap.end()){
-        continue;
-      }
-      *//*
-      string name = PersonMap.at(it->second.nconst).primaryName;
-      if(find(answer.begin(), answer.end(), name) == answer.end()){
-        answer.push_back(name);
-      }
-    }
-  }*/
-
-  auto pplNames = PeopleNameToSeriesMap.equal_range(seriesTconst);
-
-  for(auto p = pplNames.first; p != pplNames.second; p++){
-    if(find(answer.begin(), answer.end(), p->second) == answer.end()){
-      answer.push_back(p->second);
+  for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
+    if(find(answer.begin(), answer.end(), p->second) == answer.end()){ // If person is not in the answer vector
+      answer.push_back(p->second); // Add person
     }
   }
 
-  std::sort(answer.begin(), answer.end());
+  sort(answer.begin(), answer.end()); // Sort answer vector
 
   return answer;
 }
@@ -147,19 +128,19 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 
 string TVSeriesAPP::getMostSeriesGenre() const
 {
-  unordered_map<string, int> genreCount;
+  unordered_map<string, int> genreCount; // Create auxiliary map to count genres
 
-  for (const auto& series : SeriesMap){
-    for (const auto& genre : series.second.genres){
-      genreCount[genre]++;
+  for(const auto& series : SeriesMap){ // Iterate through all series
+    for(const auto& genre : series.second.genres){ // And through all genres of each series
+      genreCount[genre]++; // Increment genre count
     }
   }
 
-  return max_element(genreCount.begin(), genreCount.end(), 
-    [](const auto& a, const auto& b){
-      if (a.second != b.second) return a.second < b.second;
-      else return a.first.size() > b.first.size();
-    })->first;
+  return max_element(genreCount.begin(), genreCount.end(),     // Use max_element to find the genre with the highest count
+    [](const auto& a, const auto& b){                          // Lambda function to compare genres
+      if (a.second != b.second) return a.second < b.second;    // If the count is different, return the genre with the highest count
+      else return a.first.size() > b.first.size();             // If the count is the same, return the genre with the highest size
+    })->first;                                                 // Return the genre
 }
 
 
@@ -167,7 +148,27 @@ string TVSeriesAPP::getMostSeriesGenre() const
 
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  vector<string> answer;
+  vector<string> answer; // Create answer vector
+  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
+
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+
+  //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
+  //desenvolvido nos episódios em que entraram de determinada série de ID 
+  //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
+  //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
+  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
+
+  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
+
+  for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
+
+  }
+
   return answer;
 }
 
@@ -219,7 +220,7 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
     }
   }
 
-  std::sort(answer.begin(), answer.end());  //sort answer vector
+  sort(answer.begin(), answer.end());  //sort answer vector
 
   return answer;  //return answer vector
 }
@@ -235,7 +236,7 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
   int count = 0;  //initialize count
 
-  for(auto person: PersonMap) //iterate through all people
+  for(auto person : PersonMap) //iterate through all people
   {
     bool found = 0; //flag to check if person is InMultipleGenres
 

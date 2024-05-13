@@ -743,7 +743,7 @@ int main() {
     double time;
     beg = clock();
 
-/*
+
     //PERGUNTA 1
       error = verifica_getUniquePrincipals(tvSeriesApp);
     if (error)
@@ -771,7 +771,7 @@ int main() {
         cout << "OK: verifica_getMostSeriesGenre passou\n\n" << endl;
     }  
 
-/* 
+
    
    //PERGUNTA 3
       error = verifica_principalsWithMultipleCategories(tvSeriesApp);
@@ -823,7 +823,6 @@ int main() {
     }  
 
    
-*/
 
 
     end = clock();
