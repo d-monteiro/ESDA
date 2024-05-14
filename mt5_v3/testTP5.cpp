@@ -126,7 +126,7 @@ int verifica_getMostSeriesGenre(TVSeriesAPP& app)
 }
 
 
-//#3
+//#6
 
 int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
 {
@@ -207,7 +207,7 @@ int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
 }
 
 
-//#4
+//#3
 
 int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
 {
@@ -387,7 +387,7 @@ int verifica_principalInMultipleGenres(TVSeriesAPP& app)
 }
 
 
-//#6
+//#4
 
 int verifica_principalsInAllEpisodes5(TVSeriesAPP& app)
 {
@@ -817,7 +817,7 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes passou\n\n" << endl;
     } 
 
-*/
+/*
     //PERGUNTA 5
        error = verifica_principalInMultipleGenres(tvSeriesApp);
     if (error)
@@ -829,8 +829,7 @@ int main() {
     {
         cout << "OK: verifica_principalInMultipleGenres passou\n\n" << endl;
     }
-
-/*
+*/
     //PERGUNTA 6
      error = verifica_getPrincipalFromCharacter(tvSeriesApp);
     if (error)
@@ -842,7 +841,7 @@ int main() {
     {
         cout << "OK: verifica_getPrincipalFromCharacter passou\n\n" << endl;
     }
-*/
+//
 
 
     end = clock();
