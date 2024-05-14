@@ -249,7 +249,7 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
     auto seriesFromPerson = SeriesToPeopleMap.equal_range(person.first); //get all series of the person
 
-    for(size_t g = 0; g < vGenres.size(); g++)  //iterate through all genres
+    /*for(size_t g = 0; g < vGenres.size(); g++)  //iterate through all genres
     {
       auto genSeries = SeriesToGenresMap.equal_range(vGenres[g]); //get all series of the genre g
 
@@ -263,14 +263,28 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
             break;      //stop search throughout
           }
         }//end iteration through series of genre
-      }//end iteration through series with person
+      }//end iteration through series with person*/
 
-      if(found) //if person is in the genre:
+    for(auto series = seriesFromPerson.first; series != seriesFromPerson.second; series++)  //iterate through all series with that person
+    {
+      for(size_t g = 0; g < vGenres.size(); g++)  //iterate through all genres
+      {
+        for(size_t gSeries = 0; gSeries < series->second.genres.size(); gSeries++) //iterate through all genres of the series
+        {
+          if(series->second.genres[gSeries] == vGenres[g])  //search if the series is in the genre
+          {//if it is:
+            found = 1;  //set flag to true
+            break;      //stop search throughout
+          }
+        }//end iteration through genres of series
+      }//end iteration through genres
+
+      if(found) //if person is in the genre:~~~~~~~~~~~~~~~~~~~~~~~~~~if person's series is in the genre:
       {
         count++;  //increment count
         break;    //stop search troughout genres
       }
-    }//end iteration through genre
+    }//end iteration through genre~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~series with person
   }//end iteration through person
 
   return count; //return count
