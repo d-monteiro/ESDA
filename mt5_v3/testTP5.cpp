@@ -817,7 +817,7 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes passou\n\n" << endl;
     } 
 
-/*
+*/
     //PERGUNTA 5
        error = verifica_principalInMultipleGenres(tvSeriesApp);
     if (error)
