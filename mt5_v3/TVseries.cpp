@@ -7,8 +7,7 @@
 using namespace std;
 
 
-
-/**  Constructor */
+/* --- Constructor --- */
 
 TVSeriesAPP::TVSeriesAPP()
 {
@@ -29,8 +28,7 @@ TVSeriesAPP::TVSeriesAPP()
 }
 
 
-
-/**  Destructor */
+/* --- Destructor --- */
 
 TVSeriesAPP::~TVSeriesAPP()
 {
@@ -38,6 +36,7 @@ TVSeriesAPP::~TVSeriesAPP()
   SeriesMap.clear();
   PersonMap.clear();
   EpisodesMap.clear();
+
 //ToEpisode
   PeopleToEpisodeMap.clear();
 //ToSeries
@@ -50,13 +49,13 @@ TVSeriesAPP::~TVSeriesAPP()
 }
 
 
-
-/**  Add Methods */
+/* --- Add Methods --- */
 
 void TVSeriesAPP::addTitleBasics(const TitleBasics& title)  //a TitleBasic is a Series
 {
+//Title
   SeriesMap[title.tconst] = title;  //add title to SeriesMap
-
+//ToGenres
   for(size_t g = 0; g < title.genres.size(); g++)  //iterate through all genres of the title
   {
     SeriesToGenresMap.insert({title.genres[g], title});  //add title to SeriesToGenresMap
@@ -65,24 +64,27 @@ void TVSeriesAPP::addTitleBasics(const TitleBasics& title)  //a TitleBasic is a 
 
 void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) //a TitleEpisode is an Episode
 {
+//Title
   EpisodesMap[episode.tconst] = episode;  //add episode to EpisodesMap
+//ToSeries
   EpisodeToSeriesMap.insert({episode.parentTconst, episode}); //add episode to EpisodeToSeriesMap
 }
 
 void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitlePrincipal is a Person
 {
+//Title
   PersonMap[principal.nconst] = principal;  //add principal to PersonMap
+//ToEpisode
   PeopleToEpisodeMap.insert({principal.tconst, principal}); //add principal to PeopleToEpisodeMap
-
+//ToSeries
   auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
-
   PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
+//ToPeople
   SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
 }
 
 
-
-/** Get Methods */
+/* --- Get Methods --- */
 
 TitleBasics TVSeriesAPP::getSeries(const string& tconst) const{
   return SeriesMap.at(tconst);
@@ -102,17 +104,19 @@ TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
 
 
 
-//PERGUNTA 1:
+/* --- Answer Methods --- */
 
+
+//PERGUNTA 1:
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
 {
-  vector<string> answer;  // Create answer vector
+  vector<string> answer; // Create answer vector
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
     return answer;
   }
-
+  
   auto people = PeopleNameToSeriesMap.equal_range(seriesTconst);
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
@@ -129,7 +133,6 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 
 
 //PERGUNTA 2:
-
 string TVSeriesAPP::getMostSeriesGenre() const
 {
   unordered_map<string, int> genreCount; // Create auxiliary map to count genres
@@ -150,11 +153,10 @@ string TVSeriesAPP::getMostSeriesGenre() const
 
 
 //PERGUNTA 3:
-
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
   vector<string> answer; // Create answer vector
-  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
+/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
@@ -173,14 +175,13 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
 
   }
-
+*/
   return answer;
 }
 
 
 
 //PERGUNTA 4:
-
 vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const
 {
   vector<string> answer;  //create answer vector
@@ -225,7 +226,7 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
     }
   }
 
-  sort(answer.begin(), answer.end());  //sort answer vector
+  sort(answer.begin(), answer.end()); //sort answer vector
 
   return answer;  //return answer vector
 }
@@ -233,7 +234,6 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 
 
 //PERGUNTA 5:
-
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
   if(vGenres.empty()) //check if vGenres is empty
@@ -243,35 +243,42 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
   int count = 0;  //initialize count
 
-  for(auto person : PersonMap) //iterate through all people
+  for(auto person : PersonMap)  //iterate through all people
   {
     bool found = 0; //flag to check if person is InMultipleGenres
 
     auto seriesFromPerson = SeriesToPeopleMap.equal_range(person.first); //get all series of the person
-/*                        /!\ UNDER CONSTRUCTION /!\
-    for(auto series =)
-    for(auto genre: vGenres)  //iterate through all genres
-    {
-      if(find(person.second.genres.begin(), person.second.genres.end(), genre) != person.second.genres.end())
-      {
-        found = 1;
-        break;
-      }
-    }
-*/
-    if(found)
-    {
-      count++;
-    }
-  }
 
-  return count;
+    for(size_t g = 0; g < vGenres.size(); g++)  //iterate through all genres
+    {
+      auto genSeries = SeriesToGenresMap.equal_range(vGenres[g]); //get all series of the genre g
+
+      for(auto series = seriesFromPerson.first; series != seriesFromPerson.second; series++)  //iterate through all series with that person 
+      {
+        for(auto gSeries = genSeries.first; gSeries != genSeries.second; gSeries++) //iterate through all series of the genre
+        {
+          if(gSeries->second.tconst == series->second.tconst) //search if the series is in the genre
+          {//if it is:
+            found = 1;  //set flag to true
+            break;      //stop search throughout
+          }
+        }//end iteration through series of genre
+      }//end iteration through series with person
+
+      if(found) //if person is in the genre:
+      {
+        count++;  //increment count
+        break;    //stop search troughout genres
+      }
+    }//end iteration through genre
+  }//end iteration through person
+
+  return count; //return count
 }
 
 
 
 //PERGUNTA 6:
-
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
   string answer;
@@ -280,7 +287,8 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 
 
 
-/** Other Functions */ 
+
+/* --- Other Functions --- */
 
 //Overloading the << operator for Series
 ostream& operator<<(ostream& os, const TitleBasics& series){
