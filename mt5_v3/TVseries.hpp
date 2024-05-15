@@ -122,6 +122,13 @@ private:
   */
   unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
 
+  /**
+   * @brief Map character to a given Person (nconst)
+   * @param string character
+   * @param unordered_map of person (nconst) and int (number of times played)
+  */
+  unordered_map<string, unordered_map<string, int>> CharacterToPeopleMap;
+
 
 //ToGenres
 

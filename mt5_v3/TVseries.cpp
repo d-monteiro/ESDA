@@ -18,14 +18,15 @@ TVSeriesAPP::TVSeriesAPP()
   EpisodesMap = unordered_map<string, TitleEpisode>();  //from TitleEpisode
 
 //ToEpisode
-  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
+  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>();           //from TitlePrincipals
 //ToSeries
-  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();    //from TitleEpisode
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();       //from TitlePrincipals
+  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();              //from TitleEpisode
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();                 //from TitlePrincipals
 //ToPeople
-  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();      //from TitlePrincipals
+  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();                //from TitlePrincipals
+  CharacterToPeopleMap = unordered_map<string, unordered_map<string, int>>();   //from Characters
 //ToGenres
-  SeriesToGenresMap = unordered_multimap<string, TitleBasics>();      //from TitleBasics
+  SeriesToGenresMap = unordered_multimap<string, TitleBasics>();                //from TitleBasics
 }
 
 
@@ -45,6 +46,7 @@ TVSeriesAPP::~TVSeriesAPP()
   PeopleNameToSeriesMap.clear();
 //ToPeople
   SeriesToPeopleMap.clear();
+  CharacterToPeopleMap.clear();
 //ToGenres
   SeriesToGenresMap.clear();
 }
@@ -78,6 +80,20 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
 
   PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
   SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
+
+  // Iterate over each character the principal has played
+  for (const auto& character : principal.characters){
+    // If the character is not yet in the map, add it
+    if (CharacterToPeopleMap.find(character) == CharacterToPeopleMap.end()){
+      CharacterToPeopleMap[character] = unordered_map<string, int>();
+    }
+    // If the principal has not yet been associated with this character, add them
+    if (CharacterToPeopleMap[character].find(principal.primaryName) == CharacterToPeopleMap[character].end()){
+      CharacterToPeopleMap[character][principal.primaryName] = 0;
+    }
+    // Increment the count of how many times the principal has played this character
+    CharacterToPeopleMap[character][principal.primaryName]++;
+  }
 }
 
 
@@ -166,7 +182,6 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
   //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
   //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
 
-  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
 
   auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
 
@@ -274,8 +289,46 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
+
+  // Print the map for debugging
+  for (const auto& characterPair : CharacterToPeopleMap) {
+    cout << "Character: " << characterPair.first << endl;
+    for (const auto& personPair : characterPair.second) {
+      cout << "  Person: " << personPair.first << ", Count: " << personPair.second << endl;
+    }
+  }
+  cout<<endl<<endl;
+
   string answer;
-  return answer;
+
+  if(character.empty()) return answer;  // Check for faulty parameters
+
+for (const auto& pair : CharacterToPeopleMap) {
+  cout << "Key: " << pair.first << '\n';
+}
+cout << "Searching for: " << "\"Raul\""<< '\n';
+
+auto it = CharacterToPeopleMap.find("\"Raul\"");
+if (it != CharacterToPeopleMap.end()) {
+    return max_element(it->second.begin(), it->second.end(), 
+      [](const auto& a, const auto& b) return a.second < b.second;
+    );
+}
+/*
+// Initialize maximum count and corresponding actor
+int maxCount = 0;
+string maxActorId;
+for (auto it = people.first; it != people.second; ++it) {
+  const auto& actorCountPair = *it;
+  // If this actor has appeared more times, or the same number of times but is lexicographically smaller
+  if (actorCountPair.second > maxCount || 
+      (actorCountPair.second == maxCount && actorCountPair.first < maxActorId)) {
+    maxActorId = actorCountPair.first;
+    maxCount = actorCountPair.second;
+  }
+}
+
+*/
 }
 
 
