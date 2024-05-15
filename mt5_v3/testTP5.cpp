@@ -6,6 +6,8 @@
 #include "TVseries.hpp"
 
 
+//#1
+
 int verifica_getUniquePrincipals5(TVSeriesAPP& app)
 {
     int er = 0;
@@ -77,6 +79,8 @@ int verifica_getUniquePrincipals(TVSeriesAPP& app)
 }
 
 
+//#2
+
 int verifica_getMostSeriesGenre5(TVSeriesAPP& app)
 {
     int er = 0;
@@ -121,6 +125,8 @@ int verifica_getMostSeriesGenre(TVSeriesAPP& app)
     return er;
 }
 
+
+//#6
 
 int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
 {
@@ -200,6 +206,8 @@ int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
     return er;
 }
 
+
+//#3
 
 int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
 {
@@ -294,6 +302,8 @@ int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
 }
 
 
+//#5
+
 int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
 {
    int er = 0;
@@ -376,6 +386,8 @@ int verifica_principalInMultipleGenres(TVSeriesAPP& app)
     return er;
 }
 
+
+//#4
 
 int verifica_principalsInAllEpisodes5(TVSeriesAPP& app)
 {
@@ -477,6 +489,9 @@ int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
     return er;
 }
 
+
+//Parsing functions
+
 // Function to parse TitleBasics from a TSV file
 int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
  //   vector<TitleBasics> titles;
@@ -532,7 +547,6 @@ int parseTitleBasics(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-
 // Function to parse TitleEpisode from a TSV file
 int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
  //   vector<TitleEpisode> episodes;
@@ -562,7 +576,7 @@ int parseTitleEpisodes(const string& filename,TVSeriesAPP& Tree) {
     return 0;
 }
 
-// Function to parse TitlePrincipals from a TSV file
+// Function to parse TitlePrincipals from TSV file
 int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
     vector<TitlePrincipals> principals;
 
@@ -638,7 +652,7 @@ int parseTitlePrincipals(const string& filename,TVSeriesAPP& Tree) {
 
 
 int main() {
-     int errorCount = 0, error;
+    int errorCount = 0, error;
 
     cout << "INICIO DOS TESTES\n\n" << endl;
     cout << "Base de dados pequena (5 series) \n\n" << endl;
@@ -646,10 +660,10 @@ int main() {
 
     TVSeriesAPP tvSeriesApp5;
     int res = parseTitleBasics("series5.basics.tsv",tvSeriesApp5);
-    
+
     res = parseTitleEpisodes("series5.episode.tsv", tvSeriesApp5);
     res = parseTitlePrincipals("series5.principals.names.tsv",tvSeriesApp5);
-    
+
 
 
     //PERGUNTA 1
@@ -663,8 +677,6 @@ int main() {
     {
         cout << "OK: verifica_getUniquePrincipals5 passou\n\n" << endl;
     }  
-
-
 
 
     //PERGUNTA 2
@@ -691,10 +703,9 @@ int main() {
     {
         cout << "OK: verifica_principalsWithMultipleCategories5 passou\n\n" << endl;
     }  
-    
-  
 
-   //Pergunta 4
+
+   //PERGUNTA 4
          error = verifica_principalsInAllEpisodes5(tvSeriesApp5);
     if (error)
     {
@@ -706,6 +717,7 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes5 passou\n\n" << endl;
     } 
 
+
    //PERGUNTA 5
        error = verifica_principalInMultipleGenres5(tvSeriesApp5);
     if (error)
@@ -716,11 +728,10 @@ int main() {
     else
     {
         cout << "OK: verifica_principalInMultipleGenres5 passou\n\n" << endl;
-    } 
+    }
 
-    
-   
-   //PERGUNTA 6
+
+    //PERGUNTA 6
      error = verifica_getPrincipalFromCharacter5(tvSeriesApp5);
     if (error)
     {
@@ -736,23 +747,25 @@ int main() {
     
 
 //inicio do comentário
-    /*
+    
     cout << "Base de dados grande \n" << endl;
 
     TVSeriesAPP tvSeriesApp;
     res = parseTitleBasics("series1000.basics.tsv",tvSeriesApp);
-    
-    
+
+
     res = parseTitleEpisodes("series1000.episode.tsv", tvSeriesApp);
-    
+
 
     res = parseTitlePrincipals("series1000.principals.names.tsv",tvSeriesApp);
-    
-   
+
+
 
     clock_t beg, end;
     double time;
-    beg = clock();   
+    beg = clock();
+
+/*
     //PERGUNTA 1
       error = verifica_getUniquePrincipals(tvSeriesApp);
     if (error)
@@ -765,9 +778,7 @@ int main() {
         cout << "OK: verifica_getUniquePrincipals passou\n\n" << endl;
     }  
 
-
-
-
+/*
     //PERGUNTA 2
         error = verifica_getMostSeriesGenre(tvSeriesApp);
     if (error)
@@ -780,8 +791,7 @@ int main() {
         cout << "OK: verifica_getMostSeriesGenre passou\n\n" << endl;
     }  
 
- 
-   
+/*
    //PERGUNTA 3
       error = verifica_principalsWithMultipleCategories(tvSeriesApp);
     if (error)
@@ -792,10 +802,10 @@ int main() {
     else
     {
         cout << "OK: verifica_principalsWithMultipleCategories passou\n\n" << endl;
-    }  
-  
+    }
 
-    //Pergunta 4
+/*
+        //PERGUNTA 4
          error = verifica_principalsInAllEpisodes(tvSeriesApp);
     if (error)
     {
@@ -807,6 +817,7 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes passou\n\n" << endl;
     } 
 
+/*
     //PERGUNTA 5
        error = verifica_principalInMultipleGenres(tvSeriesApp);
     if (error)
@@ -817,8 +828,8 @@ int main() {
     else
     {
         cout << "OK: verifica_principalInMultipleGenres passou\n\n" << endl;
-    } 
-
+    }
+*/
     //PERGUNTA 6
      error = verifica_getPrincipalFromCharacter(tvSeriesApp);
     if (error)
@@ -829,18 +840,16 @@ int main() {
     else
     {
         cout << "OK: verifica_getPrincipalFromCharacter passou\n\n" << endl;
-    }  
-
-   
-
+    }
+//
 
 
     end = clock();
-time = (double)(end - beg) / CLOCKS_PER_SEC;
-cout << "Tempo para responder às 6 questões: "<< time << endl;
+    time = (double)(end - beg) / CLOCKS_PER_SEC;
+    cout << "Tempo para responder às 6 questões: "<< time << endl;
 
 // fim do comentário
-*/
+
 if (errorCount == 0)
         cout << "FIM DOS TESTES: Todos os testes passaram\n" << endl;
     else

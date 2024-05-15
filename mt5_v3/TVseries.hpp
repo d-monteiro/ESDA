@@ -11,47 +11,47 @@
 
 using namespace std; 
 
-/** @brief Class to represent a TVSerie. */
-class TitleBasics {
+/** @brief Class to represent a TVSeries */
+class TitleBasics{
 public:
   /* ATTRIBUTES */
-  string tconst; /** @brief alphanumeric unique identifier of the title */
-  string titleType; /** @brief the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc) */
-  string primaryTitle; /** @brief the more popular title / the title used by the filmmakers on promotional materials at the point of release */
-  string originalTitle; /** @brief original title, in the original language */
-  bool isAdult; /** @brief 0: non-adult title; 1: adult title */
-  int startYear; /** @brief represents the release year of a title. In the case of TV Series, it is the series start year */
-  int endYear; /** @brief TV Series end year. ‘\N’ for all other title types */
-  int runtimeMinutes; /** @brief primary runtime of the title, in minutes */
-  vector<string> genres; /** @brief includes up to three genres associated with the title */
+  string tconst;          /** @brief alphanumeric unique identifier of the title */
+  string titleType;       /** @brief the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc) */
+  string primaryTitle;    /** @brief the more popular title / the title used by the filmmakers on promotional materials at the point of release */
+  string originalTitle;   /** @brief original title, in the original language */
+  bool isAdult;           /** @brief 0: non-adult title; 1: adult title */
+  int startYear;          /** @brief represents the release year of a title. In the case of TV Series, it is the series start year */
+  int endYear;            /** @brief TV Series end year. ‘\N’ for all other title types */
+  int runtimeMinutes;     /** @brief primary runtime of the title, in minutes */
+  vector<string> genres;  /** @brief includes up to three genres associated with the title */
 
   friend ostream& operator<<(ostream& os, const TitleBasics& series);
 };
 
-/** @brief Class to represent the a Crew or aCast associated to a episode */
-class TitlePrincipals {
+/** @brief Class to represent the Crew or a Cast associated to an episode */
+class TitlePrincipals{
 public:
   /* ATTRIBUTES */
-  string tconst;  /** @brief alphanumeric unique identifier of the episode */ 
-  int ordering; /** @brief a number to uniquely identify rows for a given titleId */
-  string nconst; /** @brief alphanumeric unique identifier of the name/person */
-  string primaryName; /** @brief name by which the person is most often credited */
-  int birthYear; /** @brief  in YYYY format */
-  string category; /** @brief  the category of job that person was in */
-  string job; /** @brief the specific job title if applicable, else '\N' */
-  vector<string> characters; /** @brief the name of the character played if applicable, else '\N' */
+  string tconst;              /** @brief alphanumeric unique identifier of the episode */ 
+  int ordering;               /** @brief a number to uniquely identify rows for a given titleId */
+  string nconst;              /** @brief alphanumeric unique identifier of the name/person */
+  string primaryName;         /** @brief name by which the person is most often credited */
+  int birthYear;              /** @brief  in YYYY format */
+  string category;            /** @brief  the category of job that person was in */
+  string job;                 /** @brief the specific job title if applicable, else '\N' */
+  vector<string> characters;  /** @brief the name of the character played if applicable, else '\N' */
   
   friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 };
 
 /** @brief Class to represent each episode  */
-class TitleEpisode {
+class TitleEpisode{
 public:
   /* ATTRIBUTES */
-  string tconst; /** @brief alphanumeric identifier of episode */
-  string parentTconst; /** @brief alphanumeric identifier of the parent TV Series */
-  int seasonNumber; /** @brief season number the episode belongs to */
-  int episodeNumber; /** @brief episode number of the tconst in the TV series */
+  string tconst;        /** @brief alphanumeric identifier of episode */
+  string parentTconst;  /** @brief alphanumeric identifier of the parent TV Series */
+  int seasonNumber;     /** @brief season number the episode belongs to */
+  int episodeNumber;    /** @brief episode number of the tconst in the TV series */
   
   friend ostream& operator<<(ostream& os, const TitleEpisode& episode);
 };
@@ -108,7 +108,7 @@ private:
    * @brief Map Person objects' primaryName to a given Series
    * @param string1 Series's tconst
    * @param string2 Person's primaryName
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME!
+   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME FOR A SINGLE SERIES!
   */
   unordered_multimap<string, string> PeopleNameToSeriesMap;
 
@@ -119,33 +119,27 @@ private:
    * @brief Map Series objects to a given Person (nconst)
    * @param string Person's nconst
    * @param TitleBasics Series object
+   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME SERIES FOR A SINGLE PERSON!
   */
   unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
 
-  /**
-   * @brief Map character to a given Person (nconst)
-   * @param string character
-   * @param unordered_map of person (nconst) and int (number of times played)
-  */
-  unordered_map<string, unordered_map<string, int>> CharacterToPeopleMap;
-
-
-//ToGenres
+//Characters
 
   /**
-   * @brief Map Series objects to a given Genre
-   * @param string Genre
-   * @param TitleBasics Series object
+   * @brief Map Person objects to their respective characters
+   * @param string Character name
+   * @param TitlePrincipals Person object
   */
-  unordered_multimap<string, TitleBasics> SeriesToGenresMap;
+  unordered_multimap<string, TitlePrincipals> PersonToCharacterMap;
+
 
 public:
+
   /* --- Constructor --- */
   TVSeriesAPP();
 
   /* --- Destructor --- */
   ~TVSeriesAPP();
-
 
 
   /* --- Add Methods --- */
@@ -158,7 +152,6 @@ public:
 
   /** @brief add TitlePrincipals to TVSeriesAPP */
   void addTitlePrincipal(const TitlePrincipals& principal);
-
 
 
   /* --- Get Methods --- */
@@ -174,7 +167,6 @@ public:
 
   /** @brief get Parent Series given an episode */
   TitleBasics getParentSeries(const TitleEpisode& episode);
-
 
 
   /* --- Answer Methods --- */
