@@ -105,18 +105,10 @@ private:
   unordered_multimap<string, TitleEpisode> EpisodeToSeriesMap;
 
   /**
-   * @brief Map Person objects' primaryName to a given Series
-   * @param string1 Series's tconst
-   * @param string2 Person's primaryName
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME FOR A SINGLE SERIES!
-  */
-  unordered_multimap<string, string> PeopleNameToSeriesMap;
-
-  /**
-   * @brief Map Person objects' primaryName to a given Series
-   * @param string1 Series's tconst
-   * @param string2 Person's primaryName
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME FOR A SINGLE SERIES!
+   * @brief Map Person objects to a given Series
+   * @param string Series's tconst
+   * @param TitlePrincipals Person object
+   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME PERSON FOR A SINGLE SERIES!
   */
   unordered_multimap<string, TitlePrincipals> PeopleToSeriesMap;
 
@@ -124,21 +116,20 @@ private:
 //ToPeople
 
   /**
-   * @brief Map Series objects to a given Person (nconst)
+   * @brief Map Series objects to a given Person
    * @param string Person's nconst
    * @param TitleBasics Series object
    * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME SERIES FOR A SINGLE PERSON!
   */
   unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
 
-//Characters
-
   /**
-   * @brief Map Person objects to their respective characters
-   * @param string Character name
-   * @param TitlePrincipals Person object
+   * @brief Map Characters attribute to a given Person
+   * @param string1 Person's nconst
+   * @param string2 Character
+   * @note Might contain multiple instances of the same character for a single person
   */
-  unordered_multimap<string, TitlePrincipals> PersonToCharacterMap;
+  unordered_multimap<string, string> CharacterToPeopleMap;
 
 
 public:
