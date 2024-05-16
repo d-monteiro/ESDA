@@ -112,14 +112,6 @@ private:
   */
   unordered_multimap<string, string> PeopleNameToSeriesMap;
 
-  /**
-   * @brief Map Person objects' primaryName to a given Series
-   * @param string1 Series's tconst
-   * @param string2 Person's primaryName
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME FOR A SINGLE SERIES!
-  */
-  unordered_multimap<string, TitlePrincipals> PeopleToSeriesMap;
-
 
 //ToPeople
 
@@ -131,14 +123,12 @@ private:
   */
   unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
 
-//Characters
-
   /**
    * @brief Map Person objects to their respective characters
-   * @param string Character name
-   * @param TitlePrincipals Person object
+   * @param string1 Person's primaryName
+   * @param string2 Character
   */
-  unordered_multimap<string, TitlePrincipals> PersonToCharacterMap;
+  unordered_multimap<string, string> CharacterToPeopleNameMap;
 
 
 public:

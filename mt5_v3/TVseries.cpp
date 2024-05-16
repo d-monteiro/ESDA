@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <functional>
 #include <stack>
-#include <set>
 
 using namespace std;
 
@@ -18,16 +17,13 @@ TVSeriesAPP::TVSeriesAPP()
   EpisodesMap = unordered_map<string, TitleEpisode>();  //from TitleEpisode
 
 //ToEpisode
-  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>();   //from TitlePrincipals
+  PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
 //ToSeries
-  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();      //from TitleEpisode
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();         //from TitlePrincipals.PrimaryName
-  PeopleToSeriesMap = unordered_multimap<string, TitlePrincipals>();    //from TitlePrincipals
-
+  EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();    //from TitleEpisode
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();       //from TitlePrincipals
 //ToPeople
-  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();        //from TitlePrincipals
-//ToCharacter
-  PersonToCharacterMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
+  SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();      //from TitlePrincipals
+  CharacterToPeopleNameMap = unordered_multimap<string, string>();    //from TitlePrincipals
 }
 
 
@@ -45,11 +41,9 @@ TVSeriesAPP::~TVSeriesAPP()
 //ToSeries
   EpisodeToSeriesMap.clear();
   PeopleNameToSeriesMap.clear();
-  PeopleToSeriesMap.clear();
 //ToPeople
   SeriesToPeopleMap.clear();
-//ToCharacter
-  PersonToCharacterMap.clear();
+  CharacterToPeopleNameMap.clear();
 }
 
 
@@ -78,13 +72,11 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
 //ToSeries
   auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
   PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
-  PeopleToSeriesMap.insert({episode->second.parentTconst, principal});  //add principal to PeopleToSeriesMap
 //ToPeople
   SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
-//ToCharacter
   for(auto character : principal.characters)  //iterate through all characters of principal
   {
-    PersonToCharacterMap.insert({character, principal});  //add principal to PersonToCharacterMap
+    CharacterToPeopleNameMap.insert({principal.primaryName, character});  //add principal to PersonToCharacterMap
   }
 }
 
@@ -165,36 +157,27 @@ string TVSeriesAPP::getMostSeriesGenre() const
 //PERGUNTA 3:
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
-  //desenvolvido nos episódios em que entraram de determinada série de ID 
-  //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
-  //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
-
   vector<string> answer; // Create answer vector
-  unordered_map<string, set<string>> CatCount; // Create auxiliary map to count Categories
+/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
     return answer;
   }
-  auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
+
+  //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
+  //desenvolvido nos episódios em que entraram de determinada série de ID 
+  //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
+  //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
+  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
+
+  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-    CatCount[p->second.primaryName].insert(p->second.category); // Add category to the set of categories for this person
+
   }
-
-  for(auto& person : CatCount){ // Iterate over all people
-    if(person.second.size() > 1){ // If person has more than one category
-      answer.push_back(person.first); // Add person to the answer
-    }
-  }
-
-  sort(answer.begin(), answer.end()); // Sort the answer alphabetically
-
-  for(int i = 0; i < answer.size(); i++){
-    cout << answer[i] << endl;
-  }
-
+*/
   return answer;
 }
 
@@ -213,7 +196,7 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
   const auto epsRange = EpisodeToSeriesMap.equal_range(seriesTconst); //get all episodes of the series
   const auto pplNames = getUniquePrincipals(seriesTconst);            //get all people of the series
 
-  for(auto p = 0; p < pplNames.size(); p++) //iterate through all people of the series
+  for(size_t p = 0; p < pplNames.size(); p++) //iterate through all people of the series
   {
     bool all = 1; //flag to check if person is in all episodes
     
@@ -297,32 +280,38 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 //PERGUNTA 6:
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
-  if(character.empty())  //check if character is empty
+  if(character.empty()) //check if character is empty
   {
     return "";  //return empty string if it is
   }
+  
+  unordered_map<string, int> personRoleCount; //create auxiliary map to count roles
 
-  string charName = "\"" + character + "\""; //add quotes to character
-
-  unordered_map<string, int> roleCount; //create auxiliary map to count roles
-
-  const auto charRange = PersonToCharacterMap.equal_range(charName); //get all people assigned to the character
-
-  for(auto p = charRange.first; p != charRange.second; p++) //iterate through all people assigned to the character
+  for(const auto person : PersonMap)  //iterate through all people
   {
-    roleCount[p->second.primaryName]++; //increment roleCount for each person
+    personRoleCount[person.second.primaryName] = 0; //initialize personRoleCount for each person with 0
+
+    const auto characterRange = CharacterToPeopleNameMap.equal_range(person.second.primaryName);  //get all characters of the person
+
+    for(auto personCharacter = characterRange.first; personCharacter != characterRange.second; personCharacter++) //iterate through all characters of the person (if any)
+    {
+      if(personCharacter->second.find(character) != string::npos) //check if the character is in the person's characters
+      {
+        personRoleCount[personCharacter->first]++;  //increment personRoleCount for that person  
+      }
+    }
   }
 
-  if(roleCount.empty()) //check if roleCount is empty
+  if(personRoleCount.empty()) //check if roleCount is empty
   {
     return ""; //return empty string if it is
   }
 
-  return max_element(roleCount.begin(), roleCount.end(),  //use max_element to find the person with the highest count
-    [](const auto& a, const auto& b){                       //lambda function to compare people by count
-      if(a.second != b.second) return a.second < b.second;    //if the count is different, return the person with the highest count
-      else return a.first < b.first;                          //if the count is the same, return the person with the lowest name
-    })->first;                                            //return the person's primaryName
+  return max_element(personRoleCount.begin(), personRoleCount.end(),  //use max_element to find the person with the highest count
+    [](const auto& a, const auto& b){                               //lambda function to compare people by count
+      if(a.second != b.second) return a.second < b.second;        //if the count is different, return the person with the highest count
+      else return a.first > b.first;                              //if the count is the same, return the person with the lowest name
+    })->first;                                                  //return the person's primaryName
 }
 
 
