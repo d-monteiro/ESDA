@@ -20,10 +20,10 @@ TVSeriesAPP::TVSeriesAPP()
   PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>(); //from TitlePrincipals
 //ToSeries
   EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();    //from TitleEpisode
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();       //from TitlePrincipals
+  PeopleToSeriesMap = unordered_multimap<string, TitlePrincipals>();  //from TitlePrincipals
 //ToPeople
   SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();      //from TitlePrincipals
-  CharacterToPeopleNameMap = unordered_multimap<string, string>();    //from TitlePrincipals
+  CharacterToPeopleMap = unordered_multimap<string, string>();        //from TitlePrincipals
 }
 
 
@@ -40,10 +40,10 @@ TVSeriesAPP::~TVSeriesAPP()
   PeopleToEpisodeMap.clear();
 //ToSeries
   EpisodeToSeriesMap.clear();
-  PeopleNameToSeriesMap.clear();
+  PeopleToSeriesMap.clear();
 //ToPeople
   SeriesToPeopleMap.clear();
-  CharacterToPeopleNameMap.clear();
+  CharacterToPeopleMap.clear();
 }
 
 
@@ -71,12 +71,12 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
   PeopleToEpisodeMap.insert({principal.tconst, principal}); //add principal to PeopleToEpisodeMap
 //ToSeries
   auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
-  PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
+  PeopleToSeriesMap.insert({episode->second.parentTconst, principal});  //add principal to PeopleToSeriesMap
 //ToPeople
   SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
   for(auto character : principal.characters)  //iterate through all characters of principal
   {
-    CharacterToPeopleNameMap.insert({principal.primaryName, character});  //add principal to PersonToCharacterMap
+    CharacterToPeopleMap.insert({principal.nconst, character}); //add principal to CharacterToPeopleMap
   }
 }
 
@@ -87,8 +87,8 @@ TitleBasics TVSeriesAPP::getSeries(const string& tconst) const{
   return SeriesMap.at(tconst);
 }
 
-TitlePrincipals TVSeriesAPP::getPerson(const string& tconst) const{
-  return PersonMap.at(tconst);
+TitlePrincipals TVSeriesAPP::getPerson(const string& nconst) const{
+  return PersonMap.at(nconst);
 }
 
 TitleEpisode TVSeriesAPP::getEpisode(const string& tconst){
@@ -114,11 +114,11 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
     return answer;
   }
   
-  auto people = PeopleNameToSeriesMap.equal_range(seriesTconst);
+  auto people = PeopleToSeriesMap.equal_range(seriesTconst);
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-    if(find(answer.begin(), answer.end(), p->second) == answer.end()){ // If person is not in the answer vector
-      answer.push_back(p->second); // Add person
+    if(find(answer.begin(), answer.end(), p->second.primaryName) == answer.end()){ // If person is not in the answer vector
+      answer.push_back(p->second.primaryName); // Add person
     }
   }
 
@@ -284,20 +284,20 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
   {
     return "";  //return empty string if it is
   }
-  
+
   unordered_map<string, int> personRoleCount; //create auxiliary map to count roles
 
   for(const auto person : PersonMap)  //iterate through all people
   {
     personRoleCount[person.second.primaryName] = 0; //initialize personRoleCount for each person with 0
 
-    const auto characterRange = CharacterToPeopleNameMap.equal_range(person.second.primaryName);  //get all characters of the person
+    const auto characterRange = CharacterToPeopleMap.equal_range(person.first); //get all characters of the person
 
     for(auto personCharacter = characterRange.first; personCharacter != characterRange.second; personCharacter++) //iterate through all characters of the person (if any)
     {
       if(personCharacter->second.find(character) != string::npos) //check if the character is in the person's characters
       {
-        personRoleCount[personCharacter->first]++;  //increment personRoleCount for that person  
+        personRoleCount[person.second.primaryName]++;  //increment personRoleCount for that person  
       }
     }
   }
