@@ -158,26 +158,24 @@ string TVSeriesAPP::getMostSeriesGenre() const
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
   vector<string> answer; // Create answer vector
-/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
+  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
 
   // Check if seriesTconst exists in SeriesMap
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
     return answer;
   }
 
+
   //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
   //desenvolvido nos episódios em que entraram de determinada série de ID 
   //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
   //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
 
-  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
-
-  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
-
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-
+    CatCount[p->second.primaryName].insert(p->second.category); // Add category to the set of categories for this person
+    cout << p->second.primaryName << " - " << p->second.category << endl;
   }
-*/
+
   return answer;
 }
 
