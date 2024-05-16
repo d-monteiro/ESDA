@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <stack>
+#include <set>
 
 using namespace std;
 
@@ -20,7 +21,9 @@ TVSeriesAPP::TVSeriesAPP()
   PeopleToEpisodeMap = unordered_multimap<string, TitlePrincipals>();   //from TitlePrincipals
 //ToSeries
   EpisodeToSeriesMap = unordered_multimap<string, TitleEpisode>();      //from TitleEpisode
-  PeopleNameToSeriesMap = unordered_multimap<string, string>();         //from TitlePrincipals
+  PeopleNameToSeriesMap = unordered_multimap<string, string>();         //from TitlePrincipals.PrimaryName
+  PeopleToSeriesMap = unordered_multimap<string, TitlePrincipals>();    //from TitlePrincipals
+
 //ToPeople
   SeriesToPeopleMap = unordered_multimap<string, TitleBasics>();        //from TitlePrincipals
 //ToCharacter
@@ -42,6 +45,7 @@ TVSeriesAPP::~TVSeriesAPP()
 //ToSeries
   EpisodeToSeriesMap.clear();
   PeopleNameToSeriesMap.clear();
+  PeopleToSeriesMap.clear();
 //ToPeople
   SeriesToPeopleMap.clear();
 //ToCharacter
@@ -74,6 +78,7 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
 //ToSeries
   auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
   PeopleNameToSeriesMap.insert({episode->second.parentTconst, principal.primaryName});  //add principal's primaryName to PeopleNameToSeriesMap
+  PeopleToSeriesMap.insert({episode->second.parentTconst, principal});  //add principal to PeopleToSeriesMap
 //ToPeople
   SeriesToPeopleMap.insert({principal.nconst, getParentSeries(episode->second)});  //add principal to SeriesToPeopleMap
 //ToCharacter
@@ -160,26 +165,36 @@ string TVSeriesAPP::getMostSeriesGenre() const
 //PERGUNTA 3:
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  vector<string> answer; // Create answer vector
-/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
-
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
-    return answer;
-  }
-
   //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
   //desenvolvido nos episódios em que entraram de determinada série de ID 
   //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
   //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
 
+  vector<string> answer; // Create answer vector
+  unordered_map<string, set<string>> CatCount; // Create auxiliary map to count Categories
 
-  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+  auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-
+    CatCount[p->second.primaryName].insert(p->second.category); // Add category to the set of categories for this person
   }
-*/
+
+  for(auto& person : CatCount){ // Iterate over all people
+    if(person.second.size() > 1){ // If person has more than one category
+      answer.push_back(person.first); // Add person to the answer
+    }
+  }
+
+  sort(answer.begin(), answer.end()); // Sort the answer alphabetically
+
+  for(int i = 0; i < answer.size(); i++){
+    cout << answer[i] << endl;
+  }
+
   return answer;
 }
 
