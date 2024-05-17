@@ -791,7 +791,7 @@ int main() {
         cout << "OK: verifica_getMostSeriesGenre passou\n\n" << endl;
     }  
 
-/*
+//
     //PERGUNTA 3
         error = verifica_principalsWithMultipleCategories(tvSeriesApp);
     if (error)
@@ -804,7 +804,7 @@ int main() {
         cout << "OK: verifica_principalsWithMultipleCategories passou\n\n" << endl;
     }
 
-*/
+//
     //PERGUNTA 4
         error = verifica_principalsInAllEpisodes(tvSeriesApp);
     if (error)

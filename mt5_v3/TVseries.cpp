@@ -157,27 +157,32 @@ string TVSeriesAPP::getMostSeriesGenre() const
 //PERGUNTA 3:
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  vector<string> answer; // Create answer vector
-/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
-
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
-    return answer;
-  }
-
   //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
   //desenvolvido nos episódios em que entraram de determinada série de ID 
   //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
   //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
 
-  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
+  vector<string> answer; // Create answer vector
+  unordered_map<string, set<string>> CatCount; // Create auxiliary map to count Categories
 
-  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+  auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-
+    CatCount[p->second.nconst].insert(p->second.category); // Add category to the set of categories for this person
   }
-*/
+
+  for(auto& person : CatCount){ // Iterate over all people
+    if(person.second.size() > 1){ // If person has more than one category
+      answer.push_back(getPerson(person.first).primaryName); // Add person to the answer
+    }
+  }
+
+  sort(answer.begin(), answer.end()); // Sort the answer alphabetically
+
   return answer;
 }
 
@@ -245,8 +250,8 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
   int count = 0;  //initialize count
 
-  auto vGen = vGenres;
-  sort(vGen.begin(), vGen.end());
+  //auto vGen = vGenres;
+  sort(vGenres.begin(), vGenres.end());
 
   for(auto person : PersonMap)  //iterate through all people
   {
@@ -259,7 +264,7 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
       auto seriesGen = series->second.genres;
       sort(seriesGen.begin(), seriesGen.end());
 
-      if(includes(seriesGen.begin(), seriesGen.end(), vGen.begin(), vGen.end()))  //check if the genres of series correspond to vGenres
+      if(includes(seriesGen.begin(), seriesGen.end(), vGenres.begin(), vGenres.end()))  //check if the genres of series correspond to vGenres
       {//if it does:
         found = 1;  //set flag to true
         break;      //stop search throughout
@@ -289,7 +294,7 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 
   for(const auto person : PersonMap)  //iterate through all people
   {
-    personRoleCount[person.second.primaryName] = 0; //initialize personRoleCount for each person with 0
+    personRoleCount[person.first] = 0;  //initialize personRoleCount for each person with 0
 
     const auto characterRange = CharacterToPeopleMap.equal_range(person.first); //get all characters of the person
 
@@ -297,7 +302,7 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
     {
       if(personCharacter->second.find(character) != string::npos) //check if the character is in the person's characters
       {
-        personRoleCount[person.second.primaryName]++;  //increment personRoleCount for that person  
+        personRoleCount[person.first]++;  //increment personRoleCount for that person  
       }
     }
   }
@@ -307,11 +312,13 @@ string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
     return ""; //return empty string if it is
   }
 
-  return max_element(personRoleCount.begin(), personRoleCount.end(),  //use max_element to find the person with the highest count
-    [](const auto& a, const auto& b){                               //lambda function to compare people by count
-      if(a.second != b.second) return a.second < b.second;        //if the count is different, return the person with the highest count
-      else return a.first > b.first;                              //if the count is the same, return the person with the lowest name
-    })->first;                                                  //return the person's primaryName
+  auto answer = max_element(personRoleCount.begin(), personRoleCount.end(),  //use max_element to find the person with the highest count
+    [this](const auto& a, const auto& b){                                       //lambda function to compare people by count
+      if(a.second != b.second) return a.second < b.second;                          //if the count is different, return the person with the highest count
+      else return getPerson(a.first).primaryName > getPerson(b.first).primaryName;  //if the count is the same, return the person with the lowest name
+    })->first;                                                                //return the person's primaryName
+
+  return getPerson(answer).primaryName; //return the person's primaryName
 }
 
 
