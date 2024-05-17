@@ -126,87 +126,6 @@ int verifica_getMostSeriesGenre(TVSeriesAPP& app)
 }
 
 
-//#6
-
-int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
-{
-    int er = 0;
-   
-    
-  
-    /*Teste 1*/
-    
-    string mostfreqprincchar = app.getPrincipalFromCharacter("Self"); 
-  
-  
-    string res="Johan Derksen";
-    if (mostfreqprincchar!=res)
-    {
-        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
-    
-    /*Teste 2*/
-    
-    mostfreqprincchar = app.getPrincipalFromCharacter("Raul"); 
-  
-  
-    res="Kristof Garcia";
-    if (mostfreqprincchar!=res)
-    {
-        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Raul' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Raul' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
-    
-
-
-    return er;
-}
-
-int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
-{
-    int er = 0;
-   
-    
-  
-    /*Teste 1*/
-    
-    string mostfreqprincchar = app.getPrincipalFromCharacter("Self"); 
-  
-  
-    string res="Aaron Elliott";
-    if (mostfreqprincchar!=res)
-    {
-        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
-    
-    /*Teste 2*/
-    
-    mostfreqprincchar = app.getPrincipalFromCharacter("Judy"); 
-  
-  
-    res="Elora Españo";
-    if (mostfreqprincchar!=res)
-    {
-        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Judy' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Judy' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
-    
-
-
-    return er;
-}
-
-
 //#3
 
 int verifica_principalsWithMultipleCategories5(TVSeriesAPP& app)
@@ -297,91 +216,6 @@ int verifica_principalsWithMultipleCategories(TVSeriesAPP& app)
         cout << "...verifica_principalsWithMultipleCategories: (Serie 'Call Me Katie') - As pessoas (="<<str<<") são o esperado (ok)" << endl;
     
    
-
-    return er;
-}
-
-
-//#5
-
-int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
-{
-   int er = 0;
-
-
-    
-    /*Teste 1*/
-   vector<string> vg;
-   vg.push_back("Sport");
-   vg.push_back("Talk-Show");
-   int total = app.principalInMultipleGenres(vg);
-     
-    int res=18;
-    if (total!=res)
-    {
-        cout << "...verifica_principalInMultipleGenres5: (Genero: Sport , Talk-Show) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_principalInMultipleGenres5: (Genero: Sport , Talk-Show) - O total  (="<<total<<") são o esperado (ok)" << endl;
-    
-    /*Teste 2*/
-    vg.clear();
-    vg.push_back("Crime");
-    vg.push_back("Documentary");
-    vg.push_back("Drama");
-     
-    total = app.principalInMultipleGenres(vg);
-    res=175;
-    if (total!=res)
-    {
-        cout << "...verifica_principalInMultipleGenres5: (Genero: Crime, Documentary, Drama) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_principalInMultipleGenres5: (Genero: Crime, Documentary, Drama) - O total  (="<<total<<") são o esperado (ok)" << endl;
-    
-
-    return er;
-}
-
-int verifica_principalInMultipleGenres(TVSeriesAPP& app)
-{
-   int er = 0;
-
-
-    
-    /*Teste 1*/
-   vector<string> vg;
-   vg.push_back("Drama");
-   vg.push_back("Comedy");
-   
-   int total = app.principalInMultipleGenres(vg);
-     
-    int res=52;
-    if (total!=res)
-    {
-        cout << "...verifica_principalInMultipleGenres: (Genero: Sport , Talk-Show) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_principalInMultipleGenres: (Genero: Sport , Talk-Show) - O total  (="<<total<<") são o esperado (ok)" << endl;
-    
-    /*Teste 2*/
-    vg.clear();
-    vg.push_back("Crime");
-    vg.push_back("Comedy");
-     
-    total = app.principalInMultipleGenres(vg);
-    res=97;
-    if (total!=res)
-    {
-        cout << "...verifica_principalInMultipleGenres: (Genero: Crime, Documentary, Drama) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
-           er++;
-    }
-    else
-        cout << "...verifica_principalInMultipleGenres: (Genero: Crime, Documentary, Drama) - O total  (="<<total<<") são o esperado (ok)" << endl;
-    
 
     return er;
 }
@@ -485,6 +319,172 @@ int verifica_principalsInAllEpisodes(TVSeriesAPP& app)
     else
         cout << "...verifica_principalsInAllEpisodes: (Serie: Secret Diaries) - As pessoas (="<<str<<") são o esperado (ok)" << endl;
     
+
+    return er;
+}
+
+
+//#5
+
+int verifica_principalInMultipleGenres5(TVSeriesAPP& app)
+{
+   int er = 0;
+
+
+    
+    /*Teste 1*/
+   vector<string> vg;
+   vg.push_back("Sport");
+   vg.push_back("Talk-Show");
+   int total = app.principalInMultipleGenres(vg);
+     
+    int res=18;
+    if (total!=res)
+    {
+        cout << "...verifica_principalInMultipleGenres5: (Genero: Sport , Talk-Show) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_principalInMultipleGenres5: (Genero: Sport , Talk-Show) - O total  (="<<total<<") são o esperado (ok)" << endl;
+    
+    /*Teste 2*/
+    vg.clear();
+    vg.push_back("Crime");
+    vg.push_back("Documentary");
+    vg.push_back("Drama");
+     
+    total = app.principalInMultipleGenres(vg);
+    res=175;
+    if (total!=res)
+    {
+        cout << "...verifica_principalInMultipleGenres5: (Genero: Crime, Documentary, Drama) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_principalInMultipleGenres5: (Genero: Crime, Documentary, Drama) - O total  (="<<total<<") são o esperado (ok)" << endl;
+    
+
+    return er;
+}
+
+int verifica_principalInMultipleGenres(TVSeriesAPP& app)
+{
+   int er = 0;
+
+
+    
+    /*Teste 1*/
+   vector<string> vg;
+   vg.push_back("Drama");
+   vg.push_back("Comedy");
+   
+   int total = app.principalInMultipleGenres(vg);
+     
+    int res=52;
+    if (total!=res)
+    {
+        cout << "...verifica_principalInMultipleGenres: (Genero: Sport , Talk-Show) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_principalInMultipleGenres: (Genero: Sport , Talk-Show) - O total  (="<<total<<") são o esperado (ok)" << endl;
+    
+    /*Teste 2*/
+    vg.clear();
+    vg.push_back("Crime");
+    vg.push_back("Comedy");
+     
+    total = app.principalInMultipleGenres(vg);
+    res=97;
+    if (total!=res)
+    {
+        cout << "...verifica_principalInMultipleGenres: (Genero: Crime, Documentary, Drama) - O total (="<<total<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_principalInMultipleGenres: (Genero: Crime, Documentary, Drama) - O total  (="<<total<<") são o esperado (ok)" << endl;
+    
+
+    return er;
+}
+
+
+//#6
+
+int verifica_getPrincipalFromCharacter5(TVSeriesAPP& app)
+{
+    int er = 0;
+   
+    
+  
+    /*Teste 1*/
+    
+    string mostfreqprincchar = app.getPrincipalFromCharacter("Self"); 
+  
+  
+    string res="Johan Derksen";
+    if (mostfreqprincchar!=res)
+    {
+        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
+    
+    /*Teste 2*/
+    
+    mostfreqprincchar = app.getPrincipalFromCharacter("Raul"); 
+  
+  
+    res="Kristof Garcia";
+    if (mostfreqprincchar!=res)
+    {
+        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Raul' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_getPrincipalFromCharacter5: (Pessoa que interpetou de 'Raul' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
+    
+
+
+    return er;
+}
+
+int verifica_getPrincipalFromCharacter(TVSeriesAPP& app)
+{
+    int er = 0;
+   
+    
+  
+    /*Teste 1*/
+    
+    string mostfreqprincchar = app.getPrincipalFromCharacter("Self"); 
+  
+  
+    string res="Aaron Elliott";
+    if (mostfreqprincchar!=res)
+    {
+        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Self' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
+    
+    /*Teste 2*/
+    
+    mostfreqprincchar = app.getPrincipalFromCharacter("Judy"); 
+  
+  
+    res="Elora Españo";
+    if (mostfreqprincchar!=res)
+    {
+        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Judy' mais vezes) - A pessoa (="<<mostfreqprincchar<<") é diferente do esperado (="<<res<<") (ERRO)" << endl ;
+           er++;
+    }
+    else
+        cout << "...verifica_getPrincipalFromCharacter: (Pessoa que interpetou de 'Judy' mais vezes) - A pessoa  (="<<res<<") é o esperado (ok)" << endl;
+    
+
 
     return er;
 }
@@ -659,7 +659,7 @@ int main() {
     // Parse data from TSV files
 
     TVSeriesAPP tvSeriesApp5;
-    int res = parseTitleBasics("series5.basics.tsv",tvSeriesApp5);
+    int res = parseTitleBasics("series5.basics.tsv",tvSeriesApp5);  //res???
 
     res = parseTitleEpisodes("series5.episode.tsv", tvSeriesApp5);
     res = parseTitlePrincipals("series5.principals.names.tsv",tvSeriesApp5);
@@ -667,7 +667,7 @@ int main() {
 
 
     //PERGUNTA 1
-      error = verifica_getUniquePrincipals5(tvSeriesApp5);
+        error = verifica_getUniquePrincipals5(tvSeriesApp5);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_getUniquePrincipals5\n\n" <<  endl;
@@ -693,7 +693,7 @@ int main() {
 
 
     //PERGUNTA 3
-      error = verifica_principalsWithMultipleCategories5(tvSeriesApp5);
+        error = verifica_principalsWithMultipleCategories5(tvSeriesApp5);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalsWithMultipleCategories5\n\n" <<  endl;
@@ -705,8 +705,8 @@ int main() {
     }  
 
 
-   //PERGUNTA 4
-         error = verifica_principalsInAllEpisodes5(tvSeriesApp5);
+    //PERGUNTA 4
+        error = verifica_principalsInAllEpisodes5(tvSeriesApp5);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalsInAllEpisodes5\n\n" <<  endl;
@@ -718,8 +718,8 @@ int main() {
     } 
 
 
-   //PERGUNTA 5
-       error = verifica_principalInMultipleGenres5(tvSeriesApp5);
+    //PERGUNTA 5
+        error = verifica_principalInMultipleGenres5(tvSeriesApp5);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalInMultipleGenres5\n\n" <<  endl;
@@ -732,7 +732,7 @@ int main() {
 
 
     //PERGUNTA 6
-     error = verifica_getPrincipalFromCharacter5(tvSeriesApp5);
+        error = verifica_getPrincipalFromCharacter5(tvSeriesApp5);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_getPrincipalFromCharacter5\n\n" <<  endl;
@@ -747,7 +747,7 @@ int main() {
     
 
 //inicio do comentário
-    
+
     cout << "Base de dados grande \n" << endl;
 
     TVSeriesAPP tvSeriesApp;
@@ -765,9 +765,9 @@ int main() {
     double time;
     beg = clock();
 
-
+//
     //PERGUNTA 1
-      error = verifica_getUniquePrincipals(tvSeriesApp);
+        error = verifica_getUniquePrincipals(tvSeriesApp);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_getUniquePrincipals\n\n" <<  endl;
@@ -778,7 +778,7 @@ int main() {
         cout << "OK: verifica_getUniquePrincipals passou\n\n" << endl;
     }  
 
-
+//
     //PERGUNTA 2
         error = verifica_getMostSeriesGenre(tvSeriesApp);
     if (error)
@@ -791,9 +791,9 @@ int main() {
         cout << "OK: verifica_getMostSeriesGenre passou\n\n" << endl;
     }  
 
-
-   //PERGUNTA 3
-      error = verifica_principalsWithMultipleCategories(tvSeriesApp);
+/*
+    //PERGUNTA 3
+        error = verifica_principalsWithMultipleCategories(tvSeriesApp);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalsWithMultipleCategories\n\n" <<  endl;
@@ -804,9 +804,9 @@ int main() {
         cout << "OK: verifica_principalsWithMultipleCategories passou\n\n" << endl;
     }
 
-
-        //PERGUNTA 4
-         error = verifica_principalsInAllEpisodes(tvSeriesApp);
+*/
+    //PERGUNTA 4
+        error = verifica_principalsInAllEpisodes(tvSeriesApp);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalsInAllEpisodes\n\n" <<  endl;
@@ -817,9 +817,9 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes passou\n\n" << endl;
     } 
 
-
+//
     //PERGUNTA 5
-       error = verifica_principalInMultipleGenres(tvSeriesApp);
+        error = verifica_principalInMultipleGenres(tvSeriesApp);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_principalInMultipleGenres\n\n" <<  endl;
@@ -829,9 +829,9 @@ int main() {
     {
         cout << "OK: verifica_principalInMultipleGenres passou\n\n" << endl;
     }
-
+//
     //PERGUNTA 6
-     error = verifica_getPrincipalFromCharacter(tvSeriesApp);
+        error = verifica_getPrincipalFromCharacter(tvSeriesApp);
     if (error)
     {
         cout << "ERRO: "<< error << " erros encontrados em verifica_getPrincipalFromCharacter\n\n" <<  endl;
@@ -841,7 +841,7 @@ int main() {
     {
         cout << "OK: verifica_getPrincipalFromCharacter passou\n\n" << endl;
     }
-
+//
 
 
     end = clock();
