@@ -95,8 +95,8 @@ TitleBasics TVSeriesAPP::getSeries(const string& tconst) const{
   return SeriesMap.at(tconst);
 }
 
-TitlePrincipals TVSeriesAPP::getPerson(const string& tconst) const{
-  return PersonMap.at(tconst);
+TitlePrincipals TVSeriesAPP::getPerson(const string& nconst) const{
+  return PersonMap.at(nconst);
 }
 
 TitleEpisode TVSeriesAPP::getEpisode(const string& tconst){
@@ -180,20 +180,16 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
   auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-    CatCount[p->second.primaryName].insert(p->second.category); // Add category to the set of categories for this person
+    CatCount[p->second.nconst].insert(p->second.category); // Add category to the set of categories for this person
   }
 
   for(auto& person : CatCount){ // Iterate over all people
     if(person.second.size() > 1){ // If person has more than one category
-      answer.push_back(person.first); // Add person to the answer
+      answer.push_back(getPerson(person.first).primaryName); // Add person to the answer
     }
   }
 
   sort(answer.begin(), answer.end()); // Sort the answer alphabetically
-
-  for(int i = 0; i < answer.size(); i++){
-    cout << answer[i] << endl;
-  }
 
   return answer;
 }
@@ -255,6 +251,9 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 //PERGUNTA 5:
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
+//Determina o número de pessoas que entraram em séries com géneros correspondentes 
+//aos géneros em vGenres, retornando-o.
+
   if(vGenres.empty()) //check if vGenres is empty
   {
     return 0; //return 0 if it is

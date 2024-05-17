@@ -115,7 +115,7 @@ private:
   /**
    * @brief Map Person objects' primaryName to a given Series
    * @param string1 Series's tconst
-   * @param string2 Person's primaryName
+   * @param string2 Person's Object
    * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME NAME FOR A SINGLE SERIES!
   */
   unordered_multimap<string, TitlePrincipals> PeopleToSeriesMap;
@@ -168,7 +168,7 @@ public:
   TitleBasics getSeries(const string& tconst) const;
 
   /** @brief get TitlePrincipals given a tconst */
-  TitlePrincipals getPerson(const string& tconst) const;
+  TitlePrincipals getPerson(const string& nconst) const;
 
   /** @brief get TitleEpisodes given a tconst */
   TitleEpisode getEpisode(const string& tconst);
