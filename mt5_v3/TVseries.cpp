@@ -157,29 +157,35 @@ string TVSeriesAPP::getMostSeriesGenre() const
 //PERGUNTA 3:
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  vector<string> answer; // Create answer vector
-/*  unordered_multimap<string, TitlePrincipals> CatCount; // Create auxiliary map to count Categories
-
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
-    return answer;
-  }
-
   //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
   //desenvolvido nos episódios em que entraram de determinada série de ID 
   //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
   //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
 
-  unordered_map<string, int> CatCount; // Change the type of CatCount to unordered_map<string, int>
+  vector<string> answer; // Create answer vector
+  unordered_map<string, set<string>> CatCount; // Create auxiliary map to count Categories
 
-  auto people = PeopleToEpisodeMap.equal_range(seriesTconst); // Get all people of the series
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return answer;
+  }
+  auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
-
+    CatCount[p->second.nconst].insert(p->second.category); // Add category to the set of categories for this person
   }
-*/
+
+  for(auto& person : CatCount){ // Iterate over all people
+    if(person.second.size() > 1){ // If person has more than one category
+      answer.push_back(getPerson(person.first).primaryName); // Add person to the answer
+    }
+  }
+
+  sort(answer.begin(), answer.end()); // Sort the answer alphabetically
+
   return answer;
 }
+
 
 
 
@@ -238,6 +244,9 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 //PERGUNTA 5:
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
+//Determina o número de pessoas que entraram em séries com géneros correspondentes 
+//aos géneros em vGenres, retornando-o.
+
   if(vGenres.empty()) //check if vGenres is empty
   {
     return 0; //return 0 if it is
