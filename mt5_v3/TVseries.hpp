@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <iostream>
@@ -124,12 +125,12 @@ private:
 //ToPeople
 
   /**
-   * @brief Map Series objects to a given Person
-   * @param string Person's nconst
-   * @param TitleBasics Series object
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME SERIES FOR A SINGLE PERSON!
+   * @brief Map Genres to a given Person
+   * @param string1 Person's nconst
+   * @param string2 Genres
+   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME GENRE FOR A SINGLE PERSON!
   */
-  unordered_multimap<string, TitleBasics> SeriesToPeopleMap;
+  unordered_multimap<string, string> GenresToPeopleMap;
 
   /**
    * @brief Map Characters attribute to a given Person
