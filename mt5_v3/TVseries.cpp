@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <stack>
+#include <set>
 
 using namespace std;
 
@@ -38,9 +39,11 @@ TVSeriesAPP::~TVSeriesAPP()
 
 //ToEpisode
   PeopleToEpisodeMap.clear();
+
 //ToSeries
   EpisodeToSeriesMap.clear();
   PeopleToSeriesMap.clear();
+
 //ToPeople
   SeriesToPeopleMap.clear();
   CharacterToPeopleMap.clear();
@@ -169,6 +172,7 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
   if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
     return answer;
   }
+  
   auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
@@ -181,7 +185,7 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
     }
   }
 
-  sort(answer.begin(), answer.end()); // Sort the answer alphabetically
+    sort(answer.begin(), answer.end()); // Sort the answer alphabetically
 
   return answer;
 }
