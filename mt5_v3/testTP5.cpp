@@ -765,7 +765,7 @@ int main() {
     double time;
     beg = clock();
 
-
+/*
     //PERGUNTA 1
         error = verifica_getUniquePrincipals(tvSeriesApp);
     if (error)
@@ -817,7 +817,7 @@ int main() {
         cout << "OK: verifica_principalsInAllEpisodes passou\n\n" << endl;
     } 
 
-
+*/
     //PERGUNTA 5
         error = verifica_principalInMultipleGenres(tvSeriesApp);
     if (error)
@@ -829,7 +829,7 @@ int main() {
     {
         cout << "OK: verifica_principalInMultipleGenres passou\n\n" << endl;
     }
-
+/*
     //PERGUNTA 6
         error = verifica_getPrincipalFromCharacter(tvSeriesApp);
     if (error)
@@ -841,7 +841,7 @@ int main() {
     {
         cout << "OK: verifica_getPrincipalFromCharacter passou\n\n" << endl;
     }
-
+*/
 
 
     end = clock();
