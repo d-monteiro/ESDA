@@ -42,6 +42,7 @@ public:
   string job;                 /** @brief the specific job title if applicable, else '\N' */
   vector<string> characters;  /** @brief the name of the character played if applicable, else '\N' */
   
+  friend bool operator==(const TitlePrincipals& person1, const TitlePrincipals& person2);
   friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 };
 
@@ -191,6 +192,9 @@ public:
 };
 
 
+
+/** @brief Operator Overloading to compare Person object */
+bool operator==(const TitlePrincipals& person1, const TitlePrincipals& person2);
 
 /** @brief Operator Overloading to display Series object */
 ostream& operator<<(ostream& os, const TitleBasics& series);
