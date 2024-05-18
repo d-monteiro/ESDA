@@ -12,6 +12,9 @@ using namespace std;
 
 TVSeriesAPP::TVSeriesAPP()
 {
+//Stats
+  APPGenres = unordered_set<string>();                                        //from TitleBasics
+
 //Titles
   SeriesMap = unordered_map<string, TitleBasics>();                           //from TitleBasics
   PersonMap = unordered_map<string, TitlePrincipals>();                       //from TitlePrincipals
@@ -25,11 +28,11 @@ TVSeriesAPP::TVSeriesAPP()
   PeopleToSeriesMap = unordered_multimap<string, TitlePrincipals>();          //from TitlePrincipals
 
 //ToPeople
-  GenresToPeopleMap = unordered_multimap<string, string>();                   //from TitlePrincipals
+  GenresToPeopleMap = unordered_map<string, unordered_set<string>>();         //from TitlePrincipals
   CharacterToPeopleMap = unordered_map<string, unordered_map<string, int>>(); //from TitlePrincipals
 
 //ToGenres
- // SeriesToGenresMap = unordered_multimap<string, string>();                   //from TitleBasics
+  GenresCountMap = unordered_map<string, int>();                   //from TitleBasics
 }
 
 
@@ -52,6 +55,9 @@ TVSeriesAPP::~TVSeriesAPP()
 //ToPeople
   GenresToPeopleMap.clear();
   CharacterToPeopleMap.clear();
+  
+//ToGenres
+  GenresCountMap.clear();
 }
 
 
@@ -61,6 +67,13 @@ void TVSeriesAPP::addTitleBasics(const TitleBasics& title)  //a TitleBasic is a 
 {
 //Title
   SeriesMap[title.tconst] = title;  //add title to SeriesMap
+
+//ToGenre
+  for(const auto genre : title.genres)  //iterate through all genres of the series
+  {
+    GenresCountMap[genre]++;  //add genre to SeriesToGenresMap
+    APPGenres.insert(genre);  //add genre to APPGenres
+  }
 }
 
 void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) //a TitleEpisode is an Episode
@@ -90,7 +103,7 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
 
   for(auto genre : series.genres)  //iterate through all genres of the series
   {
-    GenresToPeopleMap.insert({principal.nconst, genre});  //add the series's genres to GenresToPeopleMap
+    GenresToPeopleMap[principal.nconst].insert(genre);  //add the series's genres to GenresToPeopleMap
   }
 
   for (const auto& character : principal.characters) {
@@ -171,24 +184,15 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 //PERGUNTA 2:
 string TVSeriesAPP::getMostSeriesGenre() const
 {
-  unordered_map<string, int> genreCount; // Create auxiliary map to count genres
+  pair<string, int> MostSeriesGenre = {"", 0};  // Create pair to store the most common genre
 
-  for(const auto& series : SeriesMap){ // Iterate through all series
-    for(const auto& genre : series.second.genres){ // And through all genres of each series
-      genreCount[genre]++; // Increment genre count
+  for(const auto& genre : APPGenres){ // Iterate through all genres of the APP
+    if(GenresCountMap.at(genre) > MostSeriesGenre.second || (GenresCountMap.at(genre) == MostSeriesGenre.second && genre.size() > MostSeriesGenre.first.size())){
+      MostSeriesGenre = {genre, GenresCountMap.at(genre)}; // Update most common genre
     }
   }
 
-  if(genreCount.empty()) //check if genreCount is empty
-  {
-    return ""; //return empty string if it is
-  }
-
-  return max_element(genreCount.begin(), genreCount.end(),     // Use max_element to find the genre with the highest count
-    [](const auto& a, const auto& b){                          // Lambda function to compare genres
-      if (a.second != b.second) return a.second < b.second;    // If the count is different, return the genre with the highest count
-      else return a.first.size() > b.first.size();             // If the count is the same, return the genre with the highest size
-    })->first;                                                 // Return the genre
+  return MostSeriesGenre.first;
 }
 
 
@@ -281,36 +285,15 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 
   int count = 0;  //initialize count
 
-  bool pInMultipleGenres = 1; //flag to check if person is InMultipleGenres
-  bool found = 0;             //flag to check if genres of vGenres are found within the genres of a person
+  vector<string> vGen(vGenres.begin(), vGenres.end());  //create vector with all genres of vGenres
+  sort(vGen.begin(), vGen.end());
 
   for(auto person : PersonMap)  //iterate through all people
   {
-    pInMultipleGenres = 1;  //reset flag for each person
+    vector<string> personGenres(GenresToPeopleMap[person.first].begin(), GenresToPeopleMap[person.first].end());
+    sort(personGenres.begin(), personGenres.end());
 
-    auto genresFromPerson = GenresToPeopleMap.equal_range(person.first);  //get all genres of the person
-
-    for(string genres : vGenres)  //iterate through all genres of vGenres
-    {
-      found = 0;  //reset flag for each genre of vGenres
-
-      for(auto genre = genresFromPerson.first; genre != genresFromPerson.second; genre++) //iterate through all genres of the person
-      {//check if the genre of person corresponds to the genre of vGenres
-        if(genre->second == genres) //if it does:
-        {
-          found = 1;  //set flag to true
-          break;      //stop search throughout genres of person
-        }
-      }
-
-      if(!found)  //if the genre of vGenres was't found within the genres of person:
-      {
-        pInMultipleGenres = 0;  //set flag to false
-        break;                  //stop search throughout genres of vGenres
-      }
-    }
-
-    if(pInMultipleGenres) //if person has the genres of vGenres:
+    if(includes(personGenres.begin(), personGenres.end(), vGen.begin(), vGen.end())) //if it does:
     {
       count++;  //increment count
     }

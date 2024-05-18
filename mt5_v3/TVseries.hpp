@@ -63,6 +63,11 @@ public:
 /** @brief Class to represent a APP TVSeries Management */
 class TVSeriesAPP{
 private:
+//Stats
+
+  unordered_set<string> APPGenres;  /** @brief Set to store all the Genres */
+
+
 //Titles
 
   /**
@@ -127,11 +132,11 @@ private:
 
   /**
    * @brief Map Genres to a given Person
-   * @param string1 Person's nconst
-   * @param string2 Genres
+   * @param string Person's nconst
+   * @param unordered_set<string> Genres
    * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME GENRE FOR A SINGLE PERSON!
   */
-  unordered_multimap<string, string> GenresToPeopleMap;
+  unordered_map<string, unordered_set<string>> GenresToPeopleMap;
 
   /**
    * @brief Map Characters attribute to a given Person
@@ -139,6 +144,16 @@ private:
    * @param unordered_map<string, int> .first = Character, .second = Number of times
   */
   unordered_map<string, unordered_map<string, int>> CharacterToPeopleMap;
+
+
+//ToGenre
+
+  /**
+   * @brief Map Series objects count to a given Genre
+   * @param string1 Genre
+   * @param string2 Series's count
+  */
+  unordered_map<string, int> GenresCountMap;
 
 
 public:
