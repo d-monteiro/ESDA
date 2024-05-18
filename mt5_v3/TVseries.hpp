@@ -136,10 +136,9 @@ private:
   /**
    * @brief Map Characters attribute to a given Person
    * @param string1 Person's nconst
-   * @param string2 Character
-   * @note Might contain multiple instances of the same character for a single person
+   * @param unordered_map<string, int> .first = Character, .second = Number of times
   */
-  unordered_multimap<string, string> CharacterToPeopleMap;
+  unordered_map<string, unordered_map<string, int>> CharacterToPeopleMap;
 
 
 public:

@@ -26,7 +26,7 @@ TVSeriesAPP::TVSeriesAPP()
 
 //ToPeople
   GenresToPeopleMap = unordered_multimap<string, string>();                   //from TitlePrincipals
-  CharacterToPeopleMap = unordered_multimap<string, string>();                //from TitlePrincipals
+  CharacterToPeopleMap = unordered_map<string, unordered_map<string, int>>(); //from TitlePrincipals
 
 //ToGenres
  // SeriesToGenresMap = unordered_multimap<string, string>();                   //from TitleBasics
@@ -81,19 +81,20 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
   PeopleToEpisodeMap.insert({principal.tconst, principal}); //add principal to PeopleToEpisodeMap
 
 //ToSeries
-    auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
+  auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
+
   PeopleToSeriesMap.insert({episode->second.parentTconst, principal});  //add principal to PeopleToSeriesMap
   
 //ToPeople
-    TitleBasics series = getParentSeries(episode->second);  //get the series of the episode
+  TitleBasics series = getParentSeries(episode->second);  //get the series of the episode
+
   for(auto genre : series.genres)  //iterate through all genres of the series
   {
     GenresToPeopleMap.insert({principal.nconst, genre});  //add the series's genres to GenresToPeopleMap
   }
 
-  for(auto character : principal.characters)  //iterate through all characters of principal
-  {
-    CharacterToPeopleMap.insert({principal.nconst, character}); //add principal's characters to CharacterToPeopleMap
+  for (const auto& character : principal.characters) {
+    CharacterToPeopleMap[character][principal.nconst]++;
   }
 }
 
@@ -323,39 +324,38 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 //PERGUNTA 6:
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
-  if(character.empty()) //check if character is empty
-  {
-    return "";  //return empty string if it is
-  }
+  //Encontra a pessoa que representou mais vezes determinada personagem (character) 
+  //nos episódios. No caso de a contagem resultar em empate, é selecionada a que se 
+  //encontra alfabeticamente à frente. Retorna o nome da pessoa (primaryName) 
+  //encontrada, ou uma string vazia em caso de erro.
 
-  unordered_map<TitlePrincipals, int, hashPerson, equalPerson> personRoleCount; //create auxiliary map to count roles
+  string answer;
 
-  for(const auto person : PersonMap)  //iterate through all people
-  {
-    personRoleCount[person.second] = 0;  //initialize personRoleCount for each person with 0
+  if(character.empty()) return answer;  // Check for faulty parameters
 
-    const auto characterRange = CharacterToPeopleMap.equal_range(person.first); //get all characters of the person
+  int maxCount = 0;
+  string maxActorId;
 
-    for(auto personCharacter = characterRange.first; personCharacter != characterRange.second; personCharacter++) //iterate through all characters of the person (if any)
-    {
-      if(personCharacter->second.find(character) != string::npos) //check if the character is in the person's characters
-      {
-        personRoleCount[person.second]++;  //increment personRoleCount for that person  
+  for(const auto& entry : CharacterToPeopleMap){
+    if(entry.first.find(character) != string::npos){  // Check if the character is a substring of the key
+      for(const auto& actorCountPair : entry.second){
+        // If this actor has appeared more times, or the same number of times but is lexicographically smaller
+        if(actorCountPair.second > maxCount || 
+          (actorCountPair.second == maxCount && actorCountPair.first < maxActorId)){
+          maxActorId = actorCountPair.first;
+          maxCount = actorCountPair.second;
+        }
       }
     }
   }
 
-  if(personRoleCount.empty()) //check if roleCount is empty
-  {
-    return ""; //return empty string if it is
+  if (!maxActorId.empty()) {
+    answer = PersonMap.find(maxActorId)->second.primaryName;
   }
 
-  return max_element(personRoleCount.begin(), personRoleCount.end(),  //use max_element to find the person with the highest count
-    [](const auto& a, const auto& b){                                     //lambda function to compare people by count
-      if(a.second != b.second) return a.second < b.second;                    //if the count is different, return the person with the highest count
-      else return a.first.primaryName > b.first.primaryName;                  //if the count is the same, return the person with the lowest name
-    })->first.primaryName;                                              //return the person's primaryName
+  return answer;
 }
+
 
 
 
