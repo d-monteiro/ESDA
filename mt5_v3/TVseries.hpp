@@ -42,6 +42,7 @@ public:
   string job;                 /** @brief the specific job title if applicable, else '\N' */
   vector<string> characters;  /** @brief the name of the character played if applicable, else '\N' */
   
+  friend bool operator==(const TitlePrincipals& person1, const TitlePrincipals& person2);
   friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 };
 
@@ -62,6 +63,11 @@ public:
 /** @brief Class to represent a APP TVSeries Management */
 class TVSeriesAPP{
 private:
+//Stats
+
+  unordered_set<string> APPGenres;  /** @brief Set to store all the Genres */
+
+
 //Titles
 
   /**
@@ -126,11 +132,11 @@ private:
 
   /**
    * @brief Map Genres to a given Person
-   * @param string1 Person's nconst
-   * @param string2 Genres
+   * @param string Person's nconst
+   * @param unordered_set<string> Genres
    * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME GENRE FOR A SINGLE PERSON!
   */
-  unordered_multimap<string, string> GenresToPeopleMap;
+  unordered_map<string, unordered_set<string>> GenresToPeopleMap;
 
   /**
    * @brief Map Characters attribute to a given Person
@@ -139,6 +145,16 @@ private:
    * @note Might contain multiple instances of the same character for a single person
   */
   unordered_multimap<string, string> CharacterToPeopleMap;
+
+
+//ToGenre
+
+  /**
+   * @brief Map Series objects count to a given Genre
+   * @param string1 Genre
+   * @param string2 Series's count
+  */
+  unordered_map<string, int> GenresCountMap;
 
 
 public:
@@ -199,6 +215,9 @@ public:
 };
 
 
+
+/** @brief Operator Overloading to compare Person object */
+bool operator==(const TitlePrincipals& person1, const TitlePrincipals& person2);
 
 /** @brief Operator Overloading to display Series object */
 ostream& operator<<(ostream& os, const TitleBasics& series);
