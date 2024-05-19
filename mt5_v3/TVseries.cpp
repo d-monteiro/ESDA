@@ -160,8 +160,12 @@ struct equalPerson
 //PERGUNTA 1:
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
 {
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+  //Encontra todas as pessoas que entraram em episódios de determinada série, ou seja, 
+  //pesquisa todos os elementos diferentes da classe TitlePrincipals da série de ID 
+  //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
+  //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){  // Check if seriesTconst exists in SeriesMap
     return {};
   }
   
@@ -184,6 +188,11 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 //PERGUNTA 2:
 string TVSeriesAPP::getMostSeriesGenre() const
 {
+  //Encontra o género mais frequente das séries na classe TVSeriesAPP. No caso de vários 
+  //géneros terem o mesmo número de séries associadas, é escolhido o que tiver o nome 
+  //com menos caracteres. Retorna o género encontrado, ou uma string vazia em caso de 
+  //erro.
+
   pair<string, int> MostSeriesGenre = {"", 0};  // Create pair to store the most common genre
 
   for(const auto& genre : APPGenres){ // Iterate through all genres of the APP
@@ -235,6 +244,10 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
 //PERGUNTA 4:
 vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const
 {
+  //Encontra todas as pessoas que entraram na totalidade de episódios de determinada 
+  //série de ID seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) 
+  //encontradas, organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
   if (SeriesMap.find(seriesTconst) == SeriesMap.end())  //check if seriesTconst exists in SeriesMap
   {
     return {};  //return empty vector if it doesn't
@@ -275,8 +288,8 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 //PERGUNTA 5:
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
-//Determina o número de pessoas que entraram em séries com géneros correspondentes 
-//aos géneros em vGenres, retornando-o.
+  //Determina o número de pessoas que entraram em séries com géneros correspondentes 
+  //aos géneros em vGenres, retornando-o.
 
   if(vGenres.empty()) //check if vGenres is empty
   {

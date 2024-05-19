@@ -830,6 +830,7 @@ int main() {
         cout << "OK: verifica_principalInMultipleGenres passou\n\n" << endl;
     }
 
+
     //PERGUNTA 6
         error = verifica_getPrincipalFromCharacter(tvSeriesApp);
     if (error)
