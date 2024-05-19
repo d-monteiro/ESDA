@@ -7,6 +7,7 @@
 using namespace std;
 
 
+
 /* --- Constructor --- */
 
 TVSeriesAPP::TVSeriesAPP()
@@ -27,11 +28,11 @@ TVSeriesAPP::TVSeriesAPP()
   PeopleToSeriesMap = unordered_multimap<string, TitlePrincipals>();          //from TitlePrincipals
 
 //ToPeople
-  GenresToPeopleMap = unordered_map<string, unordered_set<string>>();                   //from TitlePrincipals
-  CharacterToPeopleMap = unordered_multimap<string, string>();                //from TitlePrincipals
+  GenresToPeopleMap = unordered_map<string, unordered_set<string>>();         //from TitlePrincipals
+  CharacterToPeopleMap = unordered_map<string, unordered_map<string, int>>(); //from TitlePrincipals
 
 //ToGenres
-  GenresCountMap = unordered_map<string, int>();                   //from TitleBasics
+  GenresCountMap = unordered_map<string, int>();                              //from TitleBasics
 }
 
 
@@ -39,6 +40,9 @@ TVSeriesAPP::TVSeriesAPP()
 
 TVSeriesAPP::~TVSeriesAPP()
 {
+//Stats
+  APPGenres.clear();
+
 //Titles
   SeriesMap.clear();
   PersonMap.clear();
@@ -54,7 +58,7 @@ TVSeriesAPP::~TVSeriesAPP()
 //ToPeople
   GenresToPeopleMap.clear();
   CharacterToPeopleMap.clear();
-  
+
 //ToGenres
   GenresCountMap.clear();
 }
@@ -68,12 +72,13 @@ void TVSeriesAPP::addTitleBasics(const TitleBasics& title)  //a TitleBasic is a 
   SeriesMap[title.tconst] = title;  //add title to SeriesMap
 
 //ToGenre
-  for(const auto genre : title.genres)  //iterate through all genres of the series
+  for(const auto& genre : title.genres) //iterate through all genres of the series
   {
     GenresCountMap[genre]++;  //add genre to SeriesToGenresMap
     APPGenres.insert(genre);  //add genre to APPGenres
   }
 }
+
 
 void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) //a TitleEpisode is an Episode
 {
@@ -84,6 +89,7 @@ void TVSeriesAPP::addTitleEpisodes(const TitleEpisode& episode) //a TitleEpisode
   EpisodeToSeriesMap.insert({episode.parentTconst, episode}); //add episode to EpisodeToSeriesMap
 }
 
+
 void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitlePrincipal is a Person
 {
 //Title
@@ -93,19 +99,19 @@ void TVSeriesAPP::addTitlePrincipal(const TitlePrincipals& principal) //a TitleP
   PeopleToEpisodeMap.insert({principal.tconst, principal}); //add principal to PeopleToEpisodeMap
 
 //ToSeries
-    auto episode = EpisodesMap.find(principal.tconst);  //find episode in EpisodesMap
+    auto episode = EpisodesMap.find(principal.tconst);                  //find episode in EpisodesMap
   PeopleToSeriesMap.insert({episode->second.parentTconst, principal});  //add principal to PeopleToSeriesMap
   
 //ToPeople
     TitleBasics series = getParentSeries(episode->second);  //get the series of the episode
-  for(const auto genre : series.genres)  //iterate through all genres of the series
+  for(const auto& genre : series.genres)  //iterate through all genres of the series
   {
     GenresToPeopleMap[principal.nconst].insert(genre);  //add the series's genres to GenresToPeopleMap
   }
 
-  for(const auto character : principal.characters)  //iterate through all characters of principal
+  for(const auto& character : principal.characters) //iterate through all characters of principal (although it can only have one or none characters)
   {
-    CharacterToPeopleMap.insert({principal.nconst, character}); //add principal's characters to CharacterToPeopleMap
+    CharacterToPeopleMap[character][principal.nconst]++;  //increment principal's number of plays as the character characters
   }
 }
 
@@ -130,40 +136,22 @@ TitleBasics TVSeriesAPP::getParentSeries(const TitleEpisode& episode){
 
 
 
-/* --- Custom Hash Methods --- */
-
-/** @brief Hash function to hash TitlePrincipals objects, using the default hash (std::hash) for strings on the nconst */
-struct hashPerson
-{
-  size_t operator()(const TitlePrincipals& person) const
-  {
-    return hash<string>()(person.nconst);
-  }
-};
-
-/** @brief Comparison function that allows the comparison between TitlePrincipals objects, comparing them by comparing their nconsts */
-struct equalPerson
-{
-  bool operator()(const TitlePrincipals& person1, const TitlePrincipals& person2) const
-  {
-    return person1.nconst == person2.nconst;
-  }
-};
-
-
-
 /* --- Answer Methods --- */
 
 
 //PERGUNTA 1:
 vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) const
 {
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+//Encontra todas as pessoas que entraram em episódios de determinada série, ou seja, 
+//pesquisa todos os elementos diferentes da classe TitlePrincipals da série de ID 
+//seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
+//organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){  // Check if seriesTconst exists in SeriesMap
     return {};
   }
   
-  unordered_set<string> uniquePrincipals; // Create a set to store unique principals
+  set<string> uniquePrincipals; // Create a set to store unique principals
 
   auto people = PeopleToSeriesMap.equal_range(seriesTconst);
 
@@ -172,7 +160,6 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
   }
 
   vector<string> answer(uniquePrincipals.begin(), uniquePrincipals.end()); // Convert set to vector
-  sort(answer.begin(), answer.end()); // Sort answer vector
 
   return answer;
 }
@@ -182,15 +169,22 @@ vector<string> TVSeriesAPP::getUniquePrincipals(const string& seriesTconst ) con
 //PERGUNTA 2:
 string TVSeriesAPP::getMostSeriesGenre() const
 {
+//Encontra o género mais frequente das séries na classe TVSeriesAPP. No caso de vários 
+//géneros terem o mesmo número de séries associadas, é escolhido o que tiver o nome 
+//com menos caracteres. Retorna o género encontrado, ou uma string vazia em caso de 
+//erro.
+
   pair<string, int> MostSeriesGenre = {"", 0};  // Create pair to store the most common genre
 
   for(const auto& genre : APPGenres){ // Iterate through all genres of the APP
-    if(GenresCountMap.at(genre) > MostSeriesGenre.second || (GenresCountMap.at(genre) == MostSeriesGenre.second && genre.size() > MostSeriesGenre.first.size())){
-      MostSeriesGenre = {genre, GenresCountMap.at(genre)}; // Update most common genre
+    auto GenCount = GenresCountMap.at(genre); // Get the number of series of this genre
+    
+    if(GenCount > MostSeriesGenre.second || (GenCount == MostSeriesGenre.second && genre.size() < MostSeriesGenre.first.size())){
+      MostSeriesGenre = {genre, GenCount}; // Update most common genre
     }
   }
 
-  return MostSeriesGenre.first;
+  return MostSeriesGenre.first; //automatically returns "" (empty string) if APPGenres is empty
 }
 
 
@@ -198,18 +192,19 @@ string TVSeriesAPP::getMostSeriesGenre() const
 //PERGUNTA 3:
 vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& seriesTconst ) const
 {
-  //Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
-  //desenvolvido nos episódios em que entraram de determinada série de ID 
-  //seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
-  //organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+//Encontra todas as pessoas que desempenharam diferentes categorias no trabalho 
+//desenvolvido nos episódios em que entraram de determinada série de ID 
+//seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) encontradas, 
+//organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
+  // Check if seriesTconst exists in SeriesMap
+  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
+    return {};
+  }
 
   vector<string> answer; // Create answer vector
   unordered_map<string, set<string>> CatCount; // Create auxiliary map to count Categories
 
-  // Check if seriesTconst exists in SeriesMap
-  if (SeriesMap.find(seriesTconst) == SeriesMap.end()){
-    return answer;
-  }
   auto people = PeopleToSeriesMap.equal_range(seriesTconst); // Get all people of the series
 
   for(auto p = people.first; p != people.second; p++){ // Iterate through all people of the series
@@ -232,6 +227,10 @@ vector<string> TVSeriesAPP::principalsWithMultipleCategories(const string& serie
 //PERGUNTA 4:
 vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) const
 {
+//Encontra todas as pessoas que entraram na totalidade de episódios de determinada 
+//série de ID seriesTconst. Retorna o vetor com o nome das pessoas (primaryName) 
+//encontradas, organizado alfabeticamente. Em caso de erro, retorna um vetor vazio.
+
   if (SeriesMap.find(seriesTconst) == SeriesMap.end())  //check if seriesTconst exists in SeriesMap
   {
     return {};  //return empty vector if it doesn't
@@ -240,7 +239,7 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
   vector<string> answer;  //create answer vector
 
   const auto epsRange = EpisodeToSeriesMap.equal_range(seriesTconst); //get all episodes of the series
-  
+
   int numTotalEps = distance(epsRange.first, epsRange.second);  //get total number of episodes (InAllEpisodes requirement)
 
   unordered_set<TitlePrincipals, hashPerson> pplNconst; //set to store unique principals' names
@@ -254,7 +253,7 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
     EpisodesToPeople[p->second.nconst].insert(p->second.tconst);  //add episode to person's episodes
   }
 
-  for(const auto person : pplNconst)  //iterate through all people of the series
+  for(const auto& person : pplNconst)  //iterate through all people of the series
   {
     if(EpisodesToPeople[person.nconst].size() == numTotalEps)  //if person is InAllEpisodes:
     {
@@ -272,6 +271,9 @@ vector<string> TVSeriesAPP::principalsInAllEpisodes(const string& seriesTconst) 
 //PERGUNTA 5:
 int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 {
+//Determina o número de pessoas que entraram em séries com géneros correspondentes 
+//aos géneros em vGenres, retornando-o.
+
   if(vGenres.empty()) //check if vGenres is empty
   {
     return 0; //return 0 if it is
@@ -301,38 +303,37 @@ int TVSeriesAPP::principalInMultipleGenres(vector<string> vGenres)
 //PERGUNTA 6:
 string TVSeriesAPP::getPrincipalFromCharacter(const string& character) const
 {
-  if(character.empty()) //check if character is empty
-  {
-    return "";  //return empty string if it is
-  }
+//Encontra a pessoa que representou mais vezes determinada personagem (character) 
+//nos episódios. No caso de a contagem resultar em empate, é selecionada a que se 
+//encontra alfabeticamente à frente. Retorna o nome da pessoa (primaryName) 
+//encontrada, ou uma string vazia em caso de erro.
 
-  unordered_map<TitlePrincipals, int, hashPerson, equalPerson> personRoleCount; //create auxiliary map to count roles
+  if(character.empty()) return {};  // Check for faulty parameters
 
-  for(const auto person : PersonMap)  //iterate through all people
-  {
-    personRoleCount[person.second] = 0;  //initialize personRoleCount for each person with 0
+  string answer;
 
-    const auto characterRange = CharacterToPeopleMap.equal_range(person.first); //get all characters of the person
+  int maxCount = 0;
 
-    for(auto personCharacter = characterRange.first; personCharacter != characterRange.second; personCharacter++) //iterate through all characters of the person (if any)
-    {
-      if(personCharacter->second.find(character) != string::npos) //check if the character is in the person's characters
-      {
-        personRoleCount[person.second]++;  //increment personRoleCount for that person  
+  string maxActorId;
+
+  for(const auto& entry : CharacterToPeopleMap){
+    if(entry.first.find(character) != string::npos){  // Check if the character is a substring of the key
+      for(const auto& actorCountPair : entry.second){
+        // If this actor has appeared more times, or the same number of times but is lexicographically smaller
+        if(actorCountPair.second > maxCount || 
+          (actorCountPair.second == maxCount && actorCountPair.first < maxActorId)){
+          maxActorId = actorCountPair.first;
+          maxCount = actorCountPair.second;
+        }
       }
     }
   }
 
-  if(personRoleCount.empty()) //check if roleCount is empty
-  {
-    return ""; //return empty string if it is
+  if (!maxActorId.empty()) {
+    answer = PersonMap.find(maxActorId)->second.primaryName;
   }
 
-  return max_element(personRoleCount.begin(), personRoleCount.end(),  //use max_element to find the person with the highest count
-    [](const auto& a, const auto& b){                                     //lambda function to compare people by count
-      if(a.second != b.second) return a.second < b.second;                    //if the count is different, return the person with the highest count
-      else return a.first.primaryName > b.first.primaryName;                  //if the count is the same, return the person with the lowest name
-    })->first.primaryName;                                              //return the person's primaryName
+  return answer;
 }
 
 

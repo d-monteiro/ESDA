@@ -12,6 +12,10 @@
 
 using namespace std; 
 
+
+
+/* --- Classes --- */
+
 /** @brief Class to represent a TVSeries */
 class TitleBasics{
 public:
@@ -28,6 +32,7 @@ public:
 
   friend ostream& operator<<(ostream& os, const TitleBasics& series);
 };
+
 
 /** @brief Class to represent the Crew or a Cast associated to an episode */
 class TitlePrincipals{
@@ -46,6 +51,27 @@ public:
   friend ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 };
 
+  /* --- Custom Hash Methods --- */
+
+  /** @brief Hash function to hash TitlePrincipals objects, using the default hash (std::hash) for strings on the nconst */
+  struct hashPerson
+  {
+    size_t operator()(const TitlePrincipals& person) const
+    {
+      return hash<string>()(person.nconst);
+    }
+  };
+
+  /** @brief Comparison function that allows the comparison between TitlePrincipals objects, comparing them by comparing their nconsts */
+  struct equalPerson
+  {
+    bool operator()(const TitlePrincipals& person1, const TitlePrincipals& person2) const
+    {
+      return person1.nconst == person2.nconst;
+    }
+  };
+
+
 /** @brief Class to represent each episode  */
 class TitleEpisode{
 public:
@@ -57,7 +83,6 @@ public:
   
   friend ostream& operator<<(ostream& os, const TitleEpisode& episode);
 };
-
 
 
 /** @brief Class to represent a APP TVSeries Management */
@@ -126,17 +151,16 @@ private:
    * @brief Map Genres to a given Person
    * @param string Person's nconst
    * @param unordered_set<string> Genres
-   * @warning ALLOWS MULTIPLE INSTANCES OF THE SAME GENRE FOR A SINGLE PERSON!
   */
   unordered_map<string, unordered_set<string>> GenresToPeopleMap;
 
   /**
    * @brief Map Characters attribute to a given Person
    * @param string1 Person's nconst
-   * @param string2 Character
-   * @note Might contain multiple instances of the same character for a single person
+   * @param unordered_map<string Character 
+   * @param , int> Number of times Person played as Character
   */
-  unordered_multimap<string, string> CharacterToPeopleMap;
+  unordered_map<string, unordered_map<string, int>> CharacterToPeopleMap;
 
 
 //ToGenre
@@ -176,7 +200,7 @@ public:
   TitleBasics getSeries(const string& tconst) const;
 
   /** @brief get TitlePrincipals given a tconst */
-  TitlePrincipals getPerson(const string& tconst) const;
+  TitlePrincipals getPerson(const string& nconst) const;
 
   /** @brief get TitleEpisodes given a tconst */
   TitleEpisode getEpisode(const string& tconst);
@@ -208,6 +232,8 @@ public:
 
 
 
+/* --- Operator Overloading --- */
+
 /** @brief Operator Overloading to compare Person object */
 bool operator==(const TitlePrincipals& person1, const TitlePrincipals& person2);
 
@@ -219,5 +245,7 @@ ostream& operator<<(ostream& os, const TitlePrincipals& Person);
 
 /** @brief Operator Overloading to display Episode object */
 ostream& operator<<(ostream& os, const TitleEpisode& episode);
+
+
 
 #endif
