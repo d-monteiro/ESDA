@@ -409,3 +409,18 @@ ostream& operator<<(ostream& os, const TitleEpisode& episode){
 
   return os;
 }
+
+/*
+Tempos
+
+Pergunta - Tempo Médio - Peso no Tempo Total
+
+Pergunta 1 - 0.000094 - 0.4211%
+Pergunta 2 - 0.000227 - 0.2757%
+Pergunta 3 - 0.000062 - 0.5945%
+Pergunta 4 - 0.002172 - 9.6584%
+Pergunta 5 - 0.017961 - 79.859%
+Pergunta 6 - 0.001518 - 6.7523%
+
+Tempo Total - 0.022491
+*/
