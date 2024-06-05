@@ -19,7 +19,16 @@ void testReverseLastElements(int value, list<int> *list_orig, list<int> *list_re
  */
 int swapHeadAndTail(list<int> *list_name)
 {
-   
+    if(!list_name || list_name->empty()) return -1;
+    
+    if(list_name->size() == 1) return 0;
+    
+    iter_swap(list_name->begin(), prev(list_name->end()));
+    /*
+    int temp = list_name->front();
+    list_name->front() = list_name->back();
+    list_name->back() = temp;
+    */
     return 0;
 }
 
@@ -32,7 +41,20 @@ int swapHeadAndTail(list<int> *list_name)
  */
 int reverseLastElements(list<int> *list_name, int k)
 {
-     return 0;
+    if(list_name == nullptr || list_name->empty() || k <= 0 || k > (int)list_name->size()) return -1;
+    
+    vector<int> aux;
+    
+    for(int i = 0; i < k; i++){
+        aux.push_back(list_name->back());
+        list_name->pop_back();
+    }
+    
+    for(auto i : aux){
+        list_name->push_back(i);
+    }
+    
+    return 0;
 }
 
 /* ----------------------------- */

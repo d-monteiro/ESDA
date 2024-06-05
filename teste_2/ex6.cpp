@@ -3,9 +3,18 @@
 #include <vector>
 using namespace std;
  
-int removeElements(stack<string> &s, vector<string> v)
+int removeElements(list<int> *list1, int n)
 {
-  
+    if(!list1 || n > *max_element(list1->begin(), list1->end())) return -1;
+    
+    
+    for(auto i = list1->begin(); i != list1->end(); ){
+        if(*i > n) i = list1->erase(i);
+        else i++;
+    }
+    
+    //list1->remove_if([n](int val) { return val > n; });
+    
     return 0;
 }
 

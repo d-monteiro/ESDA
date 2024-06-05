@@ -55,9 +55,25 @@ void Graph::print()
 
 queue<int> Graph::BFS(int s)
 {
-   /* Implementar 4a) */
+    vector<bool> visited(s, false);
+    queue<int> q;
+    queue<int> answer;
+
+    visited[s] = true;
+    q.push(s);
+
+    while(!q.empty()){
+        int vertex = q.front();
+        answer.push(vertex);
+        q.pop();
+
+        for(auto i = adj[vertex].begin(); i != adj[vertex].end(); i++){
+            if (!visited[*i]){
+                q.push(*i);
+                visited[*i] = true;
+            }
+        }
+    }
+    
+    return answer;
 }
-
-
-
-

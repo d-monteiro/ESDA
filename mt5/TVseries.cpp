@@ -32,7 +32,7 @@ TVSeriesAPP::TVSeriesAPP()
   CharacterToPeopleMap = unordered_map<string, unordered_map<string, int>>(); //from TitlePrincipals
 
 //ToGenres
-  GenresCountMap = unordered_map<string, int>();                   //from TitleBasics
+  GenresCountMap = unordered_map<string, int>();                              //from TitleBasics
 }
 
 

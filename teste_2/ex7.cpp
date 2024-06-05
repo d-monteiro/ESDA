@@ -12,9 +12,29 @@ list<int> copyList(list<int> *list_name);
 
 void printListfloat(list<float> list_name);
 
-int removeElements(list<int> *list1, int n)
+int removeElements(stack<string> &s, vector<string> v)
 {
+    if(s.empty()) return -1;
     
+    if(v.empty()) return 0;
+    
+    stack<string> aux;
+    
+    while(!s.empty()){
+            if(find(v.begin(), v.end(), s.top()) == v.end()){
+                aux.push(s.top());
+                s.pop();
+            }
+            
+            else s.pop();
+    }
+    
+    while(!aux.empty()){
+        s.push(aux.top());
+        aux.pop();
+    }
+    
+    return 0;
 }
 
 

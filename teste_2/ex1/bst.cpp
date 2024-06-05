@@ -91,8 +91,34 @@ int Tree::getLevel(Node *search_node, Node *tree_node, int level)
 
 uint Tree::prodReplace(Node *tree_node)
 {
-    /* Implementar 1a) */
-}
+    if(tree_node == nullptr) return 0;
+    
+    if(tree_node->left == nullptr && tree_node->right == nullptr){
+        auto actual = tree_node->data;
+        tree_node->data = 1;
+        return actual;
+    }
+    
+    auto left_product = 1, right_product = 1;
+    
+
+    if(tree_node->left != nullptr){
+        left_product = prodReplace(tree_node->left);
+    }
+    
+    if(tree_node->right != nullptr){
+        right_product = prodReplace(tree_node->right);
+    }
+    
+    // Guarda o valor antigo do nó
+    auto actual = tree_node->data;
+    
+    // Atualiza o valor do nó com o produto dos valores das subárvores
+    tree_node->data = left_product * right_product;
+    
+    // Retorna o produto do novo valor e do valor antigo do nó
+    return tree_node->data * actual;
+}   
 
 void Tree::printSibling(Node *search_node, Node *tree_node)
 {

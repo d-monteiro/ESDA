@@ -225,11 +225,30 @@ void HashTable::show()
 
 string maxCollisions(HashTable &ht, vector<string> &v)
 {
+    if(v.empty() || ht.getTableSize() <= 0) return "";
+    
+    string maxString;
+    int max = -1;
 
- /* Implementar 3 */
+    for (const string &str : v){
+        int collisions = 0;
 
+        for (int i = 0; i < ht.getTableSize(); i++){
+            int pos = ht.probingFunction(str, i);
+            if (ht.getTable()[pos] == str || ht.getTable()[pos] == "") break;
+            collisions++;
+        }
+
+        if (collisions > max){
+            max = collisions;
+            maxString = str;
+        }
+    }
+
+    return maxString;
 }
- void showVector(vector<string> ve)
+
+void showVector(vector<string> ve)
  {
      cout << "vector: ";
 

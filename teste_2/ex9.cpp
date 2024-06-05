@@ -9,8 +9,17 @@ using namespace std;
 
 int firstToLast(priority_queue<int> &pq)
 {
+    if(!pq.size()) return -1;
     
+    if((int)pq.size() == 1) return 0;
+    
+    priority_queue<int> aux = pq;
+    
+    while(aux.size() != 1) aux.pop();
 
+    pq.pop();
+    pq.push(aux.top() - 1);
+    
     return 0;
 }
 

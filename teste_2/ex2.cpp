@@ -30,7 +30,17 @@ struct compareMax
  */
 int smallestPosElementVector(vector<int> vec, int k)
 {
-    /* Implementar 2a) */
+    priority_queue<int> pq;
+    
+    if(vec.empty() || k > (int)vec.size() || k <= 0) return 9999;
+    
+    for(auto i : vec) pq.push(i);
+    
+    for(int i = 0; i < (int)vec.size()-k; i++){
+        pq.pop();
+    }
+    
+    return pq.top();
 }
 
 
@@ -44,7 +54,19 @@ int smallestPosElementVector(vector<int> vec, int k)
  */
 string largestPosElementString(string text, int k)
 {
-    /* Implementar 2b) */
+    if(text.empty() || k <= 0) return "";
+    
+    stringstream ss(text);
+    priority_queue<string, vector<string>, compareMax> pq;
+    string word;
+
+    while (ss >> word) pq.push(word);
+
+    if (k > (int)pq.size()) return "";
+
+    for (int i = 1; i < k; i++) pq.pop();
+
+    return pq.top();
 }
 
 

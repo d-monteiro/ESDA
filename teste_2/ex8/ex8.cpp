@@ -11,9 +11,25 @@ Considere a representação de àrvores binárias BST dada nas aulas TPs. Implem
 
 using namespace std;
 
-bool isBST(Node * root){
+bool isBST(Node * root)
+{
+    if(root == NULL) return true;
+    if(root == nullptr) return false;
     
-  
+    
+  if (root->left){
+    if (root->item < root->left->item) return false;
+    
+    return isBST(root->left);
+  }
+
+  if (root->right){
+    if (root->item > root->right->item) return false;
+    
+    return isBST(root->right);
+  }
+    
+    return true;
 }
 
 
