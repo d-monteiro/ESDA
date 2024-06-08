@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+
 using namespace std;
  
 int removeElements(list<int> *list1, int n)

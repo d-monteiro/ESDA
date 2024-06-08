@@ -32,6 +32,8 @@ public:
     //alinea a
     queue<int> BFS(int s);
 
+    queue<int> DFS(int s);
+
 
 
 
