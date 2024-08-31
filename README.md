@@ -1,4 +1,4 @@
-# L.EEC004 - Estruturas de Dados e Algoritmos
+# L.EEC009 - Estruturas de Dados e Algoritmos
 
 This repository contains all the coursework, assignments, and projects for the L.EEC009 class at FEUP.
 
